@@ -5,7 +5,7 @@ class Usuario(models.Model):
     password = models.CharField(max_length=10, null=False, blank=False)
     cpf_usuario = models.IntegerField(null=True, blank=True)
     nivel = models.CharField(max_length=2, null=True, blank=True)
-    condominio_numero = models.CharField(max_length=5, null=True, blank=True)
+    condominio_numero = models.IntegerField(null=False, blank=False)
 
 class Condomino(models.Model):
     cpf_condomino = models.IntegerField(verbose_name="CPF Condômino *", primary_key=True, null=False, blank=False) 
@@ -16,4 +16,4 @@ class Condomino(models.Model):
     celular = models.CharField(verbose_name="Celular",max_length=11, null=True, blank=True)
     email = models.CharField(verbose_name="Email",max_length=40, null=True, blank=True)
     data_aquisicao_imovel = models.DateField(verbose_name="Data aquisição imóvel *", null=False, blank=False)
-    Condominio_numero = models.CharField(max_length=3, null=True, blank=True)
+    Condominio_numero = models.IntegerField(null=False, blank=False)
