@@ -1,4 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.http import HttpResponse
+from django.contrib.auth import authenticate
 from .models import Usuario
 
 def login(request):
@@ -13,5 +15,18 @@ def usuarios(request):
     novo_usuario.cpf_usuario = 22760369153
     novo_usuario.nivel = 1
 
-# Print('Passei POST linha 15')
-# Print(novo_usuario)
+def verificaLogin(request):
+# verifica se as informações digitadas no login conferem com as informações na tabela usuários
+    if request.method == 'POST':
+        usuario = request.POST['usuario']
+        senha = request.POST['senha']
+        user = authenticate(username=usuario,password=senha)
+
+        print(usuario,senha)
+
+        if user is not None:
+            print('Usuário Válido *************************************')
+        else:
+            print('Usuário Inválido ***********************************')
+            
+
