@@ -1,11 +1,33 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth import authenticate
+from django.contrib.auth.models import User
 from .models import Usuario
+from django.contrib.auth.hashers import make_password
 
 def login(request):
     return render(request,'login/login.html')
 
+def register(request):
+    return render(request, 'login/register.html')
+
+def realizaRegistro(request):
+    if request.method == 'POST':
+        username = request.POST['usuario']
+        password = request.POST['senha']
+        cpf = request.POST['cpf']
+        nivel = request.POST['nivel']
+        condominio = request.POST['condominio']
+    
+        user = User.objects.create_user(username, password)
+        user.cpf = cpf
+        user.nivel = nivel
+        user.condominio = condominio
+        user.save()
+        
+        return redirect('login')
+    
+    return render(request, "login/register.html")
 #
 def usuarios(request):
 # Busca as informações digitadas na tela
@@ -21,6 +43,11 @@ def verificaLogin(request):
         usuario = request.POST['usuario']
         senha = request.POST['senha']
         user = authenticate(username=usuario,password=senha)
+
+        print(user)
+        
+        
+        
 
         print(usuario,senha)
 
