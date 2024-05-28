@@ -1,25 +1,290 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-        <!-- Required meta tags -->
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <!-- Bootstrap CSS -->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-        <link rel="stylesheet" href="/static/css/home.css">
-        <title>SGC</title>
-  </head>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<link rel="stylesheet" href="/static/node_modules/bootstrap/dist/css/bootstrap.css">
+	<link rel="stylesheet" href="/static/node_modules/sidebar-skeleton-compostrap/dist/css/sidebar.css">
+	<link rel="stylesheet" href="/static/node_modules/@fortawesome/fontawesome-free/css/all.css">
+	<link rel="stylesheet" href="/static/node_modules/perfect-scrollbar/css/perfect-scrollbar.css">
+	<link rel="stylesheet" href="/static/dist/css/sidebar.menu.css">
 
-  <body>
+	<!-- Required meta tags -->
+	<!-- <meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1"> -->
 
-        <nav style="background-color:rgb(4, 37, 86) !important;" class="navbar navbar-light bg-light">
-            <div class="container-fluid">
-                <span id="titulo"  class="navbar-brand mb-0 h1">CONDOMINIUM MANAGEMENT SYSTEM</span>
-            </div>
-        </nav>
-    
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-     
-    </body>
+	<!-- Bootstrap CSS -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+	<link rel="stylesheet" href="/static/css/home.css">        
+	<title>SGC</title>
+</head>
+
+<!-- <body class="bg-light"> -->
+<body>
+
+	<nav style="background-color:rgb(4, 37, 86) !important;" id="navbar" class="navbar navbar-light bg-light">
+		<div>
+			<p class="list-title text-uppercase">RIVIERA DEI FIORI</p>
+			<p class="list-title text-uppercase">Usário conectado:{% for message in messages %} {{message}} {% endfor %}</p>
+		</div>
+		<div class="container-fluid">
+			<span id="titulo"  class="navbar-brand mb-0 h1">SISTEMA DE GERENCIAMENTO DE CONDOMÍNIOS</span>
+		</div>
+	</nav>
+
+	<div class="d-flex wrapper wrapper-navbar-used ">
+
+		<nav role="navigation" class="sidebar sidebar-bg-dark sidebar-rounded-top-right shadow-sm" id="navigation" style="background-color: rgba(0, 0, 0, 0.0);">
+
+						<!-- sidebar -->
+			<div class="sidebar-menu">
+
+				<!-- menu fixed -->
+				<div class="sidebar-menu-fixed">
+
+					<!-- menu scrollbar -->
+					<div id="sidebar-menu-hide" class="scrollbar scrollbar-use-navbar scrollbar-bg-dark" style="background-color: rgba(21, 10, 49, 0.9);">		
+						
+											
+
+						<!-- menu -->
+						<!-- <ul class="list list-unstyled list-bg-dark mb-0" style="background-color: rgba(192, 121, 121, 1);">						
+							<li class="list-item">
+
+
+								<p class="list-title text-uppercase">RIVIERA DEI FIORI</p>
+								<p class="list-title text-uppercase">Usário conectado</p>
+
+								
+								<ul class="list-unstyled">
+									<li><a href="#" class="list-link link-arrow text-uppercase">
+										<span class="list-icon"><i class="fa-regular fa-user bell"></i></span>S. Karlos</a> <br>
+
+										
+										<ul class="list-unstyled list-hidden">
+											<li><a href="#" class="list-link">Your profil</a></li>
+											<li><a href="#" class="list-link">Logout</a></li>
+										</ul>
+									</li>
+								</ul>
+							</li>
+						</ul> -->
+
+
+
+
+						<!-- menu -->
+						<ul class="list list-unstyled list-bg-dark list-icon-red mb-0" style="background-color: rgba(192, 121, 121, 0.2);">						
+							<!-- multi-level dropdown menu -->
+							<li class="list-item">
+
+								<!-- list items -->
+								<ul class="list-unstyled">
+		
+									<!-- Cadastro -->
+									<li><a href="#" class="list-link link-arrow">
+										<span class="list-icon"><i class="fa-solid fa-globe bell"></i></span>Cadastra</a>
+
+										<!-- list items, second level -->
+										<ul class="list-unstyled list-hidden">											
+											<li><a href="#" class="list-link">Familiares ✖</a></li>
+											<li><a href="usuarios_list" class="list-link">Usuarios ✓</a></li>
+											<li><a href="#" class="list-link">Níveis de acesso ✖</a></li>
+											<li><a href="#" class="list-link">Telas de acesso ✖</a></li>
+											<li><a href="#" class="list-link">Veículos ✖</a></li>
+											<li><a href="#" class="list-link">Bicicletas ✖</a></li>
+											<li><a href="#" class="list-link">Blocos ✖</a></li>
+											<li><a href="#" class="list-link">Unidades ✖</a></li>
+											<li><a href="#" class="list-link">Pets ✖</a></li>
+											<li><a href="#" class="list-link">Reservas ✖</a></li>
+											<li><a href="#" class="list-link">Visitantes ✖</a></li>
+											<li><a href="#" class="list-link">Ocorrências ✖</a></li>
+											<li><a href="#" class="list-link">Espaços ✖</a></li>
+											<li><a href="#" class="list-link">Reservas ✖</a></li>
+											<li><a href="#" class="list-link">Correspondências ✖</a></li>
+											<li><a href="#" class="list-link">Colaboradores ✖</a></li>
+											<li><a href="#" class="list-link">Benefícios ✖</a></li>
+											<li><a href="#" class="list-link">Benefícios Recebidos ✖</a></li>
+											<li><a href="#" class="list-link">Telas de acesso ✖</a></li>
+											<li><a href="#" class="list-link">Garagens ✖</a></li>
+											<li><a href="#" class="list-link">Patrimônio ✖</a></li>										
+										</ul>
+									</li>
+								</ul>
+							</li>
+						
+							<!-- multi-level dropdown menu -->
+							<li class="list-item">
+
+								<!-- list items -->
+								<ul class="list-unstyled">
+		
+									<!-- Orçamento -->
+									<li><a href="#" class="list-link link-arrow">
+										<span class="list-icon"><i class="fa-solid fa-globe bell"></i></span>Orçamento</a>
+
+										<!-- list items, second level -->
+										<ul class="list-unstyled list-hidden">
+											<li><a href="#" class="list-link">Orçamento ✖</a></li>	
+											<li><a href="#" class="list-link">Orçamento/Realizado ✖</a></li>																			
+										</ul>
+									</li>
+								</ul>
+							</li>
+
+							<!-- multi-level dropdown menu -->
+							<li class="list-item">
+
+								<!-- list items -->
+								<ul class="list-unstyled">
+
+									<!-- Orçamento -->
+									<li><a href="#" class="list-link link-arrow ">
+										<span class="list-icon"><i class="fa-solid fa-globe bell"></i></span>Produtividade</a>
+
+										<!-- list items, second level -->
+										<ul class="list-unstyled list-hidden">
+											<li><a href="#" class="list-link">Produtividade ✖</a></li>	
+											<li><a href="#" class="list-link">Orçamento/Realizado ✖</a></li>																			
+										</ul>
+									</li>
+								</ul>
+							</li>
+
+							<!-- multi-level dropdown menu -->
+							<li class="list-item">
+
+								<!-- list items -->
+								<ul class="list-unstyled">
+
+									<!-- Orçamento -->
+									<li><a href="#" class="list-link link-arrow ">
+										<span class="list-icon"><i class="fa-solid fa-globe bell"></i></span>Relatórios Administrat.</a>
+
+										<!-- list items, second level -->
+										<ul class="list-unstyled list-hidden">
+											<li><a href="#" class="list-link">Condominos ✖</a></li>
+											<li><a href="#" class="list-link">Familiares ✖</a></li>
+											<li><a href="#" class="list-link">Usuarios ✖</a></li>
+											<li><a href="#" class="list-link">Níveis de acesso ✖</a></li>
+											<li><a href="#" class="list-link">Telas de acesso ✖</a></li>
+											<li><a href="#" class="list-link">Veículos ✖</a></li>
+											<li><a href="#" class="list-link">Bicicletas ✖</a></li>
+											<li><a href="#" class="list-link">Blocos ✖</a></li>
+											<li><a href="#" class="list-link">Unidades ✖</a></li>
+											<li><a href="#" class="list-link">Pets ✖</a></li>
+											<li><a href="#" class="list-link">Reservas ✖</a></li>
+											<li><a href="#" class="list-link">Visitantes ✖</a></li>
+											<li><a href="#" class="list-link">Ocorrências ✖</a></li>
+											<li><a href="#" class="list-link">Espaços ✖</a></li>
+											<li><a href="#" class="list-link">Reservas ✖</a></li>
+											<li><a href="#" class="list-link">Correspondências ✖</a></li>
+											<li><a href="#" class="list-link">Colaboradores ✖</a></li>
+											<li><a href="#" class="list-link">Benefícios ✖</a></li>
+											<li><a href="#" class="list-link">Benefícios Recebidos ✖</a></li>
+											<li><a href="#" class="list-link">Telas de acesso ✖</a></li>
+											<li><a href="#" class="list-link">Garagens ✖</a></li>
+											<li><a href="#" class="list-link">Patrimônio ✖</a></li>																		
+										</ul>
+									</li>
+								</ul>
+							</li>
+
+							<!-- multi-level dropdown menu -->
+							<li class="list-item">
+
+								<!-- list items -->
+								<ul class="list-unstyled">
+
+									<!-- Orçamento -->
+									<li><a href="#" class="list-link link-arrow ">
+										<span class="list-icon"><i class="fa-solid fa-globe bell"></i></span>Relatórios Gerenciais</a>
+
+										<!-- list items, second level (Mês/Ano) -->
+										<ul class="list-unstyled list-hidden">
+											<!-- Gráfico pitza dando a opção de alterar Mês p Ano e escolha do ano-->
+											<li><a href="#" class="list-link">Orçamento Executado ✖</a></li>	
+											<!-- Gráfico coluna agrupada(orçado e executado) dando a opção de alterar d Mês p Ano -->							
+											<li><a href="#" class="list-link">Histórico Orçamento Executado ✖</a></li>
+											<!-- Gráfico pitza dando a opção de alterar Mês p Ano -->
+											<li><a href="#" class="list-link">Produtividade ✖</a></li>
+											<!-- Gráfico coluna dando a opção de alterar Mês p Ano e escolha do ano -->	
+											<li><a href="#" class="list-link">Ocorrências ✖</a></li>
+											<!-- Gráfico coluna dando a opção de alterar Mês p Ano e escolha do ano -->	
+											<li><a href="#" class="list-link">Moradores ✖</a></li>
+											<!-- Gráfico coluna dando a opção de alterar Mês p Ano e escolha do ano -->	
+											<li><a href="#" class="list-link">Colaboradores ✖</a></li>	
+											<!-- Gráfico coluna dando a opção de alterar Mês p Ano e escolha do ano -->
+											<li><a href="#" class="list-link">Reservas ✖</a></li>	
+											<!-- Gráfico pitza dando a opção de alterar Mês p Ano e escolha do ano -->
+											<li><a href="#" class="list-link">Recursos gerados pelos espaços ✖</a></li>	
+											<!-- Gráfico coluna dando a opção de alterar dia p Mês p Ano e escolha do ano -->
+											<li><a href="#" class="list-link">Visitantes ✖</a></li>	
+											<!-- Gráfico coluna por Ano -->
+											<li><a href="#" class="list-link">Visitantes ✖</a></li>
+											<!-- Gráfico coluna dando a opção de alterar dia p Mês p Ano e escolha do ano -->
+											<li><a href="#" class="list-link">Mudanças ✖</a></li>	
+										</ul>
+									</li>
+								</ul>
+							</li>
+
+							<!-- multi-level dropdown menu -->
+							<li class="list-item">
+
+								<!-- list items -->
+								<ul class="list-unstyled">
+
+									<!-- Orçamento -->
+									<li><a href="#" class="list-link link-arrow ">
+										<span class="list-icon"><i class="fa-solid fa-globe bell"></i></span>Apresentação</a>
+
+										<!-- list items, second level -->
+										<ul class="list-unstyled list-hidden">
+											<li><a href="#" class="list-link">Apresentação ✖</a></li>																													
+										</ul>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</nav>
+
+		<div class="container-fluid">
+
+			<!-- content -->
+			<main role="main"></main>
+		</div>
+	</div>
+
+	<!-- javascript library -->
+	<script src="/static/node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
+	<script src="/static/node_modules/sidebar-skeleton-compostrap/dist/js/sidebar.js"></script>
+	<script src="/static/node_modules/perfect-scrollbar/dist/perfect-scrollbar.js"></script>
+	<script src="/static/node_modules/nanobar/nanobar.js"></script>
+	<script src="/static/dist/js/sidebar.menu.js"></script>
+	<script>
+		document.addEventListener('DOMContentLoaded', () => {
+			new Nanobar().go(100);
+			new PerfectScrollbar('.scrollbar', {
+				wheelSpeed: 0.3
+			});
+		});
+	</script>
+
+	<script>
+		const sidebar = document.getElementById('sidebar-menu-hide');
+		sidebar.addEventListener('mouseover', () => {
+    		sidebar.classList.add('expanded');
+		});
+		sidebar.addEventListener('mouseout', () => {
+    		sidebar.classList.remove('expanded');
+		});
+	</script>
+
+</body>
 </html>
+

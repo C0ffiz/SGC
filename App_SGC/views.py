@@ -1,59 +1,98 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from django.contrib.auth import authenticate
-from django.contrib.auth.models import User
-from .models import Usuario
-from django.contrib.auth.hashers import make_password
+from django.contrib.auth import authenticate, login
+from .models import CustomUser,CustomCondomino
+from django.contrib import messages
+from django.views.generic import ListView,CreateView,UpdateView,DeleteView
+from django.urls import reverse_lazy
 
-def login(request):
+
+#-----------------------Views Login
+
+# Exibe Login
+def exibirLogin(request):
     return render(request,'login/login.html')
 
-def register(request):
-    return render(request, 'login/register.html')
+# Processo de Login e Ir para Home
+def verificarLogin(request):
 
-def realizaRegistro(request):
     if request.method == 'POST':
-        username = request.POST['usuario']
-        password = request.POST['senha']
-        cpf = request.POST['cpf']
-        nivel = request.POST['nivel']
-        condominio = request.POST['condominio']
-    
-        user = User.objects.create_user(username, password)
-        user.cpf = cpf
-        user.nivel = nivel
-        user.condominio = condominio
-        user.save()
+        usuario = request.POST.get('usuario')  # Use get() to handle missing keys gracefully
+        senha = request.POST.get('senha')
         
-        return redirect('login')
-    
-    return render(request, "login/register.html")
-#
-def usuarios(request):
-# Busca as informações digitadas na tela
-    novo_usuario = Usuario()
-    novo_usuario.usuario = request.POST.get('usuario')
-    novo_usuario.senha = request.POST.get('senha')
-    novo_usuario.cpf_usuario = 22760369153
-    novo_usuario.nivel = 1
+        print(usuario)
+        print(senha)
 
-def verificaLogin(request):
-# verifica se as informações digitadas no login conferem com as informações na tabela usuários
-    if request.method == 'POST':
-        usuario = request.POST['usuario']
-        senha = request.POST['senha']
-        user = authenticate(username=usuario,password=senha)
-
-        print(user)
-        
-        
-        
-
-        print(usuario,senha)
-
-        if user is not None:
-            print('Usuário Válido *************************************')
+        # Check if both username and password are provided
+        if usuario and senha:
+            user = authenticate(username=usuario, password=senha)
+            if user is not None:
+                login(request, user)
+                messages.info(request, f"{usuario}")
+                return redirect('exibirHome')  # Redirect to the home page after successful login
+            else:
+                messages.error(request, 'Usuário ou senha inválidos.')
         else:
-            print('Usuário Inválido ***********************************')
-            
+            messages.error(request, 'Por favor, forneça um usuário e senha válidos.')
+
+    # If not a POST request or authentication fails, render the login page again
+    return render(request, 'login/login.html')            
+
+# Exibe Home
+def exibirHome(request):
+    return render(request,'login/home.html')
+
+
+
+#-----------------------Views Usuário
+
+# Tela Usuarios
+class UsuariosListViews(ListView):
+    model = CustomUser
+    context_object_name = 'usuarios_list'
+
+# Tela Cadastro De Usuarios
+class UsuariosCreateViews(CreateView):
+    model = CustomUser
+    template_name = 'usuarios_create.html'
+    fields = ["username", "password", "cpf_usuario", "nivel", "condominio_numero"]
+    success_url = reverse_lazy("usuarios_list")
+
+# Tela Alteração De Usuarios
+class UsuariosUpdateViews(UpdateView):
+    model = CustomUser
+    fields = ["username", "password", "cpf_usuario", "nivel", "condominio_numero"]
+    success_url = reverse_lazy("usuarios_list")
+
+# Tela Exclusão De Usuarios
+class UsuariosDeleteViews(DeleteView):
+    model = CustomUser
+    success_url = reverse_lazy("usuarios_list")
+
+
+
+#-----------------------Views Condômino
+
+# Tela Condominos
+class CondominosListViews(ListView):
+    model = CustomCondomino
+    context_object_name = 'condominos_list'
+
+# Tela Cadastro De Condominos
+class CondominosCreateViews(CreateView):
+    model = CustomCondomino
+    fields = ["cpf_condomino", "nome_condomino", "bloco", "apartamento", "telefone_condomino", "celular_condomino", "email_condomino", "data_aquisicao_imovel", "Condominio_numero"]
+    data= print("data : ")
+    success_url = reverse_lazy("condominos_list")
+
+# Tela Alteração De Condominos
+class CondominosUpdateViews(UpdateView):
+    model = CustomCondomino
+    fields = ["cpf_condomino", "nome_condomino", "bloco", "apartamento", "telefone_condomino", "celular_condomino", "email_condomino", "data_aquisicao_imovel", "Condominio_numero"]
+    success_url = reverse_lazy("condominos_list")
+
+# Tela Exclusão De Condominos
+class CondominosDeleteViews(DeleteView):
+    model = CustomCondomino
+    success_url = reverse_lazy("condominos_list")
 

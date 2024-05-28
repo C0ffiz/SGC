@@ -137,3 +137,22 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTH_USER_MODEL = 'App_SGC.CustomUser'
+
+# settings.py
+DATE_FORMAT = 'DD/MM/YYYY'  # Customize the date format as needed
+
+# Iniciar site na url /login
+LOGIN_URL = 'exibirLogin'
+
+# Desabilitar encriptação de senhas ao salvar no banco de dados (ex: ce7a3ced60ceb06e746665fd5d22a2a0dfa187ec em vez de 123)
+PASSWORD_HASHERS = [
+    'django.contrib.auth.hashers.UnsaltedMD5PasswordHasher',
+]
+
+# Modificar Authenticação para logar sem password com hash
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',  # Default authentication backend
+    'App_SGC.auth_backends.plain_text_auth_backend.PlainTextAuthBackend',  #App_SGC\auth_backends
+]
