@@ -1,0 +1,99 @@
+//
+// list component for sidebar skeleton
+//
+
+.list {
+  width: $sm-width;
+  font-size: toRem(15);
+
+  & &-hidden {
+    display: none;
+    overflow: hidden;
+    padding: toRem(10) 0 toRem(10) toRem(25);
+
+    & .list-hidden {
+      padding-left: toRem(12);
+    }
+  }
+
+  &-hidden &-link {
+    line-height: toRem(30);
+  }
+
+  &-item {
+    padding: 0;
+    margin-top: toRem(10);
+    line-height: toRem(36);
+  }
+
+  &-title {
+    margin-bottom: 0;
+    margin-left: toRem(17);
+    letter-spacing: toRem(1);
+    font-size: toRem(12);
+  }
+
+  &-link {
+    display: block;
+    padding: 0 toRem(10) 0 toRem(19);
+    margin: 0;
+    text-decoration: none;
+    &:hover {
+      .bell {
+        animation: bellshake .5s cubic-bezier(.36,.07,.19,.97) both;
+        backface-visibility: hidden;
+        transform-origin: top right;
+      }
+    }
+  }
+
+  @keyframes bellshake {
+    0% { transform: rotate(0); }
+    15% { transform: rotate(5deg); }
+    30% { transform: rotate(-5deg); }
+    45% { transform: rotate(4deg); }
+    60% { transform: rotate(-4deg); }
+    75% { transform: rotate(2deg); }
+    85% { transform: rotate(-2deg); }
+    92% { transform: rotate(1deg); }
+    100% { transform: rotate(0); }
+  }
+
+  &-icon {
+    width: toRem(25);
+    display: inline-block;
+  }
+
+  .link-current {
+    font-weight: 600;
+  }
+}
+
+// arrow icon up and down in menu
+.link-arrow:before {
+  font-family: $font-awesome, sans-serif;
+  font-weight: 600;
+  font-size: toRem(12);
+  margin-right: toRem(5);
+  float: right;
+}
+
+.link-arrow.up:before {
+  content: "\f105";
+}
+
+.link-arrow.down:before {
+  content: "\f107";
+}
+
+.link-arrow.transition:before {
+  transition: 0.2s all;
+}
+
+.link-arrow.rotate:before {
+  transform: rotate(90deg);
+}
+
+.link-arrow.rotate-revert:before {
+  transform: rotate(-90deg);
+}

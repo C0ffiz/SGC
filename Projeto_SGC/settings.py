@@ -139,3 +139,6 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'App_SGC.CustomUser'
+
+# settings.py
+DATE_FORMAT = 'DD/MM/YYYY'  # Customize the date format as needed
