@@ -58,6 +58,17 @@ input{
     width: 250px;
 }
 
+#sign-up{
+    display: flex;
+    height: 70px;
+    align-items: center;
+    justify-content: center;
+}
+
+.spaceitem{
+    margin-left: 8px;
+}
+
 .cpf{
     -webkit-appearance: none;
     margin: 0;

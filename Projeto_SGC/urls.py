@@ -5,30 +5,25 @@ from App_SGC import views
 from App_SGC.views import CondominosListViews,CondominosCreateViews,CondominosUpdateViews,CondominosDeleteViews
 from App_SGC.views import UsuariosListViews,UsuariosCreateViews,UsuariosUpdateViews,UsuariosDeleteViews
 
-
 #  Condomino
 from django.views.generic import ListView
 # CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 
 
-
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('',UsuariosListViews.as_view(template_name="usuarios/usuarios_list.html"), name="usuarios_list"),
-    #  path('',CondominosListViews.as_view(template_name="condominos/condominos_list.html"), name="condominos_list"),
-
 #  Caminhos do Login
+    path('',views.exibirLogin,name='exibirLogin'),
     path('login',views.exibirLogin,name='exibirLogin'),
     path('signin',views.verificarLogin,name='verificarLogin'),
-    # path('signup',views.inserirUsuario,name='inserirUsuario'),
 
-    #  Caminhos da home
+#  Caminho do Admin
+    path('admin/', admin.site.urls),
+    
+ 
+#  Caminhos da home
     path('home',views.exibirHome,name='exibirHome'),
 
-#  Caminhos do Usuário
-    # path('usuario',views.exibirLogin,name='exibirLogin'),
-    # path('signin',views.verificarLogin,name='verificarLogin'),
 
 #  Caminhos do Usuário 
     path('usuarios_list',UsuariosListViews.as_view(template_name="usuarios/usuarios_list.html"), name="usuarios_list"),
