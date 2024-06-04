@@ -33,7 +33,7 @@ def verificarLogin(request):
             else:
                 messages.error(request, 'Usuário ou senha inválidos.')
         else:
-            messages.error(request, 'Por favor, forneça um usuário e senha válidos.')
+            messages.error(request, 'Por favor, forneça usuário e senha válidos.')
 
     # If not a POST request or authentication fails, render the login page again
     return render(request, 'login/login.html')            

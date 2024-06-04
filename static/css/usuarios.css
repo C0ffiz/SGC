@@ -24,65 +24,87 @@ body{
 .container{
     text-align: left;
     padding-top: 40px;
-    color: #ffffff;  
+    color:#fbf5f5;
     align-items: center;
-    align-content: center;      
-}     
-      
-th{
-    
+    align-content: center;  
+
+}  
+
+.container_1 {
+    display: flex;
+    width: 100%;
+    height: 60px;
+}
+
+
+
+th{   
     font-weight: bold;
     forced-color-adjust: #ffffff; 
 }
 
 
-.h1{
+h1{
     align-items: center;
-    align-content: center; 
-    font-size:10px;
+    align-content: center;     
+    font-size: 40px ;
+    margin-bottom: 20px; /* Adiciona margem na parte inferior do h1 */
 
 }
 
+.table{
+    --bs-table-color: #fff;
 
-
-
-/* .painel{
-    background-color: rgba(0, 0, 0, 0.2);
-    width: 600px; 
-    height: 330px;
-    align-items: center;
-    align-content: center;
-    align-self: center;
-    margin: auto;
-    border-radius: 20px;
-} */
-
-/* .input-bottom{
-    margin-bottom: 15px;    
 }
 
-.input-top{
-    margin-top: 15px;    
+.btn-primary{    
+    font-weight: bold;
+
 }
 
-input{
+#cadastrar{
     width: 250px;
+    height: 32px;  
+    display: flex; 
+    justify-content: center; /* Centraliza horizontalmente */
+    align-items: center; /* Centraliza verticalmente */
+    /* font-weight: bold; */
 }
 
-.cpf{
-    -webkit-appearance: none;
-    margin: 0;
-    -moz-appearance: textfield;
-}
+/* Busca na tabela */
 
-button{    
-    width: 130px;
-    color: rgb(11, 0, 3);
-    font-weight: bold;   
-} */
-
+#divBusca{
+    background-color:#E0EEEE;   
+    border:solid 0px#0d6efd;
+    border-radius: 5px;
+    width: auto;
+    height: 32px;
+  }
+  
+  #txtBusca{
+    float:left;
+    background-color:transparent;
+    padding-left:5px;
+    font-size:18px;
+    border:none;
+    height:32px;
+    width:191px;
+  }
+  
+  #btnBusca{
+    border:none;
+    float:left;
+    height:32px;
+    /* border-radius:0 7px 7px 0; */
+    border-radius:0 5px 5px 0;
+    width:70px;
+    font-weight:bold;    
+    background: #0d6efd;
+    color:#fbf5f5;
+    
+  }
+  
 .alert-custom{
-    /* background-color: rgba(0, 0, 0, 0.2); */
     height: 40px;
 }
 
@@ -99,6 +121,15 @@ button{
 
 #sidebar-menu-hide:hover{
     width: 230px;
+}
+
+.box {
+    width:350px;
+    height:32px;
+    display: inline-block;
+    margin-right: 20px; /* Adicione margem para separar as divs */
+    margin-bottom: 0%;
+   
 }
 
 
