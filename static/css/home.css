@@ -70,9 +70,9 @@ input{
 }
 
 .cpf{
-    -webkit-appearance: none;
+    /* -webkit-appearance: none; */
     margin: 0;
-    -moz-appearance: textfield;
+    /* -moz-appearance: textfield; */
 }
 
 button{    
