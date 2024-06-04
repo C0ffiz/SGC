@@ -39,7 +39,18 @@
 
         <main class="container">
             <h1>USUÁRIOS DO SISTEMA</h1>
-            <a href="{% url 'usuarios_create' %}" class = "btn btn-primary">CADASTRAR USUÁRIOS</a>
+
+            <div class="container_1">
+                <div class="box">
+                    <a href="{% url 'usuarios_create' %}" class = "btn btn-primary" id="cadastrar">CADASTRAR USUÁRIOS</a>
+                </div>
+
+                <div class="box" id="divBusca">
+                    <input type="text" id="txtBusca" placeholder="Buscar..."/>
+                    <button id="btnBusca">Buscar</button>
+                </div>
+            </div>         
+         
             <table class="table">
                 <thead>
                   <tr>       
@@ -56,14 +67,14 @@
                     
                         {% for usua in usuarios_list %}
                             <tr>
-                                <td>{{ forloop.counter }}</td>
-                                <th scope="row">{{ usua.pk }}</th>
+                                <td class="linha">{{ forloop.counter }}</td>
+                                <th class="linha" scope="row">{{ usua.pk }}</th>
                                 <!-- <td>{{ usua.username }}</td> -->
                                 <td>{{ usua.password }}</td>
                                 <td>{{ usua.cpf_usuario }}</td>
                                 <td>{{ usua.nivel }}</td>                                
                                 <td>{{ usua.condominio_numero }}</td>
-                                <td>
+                                <td style="border: none;">
                                     <a href="{% url 'usuarios_update' pk=usua.pk %}" class="btn btn-primary btn-sm">ALTERAR</a>
                                     <a href="{% url 'usuarios_delete' pk=usua.pk %}" class="btn btn-danger btn-sm">EXCLUIR</a>
                                 </td>
