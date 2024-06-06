@@ -1,90 +1,156 @@
 <!doctype html>
 <html lang="pt-br">
-    <!-- <head>
-          <meta charset="utf-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1">
 
-          <title>LISTA DE USUÁRIOS</title>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="/static/node_modules/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/node_modules/sidebar-skeleton-compostrap/dist/css/sidebar.css">
+    <link rel="stylesheet" href="/static/node_modules/@fortawesome/fontawesome-free/css/all.css">
+    <link rel="stylesheet" href="/static/node_modules/perfect-scrollbar/css/perfect-scrollbar.css">
+    <link rel="stylesheet" href="/static/dist/css/sidebar.menu.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="/static/css/usuarios.css">
+    <title>SGC</title>
+</head>
 
-          <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    </head> -->
-
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <link rel="stylesheet" href="/static/node_modules/bootstrap/dist/css/bootstrap.css">
-        <link rel="stylesheet" href="/static/node_modules/sidebar-skeleton-compostrap/dist/css/sidebar.css">
-        <link rel="stylesheet" href="/static/node_modules/@fortawesome/fontawesome-free/css/all.css">
-        <link rel="stylesheet" href="/static/node_modules/perfect-scrollbar/css/perfect-scrollbar.css">
-        <link rel="stylesheet" href="/static/dist/css/sidebar.menu.css">
-    
-        <!-- Required meta tags -->
-        <!-- <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1"> -->
-    
-        <!-- Bootstrap CSS -->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-        <link rel="stylesheet" href="/static/css/usuarios.css">        
-        <title>SGC</title>
-    </head>
-
-    
 <body>
+    <nav class="navbar bg-dark mb-30" data-bs-theme="dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="home">CONDOMINIUM</a>
+        </div>
+    </nav>
 
-        <nav class="navbar bg-dark mb-30" data-bs-theme="dark">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="home">CONDOMINIUN</a>
+    <main class="container">
+        <h1>SYSTEM USERS</h1>
+
+        <div class="container_1">
+            <div class="box">
+                <a href="{% url 'usuarios_create' %}" class="btn btn-primary" id="cadastrar">CADASTRAR USUÁRIOS</a>
             </div>
-        </nav>
 
-        <main class="container">
-            <h1>USUÁRIOS DO SISTEMA</h1>
+            <div class="box" id="divBusca">
+                <input type="text" id="txtBusca" placeholder="Search..." />
+            </div>
+        </div>
 
-            <div class="container_1">
-                <div class="box">
-                    <a href="{% url 'usuarios_create' %}" class = "btn btn-primary" id="cadastrar">CADASTRAR USUÁRIOS</a>
-                </div>
-
-                <div class="box" id="divBusca">
-                    <input type="text" id="txtBusca" placeholder="Buscar..."/>
-                    <button id="btnBusca">Buscar</button>
-                </div>
-            </div>         
-         
-            <table class="table">
-                <thead>
-                  <tr>       
-                    <th scope="col">#</th>                             
+        <table id="usuariosTable" class="table">
+            <thead>
+                <tr>
+                    <th scope="col"><a href="#" class="sort-header link-arrow down " data-sort="username"><span
+                                class="sort-icon"></span></a></th>
                     <th scope="col">USUÁRIO</th>
                     <th scope="col">SENHA</th>
                     <th scope="col">CPF USUÁRIO</th>
                     <th scope="col">NIVEL</th>
-                    <th scope="col">CONDOMINIO Nº</th>                                                      
-                  </tr>
-                </thead>
-                
-                <tbody>
-                    
-                        {% for usua in usuarios_list %}
-                            <tr>
-                                <td class="linha">{{ forloop.counter }}</td>
-                                <th class="linha" scope="row">{{ usua.pk }}</th>
-                                <!-- <td>{{ usua.username }}</td> -->
-                                <td>{{ usua.password }}</td>
-                                <td>{{ usua.cpf_usuario }}</td>
-                                <td>{{ usua.nivel }}</td>                                
-                                <td>{{ usua.condominio_numero }}</td>
-                                <td style="border: none;">
-                                    <a href="{% url 'usuarios_update' pk=usua.pk %}" class="btn btn-primary btn-sm">ALTERAR</a>
-                                    <a href="{% url 'usuarios_delete' pk=usua.pk %}" class="btn btn-danger btn-sm">EXCLUIR</a>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                                  
-                </tbody>
-            </table>
-        </main>
+                    <th scope="col">CONDOMINIO Nº</th>
+                </tr>
+            </thead>
 
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-  </body>
+            <tbody>
+                {% for usua in usuarios_list %}
+                <tr>
+                    <td class="linha">{{ forloop.counter }}</td>
+                    <td class="username">{{ usua.username }}</td>
+                    <td>{{ usua.password }}</td>
+                    <td>{{ usua.cpf_usuario }}</td>
+                    <td>{{ usua.nivel }}</td>
+                    <td>{{ usua.condominio_numero }}</td>
+                    <td style="border: none;">
+                        <a href="{% url 'usuarios_update' pk=usua.pk %}" class="btn btn-primary btn-sm">ALTERAR</a>
+                        <a href="{% url 'usuarios_delete' pk=usua.pk %}" class="btn btn-danger btn-sm">EXCLUIR</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var headers = document.querySelectorAll('.sort-header');
+            headers.forEach(function (header) {
+                header.addEventListener('click', function () {
+                    var column = this.getAttribute('data-sort');
+                    var icon = this.querySelector('.sort-icon');
+                    var isAscending = icon.classList.contains('asc');
+                    toggleSortIcon(icon, isAscending);
+                    sortTable(column, isAscending);
+                    rotateArrow(icon, isAscending); // Call the rotateArrow function
+                });
+            });
+
+            function toggleSortIcon(icon, isAscending) {
+                icon.classList.toggle('asc', !isAscending);
+                icon.classList.toggle('desc', isAscending);
+            }
+
+            function sortTable(column, isAscending) {
+                var table = document.getElementById('usuariosTable');
+                var tbody = table.querySelector('tbody');
+                var rows = Array.from(tbody.rows);
+
+                rows.sort(function (a, b) {
+                    var x = '';
+                    var y = '';
+
+                    // Only sort by name if the column is "USUÁRIO"
+                    if (column === 'username') {
+                        x = a.cells[1].textContent.trim().toLowerCase(); // Index 1 for "USUÁRIO" column
+                        y = b.cells[1].textContent.trim().toLowerCase(); // Index 1 for "USUÁRIO" column
+                    } else {
+                        x = a.cells[1].textContent.trim().toLowerCase(); // Fallback to sorting by "USUÁRIO" column
+                        y = b.cells[1].textContent.trim().toLowerCase(); // Fallback to sorting by "USUÁRIO" column
+                    }
+
+                    if (isAscending) {
+                        return x.localeCompare(y);
+                    } else {
+                        return y.localeCompare(x);
+                    }
+                });
+
+                while (tbody.firstChild) {
+                    tbody.removeChild(tbody.firstChild);
+                }
+
+                rows.forEach(function (row) {
+                    tbody.appendChild(row);
+                });
+            }
+
+            function rotateArrow(icon, isAscending) {
+                // Check if icon exists and is not null
+                if (icon && icon.parentElement) {
+                    // Toggle rotate class based on the sorting order
+                    if (isAscending) {
+                        icon.parentElement.classList.add('rotate'); // Add the rotate class to rotate the arrow
+                    } else {
+                        icon.parentElement.classList.remove('rotate'); // Remove the rotate class to reset the arrow
+                    }
+                }
+            }
+
+            document.getElementById('txtBusca').addEventListener('input', function () {
+                var searchText = this.value.toLowerCase();
+                var rows = document.querySelectorAll('#usuariosTable tbody tr');
+
+                rows.forEach(function (row) {
+                    var username = row.querySelector('.username').textContent.toLowerCase();
+                    if (username.indexOf(searchText) === -1) {
+                        row.style.display = 'none';
+                    } else {
+                        row.style.display = '';
+                    }
+                });
+            });
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+</body>
+
 </html>

@@ -40,7 +40,7 @@ body{
 
 th{   
     font-weight: bold;
-    forced-color-adjust: #ffffff; 
+    
 }
 
 
@@ -54,7 +54,7 @@ h1{
 
 .table{
     --bs-table-color: #fff;
-
+    color: #fff;
 }
 
 .btn-primary{    
@@ -133,6 +133,44 @@ h1{
 }
 
 
+.sort-header {
+    display: flex;
+    justify-content: left; /* Horizontally center the content */
+    align-items: center; /* Vertically center the content */
+    /* padding-left: 0; */
+    width: fit-content;
+}
 
+.link-arrow{
+    vertical-align: middle;
+    align-items: center;
+    text-align: center;
+    color: #7a8793;
+    text-decoration: none;
+}
 
-
+.link-arrow:before {
+    font-family: "Font Awesome 6 Free", sans-serif;
+    font-weight: 600;
+    font-size: 0.75rem;
+    /* margin-right: 0.3125rem; */
+    
+  }
+  
+  
+  
+  .link-arrow.down:before {
+    content: "\f107";
+  }
+  
+  .link-arrow.transition:before {
+    transition: 0.2s all;
+  }
+  
+  .link-arrow.rotate:before {
+    transform: rotate(180deg);
+  }
+  
+  .link-arrow.rotate-revert:before {
+    transform: rotate(-90deg);
+  }
