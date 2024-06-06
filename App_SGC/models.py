@@ -2,12 +2,13 @@ from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.urls import reverse
+from django.core.validators import MinLengthValidator, MaxLengthValidator
 
 #  Definição da Tabela usuário
 class CustomUser(AbstractUser):
     username = models.CharField(primary_key=True, max_length=30, null=False, blank=False)
     password = models.CharField(max_length=15, null=False, blank=False)
-    cpf_usuario = models.BigIntegerField(null=False, blank=False)
+    cpf_usuario = models.CharField(max_length=14, validators=[MinLengthValidator(11), MaxLengthValidator(14)], null=False, blank=False)
     nivel = models.IntegerField(null=False, blank=False)
     condominio_numero = models.IntegerField(null=False, blank=False)
     class Meta:

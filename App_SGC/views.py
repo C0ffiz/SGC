@@ -54,6 +54,12 @@ class UsuariosCreateViews(CreateView):
     template_name = 'usuarios_create.html'
     fields = ["username", "password", "cpf_usuario", "nivel", "condominio_numero"]
     success_url = reverse_lazy("usuarios_list")
+    
+    def form_valid(self, form):
+        # Strip mask from CPF
+        cpf_usuario = form.cleaned_data['cpf_usuario'].replace(".", "").replace("-", "")
+        form.instance.cpf_usuario = cpf_usuario
+        return super().form_valid(form)
 
 # Tela Alteração De Usuarios
 class UsuariosUpdateViews(UpdateView):
@@ -61,6 +67,12 @@ class UsuariosUpdateViews(UpdateView):
     context_object_name = 'usuarios_list'
     fields = ["username", "password", "cpf_usuario", "nivel", "condominio_numero"]
     success_url = reverse_lazy("usuarios_list")
+    
+    def form_valid(self, form):
+        # Strip mask from CPF
+        cpf_usuario = form.cleaned_data['cpf_usuario'].replace(".", "").replace("-", "")
+        form.instance.cpf_usuario = cpf_usuario
+        return super().form_valid(form)
 
 # Tela Exclusão De Usuarios
 class UsuariosDeleteViews(DeleteView):
