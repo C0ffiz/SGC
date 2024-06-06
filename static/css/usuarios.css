@@ -2,7 +2,7 @@ body {
     background-color: rgb(0, 74, 112);
 }
 
-#navbar {
+.navbar {
     background-color: rgb(4, 37, 86);
     color: rgb(151, 151, 151);
     font-weight: 600;
@@ -12,6 +12,7 @@ body {
     flex-wrap: nowrap;
     text-wrap: nowrap;
 }
+
 
 #titulo {
     width: 100%;
@@ -29,6 +30,14 @@ p {
     color: #fbf5f5;
     font-size: 30px;
     padding-bottom: 30px;
+}
+
+a{
+    color: #fff;
+}
+
+a:hover{
+    color:#fff
 }
 
 #titulo_list {
@@ -72,7 +81,8 @@ th {
 /*} */
 
 .table {
-    --bs-table-color: #fff;
+    /* --bs-table-color: #fff; */
+    color: #fff;
     align-items: center;
     align-content: center;
 }
@@ -202,3 +212,24 @@ th {
 .link-arrow.rotate-revert:before {
     transform: rotate(-90deg);
 }
+
+.btn-excluir{
+    width: 90px;
+    height: 31px;
+}
+
+.btn-cancelar{
+    width: 90px;
+    height: 31px;
+}
+
+.error-duplicate{
+    background-color: transparent;
+    color: #fff;
+    text-decoration: none;
+    border: 0;
+    list-style-position: inside;
+    padding: 0;
+}
+
+
