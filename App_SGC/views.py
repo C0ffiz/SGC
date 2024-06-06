@@ -19,10 +19,7 @@ def verificarLogin(request):
     if request.method == 'POST':
         usuario = request.POST.get('usuario')  # Use get() to handle missing keys gracefully
         senha = request.POST.get('senha')
-        
-        print(usuario)
-        print(senha)
-
+     
         # Check if both username and password are provided
         if usuario and senha:
             user = authenticate(username=usuario, password=senha)
@@ -61,6 +58,7 @@ class UsuariosCreateViews(CreateView):
 # Tela Alteração De Usuarios
 class UsuariosUpdateViews(UpdateView):
     model = CustomUser
+    context_object_name = 'usuarios_list'
     fields = ["username", "password", "cpf_usuario", "nivel", "condominio_numero"]
     success_url = reverse_lazy("usuarios_list")
 

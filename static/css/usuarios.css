@@ -18,24 +18,43 @@ body{
     align-items: center;
     text-align: center;
     color:#fbf5f5;
-    font-size:10px;
+    font-size:40px;
+    padding-bottom: 30px;
+}
+
+p{
+    width: 100%;
+    /* align-items:; */
+    text-align: center;
+    color:#fbf5f5;
+    font-size:30px;
+    padding-bottom: 30px;
+}
+
+#titulo_list{
+    width: 100%;
+    align-items: center;
+    text-align: center;
+    color:#fbf5f5;
+    font-size:40px;
+    padding-bottom: 30px;
 }
 
 .container{
-    text-align: left;
-    padding-top: 40px;
+    text-align: center;
+    padding-top: 60px;
     color:#fbf5f5;
     align-items: center;
     align-content: center;  
-
 }  
 
 .container_1 {
     display: flex;
     width: 100%;
     height: 60px;
+    align-items: center;
+    align-content: center;  
 }
-
 
 
 th{   
@@ -44,22 +63,26 @@ th{
 }
 
 
-h1{
+/* h1{
     align-items: center;
     align-content: center;     
-    font-size: 40px ;
-    margin-bottom: 20px; /* Adiciona margem na parte inferior do h1 */
+    font-size: 80px;   
+    margin-bottom: 20px; /*Adiciona margem na parte inferior do h1*/
 
-}
+/*} */
 
 .table{
     --bs-table-color: #fff;
-
+    align-items: center;
+    align-content: center;  
 }
 
 .btn-primary{    
-    font-weight: bold;
+    font-weight: bold;   
+}
 
+.btn-danger{
+    font-weight: bold; 
 }
 
 #cadastrar{
@@ -100,8 +123,7 @@ h1{
     width:70px;
     font-weight:bold;    
     background: #0d6efd;
-    color:#fbf5f5;
-    
+    color:#fbf5f5;    
   }
   
 .alert-custom{
@@ -128,8 +150,18 @@ h1{
     height:32px;
     display: inline-block;
     margin-right: 20px; /* Adicione margem para separar as divs */
-    margin-bottom: 0%;
-   
+    margin-bottom: 0%;   
+}
+
+#btnsalvar{
+    border: none;
+    float: center;
+    height: 32px;
+    border-radius: 5px 5px 5px 5px;
+    width: 140px;
+    font-weight: bold;    
+    background: #0d6efd;
+    color: #fbf5f5;
 }
 
 

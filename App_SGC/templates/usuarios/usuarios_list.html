@@ -29,7 +29,7 @@
     </head>
 
     
-<body>
+    <body>
 
         <nav class="navbar bg-dark mb-30" data-bs-theme="dark">
             <div class="container-fluid">
@@ -38,7 +38,7 @@
         </nav>
 
         <main class="container">
-            <h1>USUÁRIOS DO SISTEMA</h1>
+            <h1 id="titulo_list">USUÁRIOS DO SISTEMA</h1>
 
             <div class="container_1">
                 <div class="box">
@@ -47,40 +47,40 @@
 
                 <div class="box" id="divBusca">
                     <input type="text" id="txtBusca" placeholder="Buscar..."/>
-                    <button id="btnBusca">Buscar</button>
+                    <button id="btnBusca">BUSCAR</button>
                 </div>
             </div>         
          
             <table class="table">
                 <thead>
-                  <tr>       
-                    <th scope="col">#</th>                             
-                    <th scope="col">USUÁRIO</th>
-                    <th scope="col">SENHA</th>
-                    <th scope="col">CPF USUÁRIO</th>
-                    <th scope="col">NIVEL</th>
-                    <th scope="col">CONDOMINIO Nº</th>                                                      
-                  </tr>
+                    <tr>       
+                        <th scope="col">#</th>                             
+                        <th scope="col">USUÁRIO</th>
+                        <th scope="col">SENHA</th>
+                        <th scope="col">CPF USUÁRIO</th>
+                        <th scope="col">NIVEL</th>
+                        <th scope="col">CONDOMINIO Nº</th>                                                      
+                    </tr>
                 </thead>
                 
                 <tbody>
-                    
-                        {% for usua in usuarios_list %}
-                            <tr>
-                                <td class="linha">{{ forloop.counter }}</td>
-                                <th class="linha" scope="row">{{ usua.pk }}</th>
-                                <!-- <td>{{ usua.username }}</td> -->
-                                <td>{{ usua.password }}</td>
-                                <td>{{ usua.cpf_usuario }}</td>
-                                <td>{{ usua.nivel }}</td>                                
-                                <td>{{ usua.condominio_numero }}</td>
-                                <td style="border: none;">
-                                    <a href="{% url 'usuarios_update' pk=usua.pk %}" class="btn btn-primary btn-sm">ALTERAR</a>
-                                    <a href="{% url 'usuarios_delete' pk=usua.pk %}" class="btn btn-danger btn-sm">EXCLUIR</a>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                                  
+            
+                    {% for usua in usuarios_list %}
+                        <tr>
+                            <td class="linha">{{ forloop.counter }}</td>
+                            <th class="linha" scope="row">{{ usua.pk }}</th>
+                            <!-- <td>{{ usua.username }}</td> -->
+                            <td>{{ usua.password }}</td>
+                            <td>{{ usua.cpf_usuario }}</td>
+                            <td>{{ usua.nivel }}</td>                                
+                            <td>{{ usua.condominio_numero }}</td>
+                            <td style="border: none;">
+                                <a href="{% url 'usuarios_update' pk=usua.pk %}" class="btn btn-primary btn-sm">ALTERAR</a>
+                                <a href="{% url 'usuarios_delete' pk=usua.pk %}" class="btn btn-danger btn-sm">EXCLUIR</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                            
                 </tbody>
             </table>
         </main>
