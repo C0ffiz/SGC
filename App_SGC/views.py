@@ -59,7 +59,20 @@ class UsuariosCreateViews(CreateView):
         # Strip mask from CPF
         cpf_usuario = form.cleaned_data['cpf_usuario'].replace(".", "").replace("-", "")
         form.instance.cpf_usuario = cpf_usuario
+
+        # Verifica se o nome de usuário já existe
+        username = form.cleaned_data['username']
+        if CustomUser.objects.filter(username=username).exists():
+            messages.error(self.request, 'Nome de usuário já existe. Escolha outro nome.')
+            return self.form_invalid(form)
+
         return super().form_valid(form)
+    
+    def form_invalid(self, form):
+        # Customize error message for existing username
+        if 'username' in form.errors:
+            form.errors['username'] = ['Nome de usuário já existe. Escolha outro nome.']
+        return super().form_invalid(form)
 
 # Tela Alteração De Usuarios
 class UsuariosUpdateViews(UpdateView):

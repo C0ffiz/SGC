@@ -33,8 +33,8 @@
             <p>Deseja realmente excluir o usuário?</p><br>
             <form method="POST">
                 {% csrf_token %}
-                <button type="submit" class="btn btn-danger btn-sm me-2">EXCLUIR</button>
-                <a href="{% url 'usuarios_list' %}" class="btn btn-primary btn-sm">CANCELAR</a>
+                <button type="submit" class="btn btn-danger btn-sm me-2 btn-excluir">EXCLUIR</button>
+                <a href="{% url 'usuarios_list' %}" class="btn btn-primary btn-sm btn-cancelar">CANCELAR</a>
             </form>  
         </main>
 
