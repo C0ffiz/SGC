@@ -227,3 +227,71 @@ td {
     
 }
 
+/* Para q a seta e o label no List fiquem próximas e na mesma cor dos demais e coloca as palavras do label na mesma linha */
+
+.sort-header {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    text-decoration: none;
+    color: inherit;  
+    cursor: pointer; 
+    white-space: nowrap;
+}
+
+.sort-icon {
+    margin-left: 5px;
+    border: solid currentColor;  /* Usar a cor atual do texto */
+    border-width: 0 3px 3px 0;
+    display: inline-block;
+    padding: 3px;
+    transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+    visibility: hidden; /* Esconder a seta inicialmente */
+}
+
+.sort-header.asc .sort-icon {
+    transform: rotate(-135deg);
+    -webkit-transform: rotate(-135deg);
+    visibility: visible; /* Mostrar a seta quando ordenado */
+}
+
+.sort-header.desc .sort-icon {
+    transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+    visibility: visible; /* Mostrar a seta quando ordenado */
+}
+
+.sorting-label {
+    font-weight: bold;
+    color: inherit;  /* Herdar a cor do texto pai */
+    margin-left: 5px;
+}
+
+.sort-header {
+    display: inline-flex;
+    align-items: center; /* Alinha verticalmente ao centro */
+    gap: 5px; /* Espaço entre os elementos */
+    text-decoration: none; /* Remove sublinhado do link */
+}
+
+.sort-header .label-text {
+    font-weight: bold;
+}
+
+#coluna {
+    display: inline-block;
+    vertical-align: top;
+    /* Remove fixed width and let the column fit content */
+    width: auto;
+    white-space: nowrap;
+}
+#linha {
+    display: inline-block;
+    white-space: nowrap;
+}
+
+#colunas-dados {
+    align-content: center;
+    justify-content: center;
+}

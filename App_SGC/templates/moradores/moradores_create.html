@@ -10,11 +10,26 @@
     <link rel="stylesheet" href="/static/css/usuarios.css">
     <style>   
         .input-bottom {
-            margin-bottom: 10px; /* Espaçamento entre as linhas */
+            margin-bottom: 5px; /* Espaçamento entre as linhas */
         }
      
         input[type="text"], input[type="date"], input[type="password"],  input[type="number"], select {
             width: 220px;          
+        }
+
+        .container-cols {
+            display: flex;
+            gap: 20px; /* Espaçamento entre as colunas */
+        }
+
+        .input-col {
+            flex: 1; /* Cada coluna ocupa o mesmo espaço */
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .input-col .input-row {
+            margin-bottom: 20px; /* Espaçamento entre as linhas */
         }
     </style>
 </head>
@@ -23,12 +38,12 @@
 
     <nav class="navbar bg-dark mb-30" data-bs-theme="dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="{% url 'usuarios_list' %}">CONDOMINIUM</a>
+            <a class="navbar-brand" href="{% url 'moradores_list' %}">CONDOMINIUM</a>
         </div>
     </nav>
 
     <main class="container">
-        <h1 id="titulo">CADASTRO DE USUÁRIOS</h1>
+        <h1 id="titulo">CADASTRO DE MORADORES</h1>
 
         <div class="painel" style="height: 500px;">
 
@@ -48,40 +63,49 @@
                     </div>
                     {% endif %}
                 </div>
+                <div class="container-cols d-flex justify-content-center">
+                    <div id="coluna" class="input-col-md-2">
+                        <div id="linha" class="input-row no-gutters">
+                            <div class="input-bottom">
+                                <label for="cpf_condomino">CPF Condômino:</label> <br>
+                                <input id="cpf_condomino" name="cpf_condomino" autofocos class="form-control-sm" type="text" minlength="10"
+                                    maxlength="11" > 
+                            </div>
+                        </div>
+                    </div>
 
-                <div class="input-bottom">
-                    <label for="username">Usuário:</label> <br>
-                    <input id="username" name="username" autofocos class="form-control-sm" type="text" minlength="3"
-                        maxlength="30" tabindex="1"> <br>
-                </div>
+                    <div id="coluna" class="input-col-md-2">
+                        <div id="linha" class="input-row no-gutters">
+                            <div class="input-bottom">
+                                <label for="cpf_morador">CPF Morador:</label> <br>
+                                <input id="cpf_morador" name="cpf_morador" class="form-control-sm" type="number" minlength="10"
+                                    maxlength="11" tabindex="1" >                     
+                            </div>
 
-                <div class="input-bottom">
-                    <label for="password">Senha:</label> <br>
-                    <input id="password" name="password" class="form-control-sm" type="password" minlength="3"
-                        maxlength="15" tabindex="2" > <br>
-                </div>
+                            <div class="input-bottom">
+                                <label for="nome_morador">Morador:</label> <br>
+                                <input id="nome_morador" name="nome_morador" class="form-control-sm" type="text" maxlength="40" tabindex="2" >
+                            </div>
+                            
+                            <div class="input-bottom">
+                                <label for="data_nascimento_morador">Nascimento:</label> <br>
+                                <input id="data_nascimento_morador" name="data_nascimento_morador" class="form-control-sm" type="date" minlength="10" maxlength="10" tabindex="3">
+                            </div>
 
-                <div class="input-bottom">
-                    <label for="cpf_usuario">CPF Usuário:</label> <br>
-                    <input id="cpf_usuario" name="cpf_usuario" class="form-control-sm" type="text" minlength="14"
-                        maxlength="14" tabindex="3" > <br>
-                </div>
-
-                <div class="input-bottom">
-                    <label for="nivel">Nível:</label> <br>
-                    <input id="nivel" name="nivel" class="form-control-sm" type="number" minlength="2" maxlength="2" tabindex="4" >
-                    <br>
-                </div>
-
-                <div class="input-bottom">
-                    <label for="n_condominio">Condomínio:</label> <br>
-                    <select id="n_condominio" name="n_condominio" class="form-control-sm" tabindex="5" >
-                        {% for condominio in condominios %}
-                        <option value="{{ condominio.n_condominio }}">{{ condominio.n_condominio}} - {{ condominio.nome_condominio }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <br><br>
+                            <div class="input-bottom">
+                                <label for="parentesco_condomino">Parentesco:</label> <br>
+                                <input id="parentesco_condomino" name="parentesco_condomino" class="form-control-sm" type="text" maxlength="40" tabindex="4" >
+                            </div>
+                            
+                            <div class="input-bottom">
+                                <label for="celular_morador">Celular:</label><br>
+                                <input id="celular_morador" name="celular_morador" class="form-control-sm" type="text" minlength="11" maxlength="11" tabindex="5">
+                            </div>                              
+                        </div>      
+                    </div>
+                </div>              
+                <br>
+                <button id="btnsalvar" type="submit">SAIR</button>
                 <button id="btnsalvar" type="submit">SALVAR</button>
             </form>
         </div>

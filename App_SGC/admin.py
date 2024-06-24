@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import CustomCondomino, CustomUser
+from .models import CustomCondomino, CustomUser, CustomCondominio
 # from .models import Usuario
 
 # # Register your models here.
@@ -8,3 +8,4 @@ from .models import CustomCondomino, CustomUser
 
 admin.site.register(CustomUser)
 admin.site.register(CustomCondomino)
+admin.site.register(CustomCondominio)
