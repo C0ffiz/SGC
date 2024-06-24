@@ -4,21 +4,25 @@ from django.urls import path
 from App_SGC import views
 from App_SGC.views import CondominosListViews,CondominosCreateViews,CondominosUpdateViews,CondominosDeleteViews
 from App_SGC.views import UsuariosListViews,UsuariosCreateViews,UsuariosUpdateViews,UsuariosDeleteViews
-
-#  Condomino
+from App_SGC.views import CondominiosListViews,CondominiosCreateViews,CondominiosUpdateViews,CondominiosDeleteViews
+from App_SGC.views import MoradoresListViews,MoradoresCreateViews,MoradoresUpdateViews,MoradoresDeleteViews
 from django.views.generic import ListView
-# CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 
 
 urlpatterns = [
-#  Caminhos do Login
-    path('',views.exibirLogin,name='exibirLogin'),
-    path('login',views.exibirLogin,name='exibirLogin'),
-    path('signin',views.verificarLogin,name='verificarLogin'),
 
 #  Caminho do Admin
     path('admin/', admin.site.urls),
+
+
+
+#  Caminhos do Login
+    path('',MoradoresListViews.as_view(template_name="moradores/moradores_list.html"), name="moradores_list"),
+    
+    # path('',views.exibirLogin,name='exibirLogin'), 
+    path('login',views.exibirLogin,name='exibirLogin'),
+    path('signin',views.verificarLogin,name='verificarLogin'),
     
  
 #  Caminhos da home
@@ -37,6 +41,20 @@ urlpatterns = [
     path('condominos_create',CondominosCreateViews.as_view(template_name="condominos/condominos_create.html"), name="condominos_create"),
     path("update/<int:pk>", CondominosUpdateViews.as_view(template_name="condominos/condominos_update.html"), name="condominos_update"),
     path("delete/<int:pk>", CondominosDeleteViews.as_view(template_name="condominos/condominos_confirm_delete.html"), name="condominos_delete"),
+
+
+#  Caminhos do Condominio
+    path('condominios_list',CondominiosListViews.as_view(template_name="condominios/condominios_list.html"), name="condominios_list"),
+    path('condominios_create',CondominiosCreateViews.as_view(template_name="condominios/condominios_create.html"), name="condominios_create"),
+    path('condominios_update/<str:pk>',CondominiosUpdateViews.as_view(template_name="condominios/condominios_update.html"), name="condominios_update"),
+    path("condominios_delete/<str:pk>",CondominiosDeleteViews.as_view(template_name="condominios/condominios_confirm_delete.html"), name="condominios_delete"),
+
+#  Caminhos do Morador 
+    path('moradores_list',MoradoresListViews.as_view(template_name="moradores/moradores_list.html"), name="moradores_list"),
+    path('moradores_create',MoradoresCreateViews.as_view(template_name="moradores/moradores_create.html"), name="moradores_create"),
+    path('moradores_update/<str:pk>',MoradoresUpdateViews.as_view(template_name="moradores/moradores_update.html"), name="moradores_update"),
+    path("moradores_delete/<str:pk>",MoradoresDeleteViews.as_view(template_name="moradores/moradores_confirm_delete.html"), name="moradores_delete"),
+
 
 ]
 

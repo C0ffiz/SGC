@@ -9,7 +9,7 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
             integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
         <!-- Folhas de Estilo Locais -->
-        <link rel="stylesheet" href="/static/css/usuarios.css">
+        <link rel="stylesheet" href="/static/css/moradores.css">
         <title>SGC</title>
     </head>
 
@@ -23,12 +23,12 @@
 
         <!-- Corpo da Página -->
         <main class="container">
-            <h1 id="titulo_list">USUÁRIOS DO SISTEMA</h1>
+            <h1 id="titulo_list">MORADORES</h1>
 
             <!-- Opções de Pesquisa e Cadastro -->
             <div class="container_1">
                 <div class="box">
-                    <a href="{% url 'usuarios_create' %}" class="btn btn-primary" id="cadastrar">CADASTRAR USUÁRIOS</a>
+                    <a href="{% url 'moradores_create' %}" class="btn btn-primary" id="cadastrar">CADASTRAR MORADORES</a>
                 </div>
 
                 <div class="box" id="divBusca">
@@ -41,34 +41,40 @@
             <table id="usuariosTable" class="table">
                 <thead>
                     <tr>
+                        <th scope="col">NÚMERO</th>                        
                         <th scope="col">
-                            <!-- <a href="#" class="sort-header link-arrow down" data-sort="username">
-                                <span
-                                    class="sort-icon">
-                                </span>
-                            </a> -->
+                            <a href="#" class="sort-header link-arrow down" data-sort="bloco">
+                                CPF CONDÔMINO
+                                <span class="sort-icon"></span>
+                                <span class="sorting-label"></span>
+                            </a>
                         </th>
-                        <th scope="col">USUÁRIO</th>
-                        <th scope="col">SENHA</th>
-                        <th scope="col">CPF USUÁRIO</th>
-                        <th scope="col">NÍVEL</th>
+                        <th scope="col">CPF MORADOR</th>
+                        <th scope="col">NOME</th>
+                        <th scope="col">NASCIMENTO</th>
+                        <th scope="col">PARENTESCO</th>
+                        <th scope="col">CELULAR</th>
+                        <th scope="col">E-MAIL</th>
                         <th scope="col">CONDOMÍNIO</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for usua in usuarios_list %}
-                    <tr>
-                        <td class="linha">{{ forloop.counter }}</td>
-                        <td class="username">{{ usua.username }}</td>
-                        <td>{{ usua.password }}</td>
-                        <td id="cpf_cell_{{ forloop.counter }}">{{ usua.cpf_usuario }}</td>
-                        <td>{{ usua.nivel }}</td>
-                        <td>{{ usua.n_condominio.n_condominio }}</td>
-                        <td style="border: none; width:200px">
-                            <a href="{% url 'usuarios_update' pk=usua.pk %}" class="btn btn-primary btn-sm">ALTERAR</a>
-                            <a href="{% url 'usuarios_delete' pk=usua.pk %}" class="btn btn-danger btn-sm">EXCLUIR</a>
-                        </td>
-                    </tr>
+                    {% for mora in moradores_list %}
+                        <tr>
+                            <td class="linha">{{ forloop.counter }}</td>
+                            <td class="cpf_condomino">{{ mora.cpf_condomino }}</td>
+                            <td class="cpf_morador">{{ mora.cpf_morador }}</td>
+                            <td class="nome_morador">{{ mora.nome_morador }}</td>
+                            <td class="data_nascimento_morador">{{ mora.data_nascimento_morador }}</td>
+                            <td class="parentesco_condomino">{{ mora.parentesco_condomino }}</td>
+                            <td class="celular_morador">{{ mora.celular_morador }}</td>
+                            <td class="email_morador">{{ mora.email_morador }}</td>
+                            <td class="email_morador">{{ mora.n_condominio }}</td>
+                            <td style="border: none; width:200px">
+                                <a href="{% url 'moradores_update' pk=mora.pk %}" class="btn btn-primary btn-sm">ALTERAR</a>
+                                <a href="{% url 'moradores_confirm_delete' pk=mora.pk %}" class="btn btn-danger btn-sm">EXCLUIR</a>
+                            </td>
+                        </tr>
                     {% endfor %}
                 </tbody>
             </table>
@@ -76,6 +82,23 @@
 
         <!-- Scripts JavaScript -->
         <script>
+            // Função para formatar CPF no modelo xxx.xxx.xxx-xx
+            function formatCPF() {
+                    var cpfs = document.querySelectorAll('#condominosTable tbody td:first-child');
+                    cpfs.forEach(function (element) {
+                        var cpf = element.textContent.trim();
+
+                        if (cpf.length === 11) {
+                            cpf = cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+                        } else if (cpf.length === 10) {
+                            cpf = cpf.replace(/(\d{2})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+                        }
+
+                        element.textContent = cpf;
+                    });
+                }
+
+
             // Função para manipular a ordenação das colunas
             function handleSort() {
                 var headers = document.querySelectorAll('.sort-header');
@@ -99,7 +122,7 @@
 
             // Função para ordenar as linhas da tabela
             function sortTable(column, isAscending) {
-                var table = document.getElementById('usuariosTable');
+                var table = document.getElementById('moradoresTable');
                 var tbody = table.querySelector('tbody');
                 var rows = Array.from(tbody.rows);
 
@@ -133,11 +156,11 @@
             function handleSearch() {
                 document.getElementById('txtBusca').addEventListener('input', function () {
                     var searchText = this.value.toLowerCase();
-                    var rows = document.querySelectorAll('#usuariosTable tbody tr');
+                    var rows = document.querySelectorAll('#moradoresTable tbody tr');
 
                     rows.forEach(function (row) {
-                        var username = row.querySelector('.username').textContent.toLowerCase();
-                        var cpf = row.querySelector('[id^="cpf_cell_"]').textContent.toLowerCase();
+                        var nome_morador = row.querySelector('.nome_morador').textContent.toLowerCase();
+                        var cpf_condomino = row.querySelector('[id^="cpf_cell_"]').textContent.toLowerCase();
                         // Check if either username or CPF contains the search text
                         if (username.includes(searchText) || cpf.includes(searchText)) {
                             row.style.display = '';
@@ -145,16 +168,6 @@
                             row.style.display = 'none';
                         }
                     });
-                });
-            }
-
-            // Função para formatar os números de CPF
-            function formatCPF() {
-                var cpfCells = document.querySelectorAll('[id^="cpf_cell_"]');
-                cpfCells.forEach(function (cell) {
-                    var cpf = cell.textContent;
-                    var cpfFormatted = cpf.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, '$1.$2.$3-$4');
-                    cell.textContent = cpfFormatted;
                 });
             }
 
