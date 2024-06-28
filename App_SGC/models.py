@@ -24,7 +24,7 @@ class CustomUser(AbstractUser):
         managed = True
 
       
-#  Definição da Tabela do Condomínio 
+
 class CustomCondominio(models.Model):
     n_condominio = models.IntegerField(verbose_name="Número do Condomínio *", primary_key=True, default=0) 
     nome_condominio = models.CharField(verbose_name="Nome do Condomínio *", max_length=60, null=False, blank=False)
@@ -32,21 +32,19 @@ class CustomCondominio(models.Model):
     class Meta:
         db_table='condominio'
         managed = True
-   
 
-#  Definição da Tabela Condômino
 class CustomCondomino(models.Model):
-    cpf_condomino = models.BigIntegerField(verbose_name="CPF Condômino *", primary_key=True, null=False, blank=False) 
+    cpf_condomino = models.CharField(verbose_name="CPF Condômino *", max_length=14, primary_key=True, null=False, blank=False) 
     nome_condomino = models.CharField(verbose_name="Nome Condômino *",max_length=40, null=False, blank=False)
     data_nascimento_condomino = models.DateField(verbose_name="Data Nascimento *", null=False, blank=False, default='0000-00-00')
     bloco = models.CharField(verbose_name="Bloco *",max_length=2, null=False, blank=False)
     apartamento = models.CharField(verbose_name="Apartamento *",max_length=4, null=False, blank=False)
-    telefone_condomino = models.CharField(verbose_name="Telefone",max_length=9, null=True, blank=True, default='-')
+    telefone_condomino = models.CharField(verbose_name="Telefone",max_length=10, null=True, blank=True, default='-')
     celular_condomino = models.CharField(verbose_name="Celular",max_length=11, null=True, blank=True)
     email_condomino = models.CharField(verbose_name="E-mail",max_length=40, null=True, blank=True, default='-')
     data_aquisicao_imovel = models.DateField(verbose_name="Data Aquisição Imóvel *", null=False, blank=False, default='0000-00-00')
     n_condominio = models.ForeignKey(
-        'CustomCondominio',  
+        CustomCondominio,  
         on_delete=models.CASCADE,
         verbose_name="Número do Condomínio",
         null=False,  
@@ -57,25 +55,37 @@ class CustomCondomino(models.Model):
         db_table='condomino'
         managed = True
 
-
-# Definição da Tabela Morador
 class CustomMorador(models.Model):
     cpf_condomino = models.ForeignKey(
-        'CustomCondomino', 
+        CustomCondomino, 
         on_delete=models.CASCADE, 
         verbose_name="CPF Condômino *", 
         null=False, 
         blank=False,
         related_name='moradores_por_cpf'
     )
-    cpf_morador = models.BigIntegerField(verbose_name="CPF Morador *", primary_key=True, null=False, blank=False)
+    cpf_morador = models.CharField(verbose_name="CPF Morador *", max_length=14, primary_key=True, null=False, blank=False)
     nome_morador = models.CharField(verbose_name="Nome Morador *", max_length=40, null=False, blank=False)
     data_nascimento_morador = models.DateField(verbose_name="Data de Nascimento *", null=False, blank=False)
-    parentesco_condomino = models.CharField(verbose_name="Parentesco", max_length=11, null=False, blank=False, default="Outros")
+    PARENTESCO_CHOICES = [
+        ('esposo', 'Esposo(a)'),
+        ('filho', 'Filho(a)'),
+        ('pai', 'Pai'),
+        ('mae', 'Mãe'),
+        ('outros', 'Outros'),
+    ]
+    parentesco_condomino = models.CharField(
+        verbose_name="Parentesco",
+        max_length=11,
+        choices=PARENTESCO_CHOICES,
+        default='outros',  # Defina o valor padrão conforme necessário
+        null=False,
+        blank=False
+    )
     celular_morador = models.CharField(verbose_name="Celular", max_length=11, null=True, blank=True)
     email_morador = models.CharField(verbose_name="Email", max_length=40, null=True, blank=True)
     n_condominio = models.ForeignKey(
-        'CustomCondomino', 
+        CustomCondominio, 
         on_delete=models.CASCADE, 
         verbose_name="Número do Condomínio", 
         null=False, 

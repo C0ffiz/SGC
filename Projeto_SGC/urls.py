@@ -51,9 +51,11 @@ urlpatterns = [
 
 #  Caminhos do Morador 
     path('moradores_list',MoradoresListViews.as_view(template_name="moradores/moradores_list.html"), name="moradores_list"),
-    path('moradores_create',MoradoresCreateViews.as_view(template_name="moradores/moradores_create.html"), name="moradores_create"),
+    path('moradores_verify',views.verificar_cpf_condomino,name='verificar_cpf_condomino'),
+    path('moradores_create/',MoradoresCreateViews.as_view(template_name="moradores/moradores_create.html"), name="moradores_create"),
     path('moradores_update/<str:pk>',MoradoresUpdateViews.as_view(template_name="moradores/moradores_update.html"), name="moradores_update"),
     path("moradores_delete/<str:pk>",MoradoresDeleteViews.as_view(template_name="moradores/moradores_confirm_delete.html"), name="moradores_delete"),
+    path('verificar_cpf_condomino/', views.verificar_cpf_condomino, name='verificar_cpf_condomino'),
 
 
 ]
