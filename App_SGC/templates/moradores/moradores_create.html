@@ -1,41 +1,36 @@
 <!doctype html>
 <html lang="pt-br">
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>SGC</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="/static/css/usuarios.css">
-    <style>   
+    <style>
         .input-bottom {
-            margin-bottom: 5px; /* Espaçamento entre as linhas */
+            margin-bottom: 5px;
         }
-     
-        input[type="text"], input[type="date"], input[type="password"],  input[type="number"], select {
-            width: 220px;          
+        input[type="text"], input[type="date"], input[type="password"], input[type="number"], select {
+            width: 220px;
         }
-
         .container-cols {
             display: flex;
-            gap: 20px; /* Espaçamento entre as colunas */
+            gap: 20px;
         }
-
         .input-col {
-            flex: 1; /* Cada coluna ocupa o mesmo espaço */
+            flex: 1;
             display: flex;
             flex-direction: column;
         }
-        
         .input-col .input-row {
-            margin-bottom: 20px; /* Espaçamento entre as linhas */
+            margin-bottom: 20px;
+        }
+        .field-error {
+            border: 2px solid red;
         }
     </style>
 </head>
-
 <body>
-
     <nav class="navbar bg-dark mb-30" data-bs-theme="dark">
         <div class="container-fluid">
             <a class="navbar-brand" href="{% url 'moradores_list' %}">CONDOMINIUM</a>
@@ -44,19 +39,16 @@
 
     <main class="container">
         <h1 id="titulo">CADASTRO DE MORADORES</h1>
-
         <div class="painel" style="height: 500px;">
-
-            <form method="POST">
+            <form method="POST" novalidate>
                 {% csrf_token %}
                 <div>
                     {% if form.errors %}
                     <div class="alert alert-danger error-duplicate" role="alert">
-                        <!-- <strong>Erro:</strong> Por favor, corrija os seguintes erros:<br> -->
                         <ul>
                             {% for field, errors in form.errors.items %}
                             {% for error in errors %}
-                            <li strong>{{ error }}</li>
+                            <li><strong>{{ field }}:</strong> {{ error }}</li>
                             {% endfor %}
                             {% endfor %}
                         </ul>
@@ -68,45 +60,64 @@
                         <div id="linha" class="input-row no-gutters">
                             <div class="input-bottom">
                                 <label for="cpf_condomino">CPF Condômino:</label> <br>
-                                <input id="cpf_condomino" name="cpf_condomino" autofocos class="form-control-sm" type="text" minlength="10"
-                                    maxlength="11" > 
+                                <input id="cpf_condomino" name="cpf_condomino" autofocus class="form-control-sm {% if form.cpf_condomino.errors %}field-error{% endif %}" type="text" value="{{ request.GET.cpf_condomino }}" readonly="readonly">
+                                {% if form.cpf_condomino.errors %}
+                                    <div class="text-danger">{{ form.cpf_condomino.errors|join:" " }}</div>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
-
                     <div id="coluna" class="input-col-md-2">
                         <div id="linha" class="input-row no-gutters">
                             <div class="input-bottom">
                                 <label for="cpf_morador">CPF Morador:</label> <br>
-                                <input id="cpf_morador" name="cpf_morador" class="form-control-sm" type="number" minlength="10"
-                                    maxlength="11" tabindex="1" >                     
+                                <input id="cpf_morador" name="cpf_morador" class="form-control-sm {% if form.cpf_morador.errors %}field-error{% endif %}" type="text" tabindex="1">
+                                {% if form.cpf_morador.errors %}
+                                    <div class="text-danger">{{ form.cpf_morador.errors|join:" " }}</div>
+                                {% endif %}
                             </div>
-
                             <div class="input-bottom">
                                 <label for="nome_morador">Morador:</label> <br>
-                                <input id="nome_morador" name="nome_morador" class="form-control-sm" type="text" maxlength="40" tabindex="2" >
+                                <input id="nome_morador" name="nome_morador" class="form-control-sm {% if form.nome_morador.errors %}field-error{% endif %}" type="text" maxlength="40" tabindex="2">
+                                {% if form.nome_morador.errors %}
+                                    <div class="text-danger">{{ form.nome_morador.errors|join:" " }}</div>
+                                {% endif %}
                             </div>
-                            
                             <div class="input-bottom">
                                 <label for="data_nascimento_morador">Nascimento:</label> <br>
-                                <input id="data_nascimento_morador" name="data_nascimento_morador" class="form-control-sm" type="date" minlength="10" maxlength="10" tabindex="3">
+                                <input id="data_nascimento_morador" name="data_nascimento_morador" class="form-control-sm {% if form.data_nascimento_morador.errors %}field-error{% endif %}" type="date" tabindex="3">
+                                {% if form.data_nascimento_morador.errors %}
+                                    <div class="text-danger">{{ form.data_nascimento_morador.errors|join:" " }}</div>
+                                {% endif %}
                             </div>
-
                             <div class="input-bottom">
                                 <label for="parentesco_condomino">Parentesco:</label> <br>
-                                <input id="parentesco_condomino" name="parentesco_condomino" class="form-control-sm" type="text" maxlength="40" tabindex="4" >
+                                <select id="parentesco_condomino" name="parentesco_condomino" class="form-control-sm {% if form.parentesco_condomino.errors %}field-error{% endif %}" tabindex="4">
+                                    <option value="esposo">Esposo(a)</option>
+                                    <option value="filho">Filho(a)</option>
+                                    <option value="pai">Pai</option>
+                                    <option value="mae">Mãe</option>
+                                    <option value="outros">Outros</option>
+                                </select>
+                                {% if form.parentesco_condomino.errors %}
+                                    <div class="text-danger">{{ form.parentesco_condomino.errors|join:" " }}</div>
+                                {% endif %}
                             </div>
-                            
                             <div class="input-bottom">
                                 <label for="celular_morador">Celular:</label><br>
-                                <input id="celular_morador" name="celular_morador" class="form-control-sm" type="text" minlength="11" maxlength="11" tabindex="5">
-                            </div>                              
-                        </div>      
+                                <input id="celular_morador" name="celular_morador" class="form-control-sm {% if form.celular_morador.errors %}field-error{% endif %}" type="text" minlength="11" maxlength="11" tabindex="5">
+                                {% if form.celular_morador.errors %}
+                                    <div class="text-danger">{{ form.celular_morador.errors|join:" " }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
                     </div>
-                </div>              
+                </div>
                 <br>
-                <button id="btnsalvar" type="submit">SAIR</button>
-                <button id="btnsalvar" type="submit">SALVAR</button>
+                <div>
+                    <button class="btn btn-primary col-2 me-2 btn-block" type="submit">SALVAR</button>
+                    <button onclick="window.location.href='{% url 'moradores_list' %}'" type="button" class="btn btn-danger col-2 btn-block">Sair</button>
+                </div>
             </form>
         </div>
     </main>
@@ -115,57 +126,27 @@
         function validaCPF(cpf) {
             cpf = cpf.replace(/\D+/g, '');
             if (cpf.length !== 11) return false;
-
-            let soma = 0;
-            let resto;
-            if (/^(\d)\1{10}$/.test(cpf)) return false;
-
+            if (/^(\d)\1+$/.test(cpf)) return false;
+            let soma = 0, resto;
             for (let i = 1; i <= 9; i++) soma += parseInt(cpf.substring(i - 1, i)) * (11 - i);
             resto = (soma * 10) % 11;
             if ((resto === 10) || (resto === 11)) resto = 0;
             if (resto !== parseInt(cpf.substring(9, 10))) return false;
-
             soma = 0;
             for (let i = 1; i <= 10; i++) soma += parseInt(cpf.substring(i - 1, i)) * (12 - i);
             resto = (soma * 10) % 11;
             if ((resto === 10) || (resto === 11)) resto = 0;
-            if (resto !== parseInt(cpf.substring(10, 11))) return false;
-
-            return true;
+            return resto === parseInt(cpf.substring(10, 11));
         }
 
-        function mascara(i) {
-            var v = i.value;
-
-            if (isNaN(v[v.length - 1])) { // Previne a inserção de caracteres que não sejam números
-                i.value = v.substring(0, v.length - 1);
-                return;
+        document.querySelector('form').addEventListener('submit', function(event) {
+            const cpfCondominoInput = document.getElementById('cpf_condomino');
+            const cpfMoradorInput = document.getElementById('cpf_morador');
+            if (!validaCPF(cpfCondominoInput.value) || !validaCPF(cpfMoradorInput.value)) {
+                event.preventDefault();
+                alert('CPF inválido');
             }
-
-            i.setAttribute("maxlength", "14");
-            if (v.length == 3 || v.length == 7) i.value += ".";
-            if (v.length == 11) i.value += "-";
-        }
-
-        document.addEventListener('DOMContentLoaded', function () {
-            document.getElementById('btnsalvar').addEventListener('click', function (e) {
-                var cpf = document.getElementById('cpf_usuario').value;
-                if (!validaCPF(cpf)) {
-                    e.preventDefault();
-                    alert('CPF inválido. Verifique o número digitado.');
-                    document.getElementById('cpf_usuario').focus();
-                }
-            });
-
-            document.getElementById('cpf_usuario').addEventListener('input', function (e) {
-                mascara(e.target);
-            });
         });
     </script>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-        crossorigin="anonymous"></script>
 </body>
-
 </html>

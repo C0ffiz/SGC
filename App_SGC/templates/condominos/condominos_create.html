@@ -1,57 +1,46 @@
+<!-- templates/moradores/moradores_create.html -->
 <!doctype html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- Folhas de Estilo Externas -->
+    <title>SGC</title>
     <link rel="stylesheet" href="/static/node_modules/@fortawesome/fontawesome-free/css/all.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <!-- Folhas de Estilo Locais -->
     <link rel="stylesheet" href="/static/css/condominos.css">
-    <title>SGC</title>
     <style>
         .container-cols {
             display: flex;
             gap: 20px; /* Espaçamento entre as colunas */
         }
-
         .input-col {
             flex: 1; /* Cada coluna ocupa o mesmo espaço */
             display: flex;
             flex-direction: column;
         }
-        
         .input-col .input-row {
             margin-bottom: 20px; /* Espaçamento entre as linhas */
         }
-
         .form-control-sm {
             /* width: 50%;  */
         }
-
         input[type="text"], input[type="date"], select {
             width: 220px;
-          
         }
     </style>
 </head>
-
 <body>
-    <!-- Barra de Navegação -->
     <nav class="navbar bg-dark mb-30" data-bs-theme="dark">
         <div class="container-fluid">
             <a class="navbar-brand" href="{% url 'condominos_list' %}">CONDOMINIUM</a>
         </div>
     </nav>
 
-    <!-- Corpo da Página -->
     <main class="container">
         <h1 id="titulo_list">CADASTRO DE CONDÔMINOS</h1> <br>
         <form method="POST">
             {% csrf_token %}
-
-            <!-- Contêiner das Colunas -->
             <div class="container-cols d-flex justify-content-center">
                 <!-- Coluna 1 -->
                 <div id="coluna1" class="input-col-md-2">
@@ -60,17 +49,14 @@
                             <label for="cpf_condomino">CPF:</label><br>
                             <input id="cpf_condomino" name="cpf_condomino" class="form-control-sm" type="text" minlength="11" maxlength="11" tabindex="1" autofocus>
                         </div>
-
                         <div class="input-bottom">
                             <label for="bloco">Bloco:</label><br>
                             <input id="bloco" name="bloco" class="form-control-sm" type="text" minlength="1" maxlength="2" tabindex="4">
                         </div>
-
                         <div class="input-top input-bottom">
                             <label for="telefone_condomino">Telefone:</label><br>
                             <input id="telefone_condomino" name="telefone_condomino" class="form-control-sm" type="text" minlength="10" maxlength="10" tabindex="7">
                         </div>
-
                         <div class="input-top input-bottom">
                             <label for="n_condominio">Condomínio:</label><br>
                             <select id="n_condominio" name="n_condominio" class="form-control-sm" tabindex="10">
@@ -81,7 +67,6 @@
                         </div>
                     </div>
                 </div>
-
                 <!-- Coluna 2 -->
                 <div id="coluna2" class="input-col-md-2">
                     <div class="input-row">
@@ -89,19 +74,16 @@
                             <label for="nome_condomino">Nome:</label><br>
                             <input id="nome_condomino" name="nome_condomino" class="form-control-sm" type="text" maxlength="40" tabindex="2">
                         </div>
-
-                        <div class="input-top input-bottom"> 
+                        <div class="input-top input-bottom">
                             <label for="apartamento">Apartamento:</label><br>
                             <input id="apartamento" name="apartamento" class="form-control-sm" type="text" minlength="1" maxlength="4" tabindex="5">
                         </div>
-
                         <div class="input-top input-bottom">
                             <label for="celular_condomino">Celular:</label><br>
                             <input id="celular_condomino" name="celular_condomino" class="form-control-sm" type="text" minlength="11" maxlength="11" tabindex="8">
                         </div>
                     </div>
                 </div>
-
                 <!-- Coluna 3 -->
                 <div id="coluna3" class="input-col-md-2">
                     <div class="input-row">
@@ -109,12 +91,10 @@
                             <label for="data_nascimento_condomino">Nascimento:</label><br>
                             <input id="data_nascimento_condomino" name="data_nascimento_condomino" class="form-control-sm" type="date" minlength="10" maxlength="10" tabindex="3">
                         </div>
-
                         <div class="input-top input-bottom">
                             <label for="data_aquisicao_imovel">Aquisição imóvel:</label><br>
                             <input id="data_aquisicao_imovel" name="data_aquisicao_imovel" class="form-control-sm" type="date" minlength="10" maxlength="10" tabindex="6">
                         </div>
-
                         <div class="input-top input-bottom">
                             <label for="email_condomino">E-mail:</label><br>
                             <input id="email_condomino" name="email_condomino" class="form-control-sm" type="text" minlength="4" maxlength="40" tabindex="9">
@@ -126,8 +106,6 @@
             <button id="btnsalvar" type="submit">SALVAR</button>
         </form>
     </main>
-
-    <!-- Bootstrap JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
