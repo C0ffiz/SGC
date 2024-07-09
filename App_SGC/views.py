@@ -1,14 +1,25 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login
-from .models import CustomUser,CustomCondominio,CustomCondomino,CustomCondominio,CustomMorador
+from .models import CustomUser, CustomCondominio, CustomCondomino, CustomMorador, CustomBloco, CustomUnidade
 from django.contrib import messages
-from django.views.generic import ListView,CreateView,UpdateView,DeleteView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy, reverse
 from django import forms
+from django.http import HttpResponseRedirect
+
+from django.views.generic.edit import CreateView
+from django.contrib import messages
+from django.views import View
+from django.shortcuts import get_object_or_404
 
 
-#-----------------------Views Login
+
+
+
+
+
+#-----------------------Views Login.................................................................
 
 # Exibe Login
 def exibirLogin(request):
@@ -26,7 +37,7 @@ def verificarLogin(request):
             user = authenticate(username=usuario, password=senha)
             if user is not None:
                 login(request, user)
-                messages.info(request, f"{usuario}")
+                # messages.info(request, f"{usuario}")
                 return redirect('exibirHome')  # Redirect to the home page after successful login
             else:
                 messages.error(request, 'Usuário ou senha inválidos.')
@@ -38,12 +49,13 @@ def verificarLogin(request):
 
 # Exibe Home
 def exibirHome(request):
+    
     return render(request,'login/home.html')
 
 
-#-----------------------Views Usuário
+#-----------------------Views Usuário.................................................................
 
-# Tela Usuarios
+# Tela Lista Usuarios
 class UsuariosListViews(ListView):
     model = CustomUser
     context_object_name = 'usuarios_list'
@@ -53,7 +65,7 @@ class UsuariosListViews(ListView):
         context['condominios'] = CustomCondominio.objects.all()
         return context
 
-# Tela Cadastro De Usuarios
+# Tela Cadastro de Usuarios
 class UsuariosCreateViews(CreateView):
     model = CustomUser
     template_name = 'usuarios_create.html'
@@ -66,9 +78,7 @@ class UsuariosCreateViews(CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['condominios'] = CustomCondominio.objects.all()
-        return context
-    
-    
+        return context      
     
     def form_valid(self, form):
         # Strip mask from CPF
@@ -141,13 +151,15 @@ class UsuariosDeleteViews(DeleteView):
     success_url = reverse_lazy("usuarios_list")
     
 
-#-----------------------Views Condômino
+#-----------------------Views Condômino.................................................................
 
+# Tela Lista Condominos
 class CondominosListViews(ListView):
     model = CustomCondomino
     context_object_name = 'condominos_list'
 
 
+# Tela Cadastro de Condôminos
 class CondominosCreateViews(CreateView):
     model = CustomCondomino
     fields = ["cpf_condomino", "nome_condomino", "bloco", "apartamento", "telefone_condomino", "celular_condomino", "email_condomino", "data_aquisicao_imovel", "data_nascimento_condomino", "n_condominio"]
@@ -188,7 +200,7 @@ class CondominosCreateViews(CreateView):
         return super().form_invalid(form)
     
 
-# Tela Alteração De Condominos
+# Tela Alteração De Condôminos
 class CondominosUpdateViews(UpdateView):
     model = CustomCondomino
     context_object_name = 'condominos_list'    
@@ -221,15 +233,15 @@ class CondominosUpdateViews(UpdateView):
         
         return super().form_valid(form)         
     
-# Tela Exclusão De Condominos
+# Tela Exclusão De Condôminos
 class CondominosDeleteViews(DeleteView):
     model = CustomCondomino
     success_url = reverse_lazy("condominos_list")
 
 
-#-----------------------Views Condomínios
+#-----------------------Views Condomínios.................................................................
 
-# Tela Condomínios
+# Tela Lista Condomínios
 class CondominiosListViews(ListView):
     model = CustomCondominio
     context_object_name = 'condominios_list'
@@ -283,9 +295,9 @@ class CondominiosDeleteViews(DeleteView):
     success_url = reverse_lazy("condominios_list")
     
 
-#-----------------------Views Moradores
+#-----------------------Views Moradores.................................................................
 
-# Tela Moradores
+# Tela Lista Moradores
 class MoradoresListViews(ListView):
     model = CustomMorador
     context_object_name = 'moradores_list'
@@ -295,7 +307,7 @@ class MoradoresListViews(ListView):
         context['moradores'] = CustomMorador.objects.all()
         return context
 
-# Tela Verificar Moradores
+# Tela Verifica Moradores
 def verificar_cpf_condomino(request):
     if request.method == 'POST':
         cpf_condomino = request.POST.get('cpf_condomino')
@@ -365,8 +377,7 @@ class MoradoresCreateViews(CreateView):
     def form_invalid(self, form):
         print("NNNNNNNNN passou ######################################")
         return super().form_invalid(form)
-    
-    
+        
 
 # Tela Alteração De Moradores
 class MoradoresUpdateViews(UpdateView):
@@ -402,7 +413,216 @@ class MoradoresUpdateViews(UpdateView):
         # return super().form_valid(form)
     
 
-# Tela Exclusão De Usuarios
+# Tela Exclusão De Moradores
 class MoradoresDeleteViews(DeleteView):
     model = CustomMorador
     success_url = reverse_lazy("moradores_list")
+
+
+    #-----------------------Views Blocos.................................................................
+
+# Tela Lista os Blocos
+class BlocosListViews(ListView):
+    model = CustomBloco
+    context_object_name = 'blocos_list'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['blocos'] = CustomBloco.objects.all()
+        return context
+
+
+# Tela Cadastro de Blocos 
+class BlocosCreateViews(CreateView):
+    model = CustomBloco
+    template_name = 'blocos_create.html'
+    fields = ["bloco", "n_condominio"]
+    success_url = reverse_lazy("blocos_list")
+
+    # rotinas para gerar as informações na div do select no html
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['condominios'] = CustomCondominio.objects.all()
+        return context
+
+    def form_valid(self, form):
+        condominio_instance = form.cleaned_data['n_condominio']
+        form.instance.n_condominio_id = condominio_instance.n_condominio
+
+        if not CustomCondominio.objects.filter(n_condominio=form.instance.n_condominio_id).exists():
+            form.add_error('n_condominio', 'Número de condomínio inválido.')
+            return self.form_invalid(form)
+
+        bloco_instance = form.cleaned_data['bloco']
+        form.instance.bloco = bloco_instance
+
+        # Verificar se a combinação bloco-condomínio já existe
+        if CustomBloco.objects.filter(bloco=form.instance.bloco, n_condominio=form.instance.n_condominio_id).exists():
+            form.add_error('bloco', 'Bloco já cadastrado para este condomínio.')
+            return self.form_invalid(form)
+
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        return super().form_invalid(form)
+
+
+# Tela Alteração de Blocos 
+class BlocosUpdateViews(UpdateView):
+    model = CustomBloco
+    template_name = 'blocos_update.html'
+    context_object_name = 'blocos_list'
+    fields = ["bloco"]
+    success_url = reverse_lazy("blocos_list") 
+       
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['condominios'] = CustomCondominio.objects.all()
+        return context
+
+    def form_valid(self, form):
+        bloco_instance = form.cleaned_data['bloco']
+        form.instance.bloco = bloco_instance
+
+        # Verificar se a combinação bloco-condomínio já existe
+        if CustomBloco.objects.filter(bloco=form.instance.bloco).exists():
+            form.add_error('bloco', 'Bloco já cadastrado para este condomínio.')
+            return self.form_invalid(form)
+
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        return super().form_invalid(form)
+    
+       
+# Tela Exclusão de Blocos
+class BlocosDeleteViews(DeleteView):
+    model = CustomBloco
+    success_url = reverse_lazy("blocos_list")
+    # template_name = 'App_SGC\templates\Blocos\blocos_confirm_delete.html'  
+   
+
+
+  #-----------------------Views Unidades.................................................................
+
+# Tela Lista as Unidades 
+class UnidadesListViews(ListView):
+    model = CustomUnidade
+    context_object_name = 'unidades_list'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['unidades'] = CustomUnidade.objects.all()
+        return context    
+
+
+# Tela Cadastro de Unidades
+class UnidadesCreateViews(View):
+    template_name = 'unidades/unidades_create.html'
+    success_url = reverse_lazy("unidades_list")
+
+    def get_context_data(self, **kwargs):
+        context = {}
+        context['blocos'] = CustomBloco.objects.all()
+        return context
+
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data()
+        return render(request, self.template_name, context)
+    
+    def post(self, request, *args, **kwargs):
+        cpf_condomino = request.POST.get('cpf_condomino')
+        bloco_id = request.POST.get('bloco_id')
+        unidade = request.POST.get('unidade')
+
+        context = self.get_context_data()
+
+        # Validar CPF do condômino
+        try:
+            condomino_instance = CustomCondomino.objects.get(cpf_condomino=cpf_condomino)
+        except CustomCondomino.DoesNotExist:
+            context['form_errors'] = {'cpf_condomino': ' - CPF não cadastrado'}
+            return render(request, self.template_name, context)
+        
+        # Obter a instância do condomínio associada ao condômino
+        condominio_instance = condomino_instance.n_condominio
+        
+        # Validar se a unidade já existe para o bloco
+        if CustomUnidade.objects.filter(bloco_id=bloco_id, unidade=unidade).exists():
+            context['form_errors'] = {'unidade': ' - Unidade já cadastrada para este bloco'}
+            return render(request, self.template_name, context)
+
+        # Criar a nova unidade
+        CustomUnidade.objects.create(
+            cpf_condomino=condomino_instance,
+            bloco_id=CustomBloco.objects.get(bloco_id=bloco_id),
+            n_condominio=condominio_instance,
+            unidade=unidade
+        )
+        
+        return HttpResponseRedirect(self.success_url)
+
+
+# Tela Alteração das Unidades
+class UnidadesUpdateViews(View):
+    template_name = 'unidades/unidades_update.html'
+    success_url = reverse_lazy("unidades_list")
+
+    def get_context_data(self, **kwargs):
+        context = {}
+        context['blocos'] = CustomBloco.objects.all()
+        if 'pk' in kwargs:
+            context['unidade'] = get_object_or_404(CustomUnidade, unidade_id=kwargs['pk'])
+        return context
+
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data(pk=kwargs['pk'])
+        return render(request, self.template_name, context)
+    
+    def post(self, request, *args, **kwargs):
+        unidade = get_object_or_404(CustomUnidade, unidade_id=kwargs['pk'])
+
+        bloco_id = request.POST.get('bloco_id')
+        unidade_str = request.POST.get('unidade')
+
+        context = self.get_context_data(pk=kwargs['pk'])
+
+        # Validar CPF do condômino
+        try:
+            condomino_instance = CustomCondomino.objects.get(cpf_condomino=unidade.cpf_condomino.cpf_condomino)
+        except CustomCondomino.DoesNotExist:
+            context['form_errors'] = {'cpf_condomino': ' - CPF não cadastrado'}
+            return render(request, self.template_name, context)
+        
+        # Obter a instância do condomínio associada ao condômino
+        condominio_instance = condomino_instance.n_condominio
+        
+        # Validar se a unidade já existe para o bloco
+        if CustomUnidade.objects.filter(bloco_id=bloco_id, unidade=unidade_str).exists():
+            context['form_errors'] = {'unidade': ' - Unidade já cadastrada para este bloco'}
+            context['unidade'] = unidade  # Certificar-se de que a unidade está no contexto
+            return render(request, self.template_name, context)
+
+        # Atualizar a unidade existente
+        unidade.bloco_id = CustomBloco.objects.get(bloco_id=bloco_id)
+        unidade.unidade = unidade_str
+        unidade.n_condominio = condominio_instance
+        unidade.save()
+        
+        return HttpResponseRedirect(self.success_url)
+
+      
+      
+       
+
+
+
+
+
+# Tela Exclusão das Unidades
+class UnidadesDeleteViews(DeleteView):
+    model = CustomUnidade
+    success_url = reverse_lazy("unidades_list")
+    # template_name = 'App_SGC\templates\Blocos\blocos_confirm_delete.html'  
+   
+

@@ -6,6 +6,8 @@ from App_SGC.views import CondominosListViews,CondominosCreateViews,CondominosUp
 from App_SGC.views import UsuariosListViews,UsuariosCreateViews,UsuariosUpdateViews,UsuariosDeleteViews
 from App_SGC.views import CondominiosListViews,CondominiosCreateViews,CondominiosUpdateViews,CondominiosDeleteViews
 from App_SGC.views import MoradoresListViews,MoradoresCreateViews,MoradoresUpdateViews,MoradoresDeleteViews
+from App_SGC.views import BlocosListViews,BlocosCreateViews,BlocosUpdateViews,BlocosDeleteViews
+from App_SGC.views import UnidadesListViews,UnidadesCreateViews,UnidadesUpdateViews,UnidadesDeleteViews
 from django.views.generic import ListView
 from django.urls import reverse_lazy
 
@@ -18,8 +20,8 @@ urlpatterns = [
 
 
 #  Caminhos do Login
-    path('',MoradoresListViews.as_view(template_name="moradores/moradores_list.html"), name="moradores_list"),
-    
+    path('',UnidadesListViews.as_view(template_name="unidades/unidades_list.html"), name="unidades_list"),
+
     # path('',views.exibirLogin,name='exibirLogin'), 
     path('login',views.exibirLogin,name='exibirLogin'),
     path('signin',views.verificarLogin,name='verificarLogin'),
@@ -32,8 +34,8 @@ urlpatterns = [
 #  Caminhos do Usuário 
     path('usuarios_list',UsuariosListViews.as_view(template_name="usuarios/usuarios_list.html"), name="usuarios_list"),
     path('usuarios_create',UsuariosCreateViews.as_view(template_name="usuarios/usuarios_create.html"), name="usuarios_create"),
-    path('usuarios_update/<str:pk>', UsuariosUpdateViews.as_view(template_name="usuarios/usuarios_update.html"), name="usuarios_update"),
-    path("usuarios_delete/<str:pk>", UsuariosDeleteViews.as_view(template_name="usuarios/usuarios_confirm_delete.html"), name="usuarios_delete"),
+    path('usuarios_update/<str:pk>',UsuariosUpdateViews.as_view(template_name="usuarios/usuarios_update.html"), name="usuarios_update"),
+    path("usuarios_delete/<str:pk>",UsuariosDeleteViews.as_view(template_name="usuarios/usuarios_confirm_delete.html"), name="usuarios_delete"),
 
    
 #  Caminhos do Condômino 
@@ -56,6 +58,19 @@ urlpatterns = [
     path('moradores_update/<str:pk>',MoradoresUpdateViews.as_view(template_name="moradores/moradores_update.html"), name="moradores_update"),
     path("moradores_delete/<str:pk>",MoradoresDeleteViews.as_view(template_name="moradores/moradores_confirm_delete.html"), name="moradores_delete"),
     path('verificar_cpf_condomino/', views.verificar_cpf_condomino, name='verificar_cpf_condomino'),
+
+#  Caminhos do Bloco 
+    path('blocos_list',BlocosListViews.as_view(template_name="blocos/blocos_list.html"), name="blocos_list"),
+    path('blocos_create',BlocosCreateViews.as_view(template_name="blocos/blocos_create.html"), name="blocos_create"),
+    path('blocos_update/<str:pk>',BlocosUpdateViews.as_view(template_name="blocos/blocos_update.html"), name="blocos_update"),
+    path("blocos_delete/<str:pk>",BlocosDeleteViews.as_view(template_name="blocos/blocos_confirm_delete.html"), name="blocos_delete"),
+
+#  Caminhos das Unidades
+    path('unidades_list',UnidadesListViews.as_view(template_name="unidades/unidades_list.html"), name="unidades_list"),
+    path('unidades_create',UnidadesCreateViews.as_view(template_name="unidades/unidades_create.html"), name="unidades_create"),
+    path('unidades_update/<str:pk>',UnidadesUpdateViews.as_view(template_name="unidades/unidades_update.html"), name="unidades_update"),
+    path("unidades_delete/<str:pk>",UnidadesDeleteViews.as_view(template_name="unidades/unidades_confirm_delete.html"), name="unidades_delete"),
+
 
 
 ]

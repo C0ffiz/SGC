@@ -26,7 +26,7 @@
 	<nav style="background-color:rgb(4, 37, 86) !important;" id="navbar" class="navbar navbar-light bg-light">
 		<div>
 			<p class="list-title text-uppercase">RIVIERA DEI FIORI</p>
-			<p class="list-title text-uppercase">Usário conectado:{% for message in messages %} {{message}} {% endfor %}</p>
+			<p class="list-title text-uppercase">Usário conectado:{{ user.username }}</p>
 		</div>
 		<div class="container-fluid">
 			<span id="titulo"  class="navbar-brand mb-0 h1">SISTEMA DE GERENCIAMENTO DE CONDOMÍNIOS</span>
@@ -90,7 +90,9 @@
 											<li><a href="condominos_list" class="list-link">Condôminos ✓</a></li>
 											<li><a href="usuarios_list" class="list-link">Usuarios ✓</a></li>
 											<li><a href="condominios_list" class="list-link">Condomínios ✓</a></li>
-											<li><a href="moradores_list" class="list-link">Moradores ✓</a></li>											
+											<li><a href="moradores_list" class="list-link">Moradores ✓</a></li>	
+											<li><a href="blocos_list" class="list-link">Blocos ✓</a></li>	
+											<li><a href="unidades_list" class="list-link">Unidades ✓</a></li>								
 											<li><a href="#" class="list-link">Veículos ✖</a></li>
 											<li><a href="#" class="list-link">Bicicletas ✖</a></li>
 											<li><a href="#" class="list-link">Blocos ✖</a></li>

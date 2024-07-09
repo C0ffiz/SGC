@@ -60,6 +60,7 @@
                         <div class="input-top input-bottom">
                             <label for="n_condominio">Condomínio:</label><br>
                             <select id="n_condominio" name="n_condominio" class="form-control-sm" tabindex="10">
+                                <option value="">Condomínio</option>
                                 {% for condominio in condominios %}
                                 <option value="{{ condominio.n_condominio }}">{{ condominio.n_condominio }} - {{ condominio.nome_condominio }}</option>
                                 {% endfor %}
