@@ -8,6 +8,7 @@ from App_SGC.views import CondominiosListViews,CondominiosCreateViews,Condominio
 from App_SGC.views import MoradoresListViews,MoradoresCreateViews,MoradoresUpdateViews,MoradoresDeleteViews
 from App_SGC.views import BlocosListViews,BlocosCreateViews,BlocosUpdateViews,BlocosDeleteViews
 from App_SGC.views import UnidadesListViews,UnidadesCreateViews,UnidadesUpdateViews,UnidadesDeleteViews
+from App_SGC.views import VeiculosListViews,VeiculosCreateViews,VeiculosUpdateViews,VeiculosDeleteViews
 from django.views.generic import ListView
 from django.urls import reverse_lazy
 
@@ -20,7 +21,7 @@ urlpatterns = [
 
 
 #  Caminhos do Login
-    path('',UnidadesListViews.as_view(template_name="unidades/unidades_list.html"), name="unidades_list"),
+    path('',VeiculosListViews.as_view(template_name="veiculos/veiculos_list.html"), name="veiculos_list"),
 
     # path('',views.exibirLogin,name='exibirLogin'), 
     path('login',views.exibirLogin,name='exibirLogin'),
@@ -70,6 +71,14 @@ urlpatterns = [
     path('unidades_create',UnidadesCreateViews.as_view(template_name="unidades/unidades_create.html"), name="unidades_create"),
     path('unidades_update/<str:pk>',UnidadesUpdateViews.as_view(template_name="unidades/unidades_update.html"), name="unidades_update"),
     path("unidades_delete/<str:pk>",UnidadesDeleteViews.as_view(template_name="unidades/unidades_confirm_delete.html"), name="unidades_delete"),
+
+#  Caminhos de Veículos
+    path('veiculos_list',VeiculosListViews.as_view(template_name="veiculos/veiculos_list.html"), name="veiculos_list"),
+    path('veiculos_create',VeiculosCreateViews.as_view(template_name="veiculos/veiculos_create.html"), name="veiculos_create"),
+    path('veiculos_update/<str:pk>',VeiculosUpdateViews.as_view(template_name="veiculos/veiculos_update.html"), name="veiculos_update"),
+    path("veiculos_delete/<str:pk>",VeiculosDeleteViews.as_view(template_name="veiculos/veiculos_confirm_delete.html"), name="veiculos_delete"),
+
+
 
 
 

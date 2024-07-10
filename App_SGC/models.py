@@ -189,6 +189,35 @@ class CustomUnidade(models.Model):
         ordering = ['bloco_id__bloco', 'unidade']
 
 
+# Definição da Tabela Garagens................................................................... 
+class CustomGaragem(models.Model):
+    garagem_id = models.AutoField(primary_key=True)
+    n_garagem = models.CharField(verbose_name="Garagem *", max_length=4, null=False, blank=False)
+    cpf_condomino = models.ForeignKey(
+        'CustomCondomino', 
+        on_delete=models.CASCADE, 
+        verbose_name="CPF Condômino *", 
+        null=False, 
+        blank=False,
+        related_name='veiculo_por_cpf')
+    bloco_id = models.ForeignKey(
+        'CustomBloco', 
+        on_delete=models.CASCADE, 
+        verbose_name="Bloco *", 
+        null=False, 
+        blank=False,
+        related_name='veiculo_por_bloco')
+    n_condominio = models.ForeignKey(
+        'CustomCondominio',  
+        on_delete=models.CASCADE,
+        verbose_name="Número Condomínio *",
+        null=False,
+        blank=False)
+           
+    class Meta:
+        db_table = 'garagem'
+        managed = True
+        ordering = ['bloco_id__bloco', 'n_garagem']
 
 
 

@@ -1,19 +1,16 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login
-from .models import CustomUser, CustomCondominio, CustomCondomino, CustomMorador, CustomBloco, CustomUnidade
+from .models import CustomUser, CustomCondominio, CustomCondomino, CustomMorador, CustomBloco, CustomUnidade, CustomVeiculo
 from django.contrib import messages
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy, reverse
 from django import forms
 from django.http import HttpResponseRedirect
-
 from django.views.generic.edit import CreateView
 from django.contrib import messages
 from django.views import View
 from django.shortcuts import get_object_or_404
-
-
 
 
 
@@ -101,7 +98,7 @@ class UsuariosCreateViews(CreateView):
         if CustomUser.objects.filter(username=username).exists():
             messages.error(self.request, 'Nome de usuário já existe. Escolha outro nome.')
             return self.form_invalid(form)
-
+        
         return super().form_valid(form)
     
     def form_invalid(self, form):
@@ -558,8 +555,7 @@ class UnidadesCreateViews(View):
             bloco_id=CustomBloco.objects.get(bloco_id=bloco_id),
             n_condominio=condominio_instance,
             unidade=unidade
-        )
-        
+        )        
         return HttpResponseRedirect(self.success_url)
 
 
@@ -607,22 +603,165 @@ class UnidadesUpdateViews(View):
         unidade.bloco_id = CustomBloco.objects.get(bloco_id=bloco_id)
         unidade.unidade = unidade_str
         unidade.n_condominio = condominio_instance
-        unidade.save()
-        
-        return HttpResponseRedirect(self.success_url)
-
+        unidade.save()        
+        return HttpResponseRedirect(self.success_url)  
       
-      
-       
-
-
-
-
 
 # Tela Exclusão das Unidades
 class UnidadesDeleteViews(DeleteView):
     model = CustomUnidade
     success_url = reverse_lazy("unidades_list")
-    # template_name = 'App_SGC\templates\Blocos\blocos_confirm_delete.html'  
+     
    
+  #-----------------------Views Veículos.................................................................
+
+# Tela Lista Veículos 
+class VeiculosListViews(ListView):
+    model = CustomVeiculo
+    template_name = 'veiculos/veiculos_list.html'
+    context_object_name = 'veiculo_list'
+
+    
+# Tela Cadastro de Veículos
+class VeiculosCreateViews(View):
+    template_name = 'veiculos/veiculos_create.html'
+    success_url = reverse_lazy("veiculos_list")
+
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name)
+
+    def post(self, request, *args, **kwargs):
+        context = {}
+        form_errors = {}
+
+        cpf_condomino = request.POST.get('cpf_condomino')
+        placa_veiculo = request.POST.get('placa_veiculo')
+        marca_veiculo = request.POST.get('marca_veiculo')
+        modelo_veiculo = request.POST.get('modelo_veiculo')
+        cor_veiculo = request.POST.get('cor_veiculo')
+
+        # Validar CPF do condômino
+        try:
+            condomino_instance = CustomCondomino.objects.get(cpf_condomino=cpf_condomino)
+        except CustomCondomino.DoesNotExist:
+            form_errors['cpf_condomino'] = 'Condômino não cadastrado'
+
+        # Verificar se a placa do veículo foi digitada
+        if not placa_veiculo:
+            form_errors['placa_veiculo'] = 'Digite a placa do veículo'
+        
+        # Verificar se a marca do veículo foi digitada
+        if not marca_veiculo:
+            form_errors['marca_veiculo'] = 'Digite a marca do veículo'
+        
+        # Verificar se o modelo do veículo foi digitado
+        if not modelo_veiculo:
+            form_errors['modelo_veiculo'] = 'Digite o modelo do veículo'
+        
+        # Verificar se a cor do veículo foi digitada
+        if not cor_veiculo:
+            form_errors['cor_veiculo'] = 'Digite a cor do veículo'
+
+        # Verificar se há erros de formulário
+        if form_errors:
+            context['form_errors'] = form_errors
+            return render(request, self.template_name, context)
+
+        # Validar se o veículo já está cadastrado
+        if CustomVeiculo.objects.filter(placa_veiculo=placa_veiculo).exists():
+            form_errors['placa_veiculo'] = 'Veículo já cadastrado'
+            context['form_errors'] = form_errors
+            return render(request, self.template_name, context)
+
+        # Inserir os dados na tabela CustomVeiculo
+        try:
+            veiculo = CustomVeiculo(
+                placa_veiculo=placa_veiculo,
+                marca_veiculo=marca_veiculo,
+                modelo_veiculo=modelo_veiculo,
+                cor_veiculo=cor_veiculo,
+                cpf_condomino=condomino_instance
+            )
+            veiculo.save()
+        except Exception as e:
+            form_errors['general'] = 'Erro ao inserir o veículo'
+            context['form_errors'] = form_errors
+            return render(request, self.template_name, context)
+
+        return redirect(self.success_url)
+
+
+# Tela Alteração de Veículos
+class VeiculosUpdateViews(View):
+    template_name = 'veiculos/veiculos_update.html'
+    success_url = reverse_lazy("veiculos_list")
+
+    def get(self, request, *args, **kwargs):
+        veiculo = get_object_or_404(CustomVeiculo, pk=kwargs['pk'])
+        context = {
+            'veiculo': veiculo
+        }
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        context = {}
+        form_errors = {}
+        veiculo = get_object_or_404(CustomVeiculo, pk=kwargs['pk'])
+
+        cpf_condomino = request.POST.get('cpf_condomino')
+        placa_veiculo = request.POST.get('placa_veiculo')
+        marca_veiculo = request.POST.get('marca_veiculo')
+        modelo_veiculo = request.POST.get('modelo_veiculo')
+        cor_veiculo = request.POST.get('cor_veiculo')
+
+        # Validar CPF do condômino
+        try:
+            condomino_instance = CustomCondomino.objects.get(cpf_condomino=cpf_condomino)
+        except CustomCondomino.DoesNotExist:
+            form_errors['cpf_condomino'] = 'Condômino não cadastrado'
+
+        # Verificar se a placa do veículo foi digitada
+        if not placa_veiculo:
+            form_errors['placa_veiculo'] = 'Digite a placa do veículo'
+        
+        # Verificar se a marca do veículo foi digitada
+        if not marca_veiculo:
+            form_errors['marca_veiculo'] = 'Digite a marca do veículo'
+        
+        # Verificar se o modelo do veículo foi digitado
+        if not modelo_veiculo:
+            form_errors['modelo_veiculo'] = 'Digite o modelo do veículo'
+        
+        # Verificar se a cor do veículo foi digitada
+        if not cor_veiculo:
+            form_errors['cor_veiculo'] = 'Digite a cor do veículo'
+
+        # Verificar se há erros de formulário
+        if form_errors:
+            context['form_errors'] = form_errors
+            context['veiculo'] = veiculo
+            return render(request, self.template_name, context)
+
+        # Atualiza os dados do veículo
+        veiculo.marca_veiculo = marca_veiculo
+        veiculo.modelo_veiculo = modelo_veiculo
+        veiculo.cor_veiculo = cor_veiculo
+        veiculo.cpf_condomino = condomino_instance
+
+        try:
+            veiculo.save()
+        except Exception as e:
+            form_errors['general'] = 'Erro ao atualizar o veículo'
+            context['form_errors'] = form_errors
+            context['veiculo'] = veiculo
+            return render(request, self.template_name, context)
+
+        return redirect(self.success_url)
+    
+
+# Tela Exclusão de Veículo
+class VeiculosDeleteViews(DeleteView):
+    model = CustomVeiculo
+    success_url = reverse_lazy("veiculos_list")
+
 

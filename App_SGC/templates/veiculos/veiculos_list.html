@@ -9,7 +9,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <!-- Folhas de Estilo Locais -->
-    <link rel="stylesheet" href="/static/css/unidades.css">
+    <link rel="stylesheet" href="/static/css/veiculos.css">
     <title>SGC</title>
     <style>
         .container-cols {
@@ -62,40 +62,42 @@
 
     <!-- Corpo da Página -->
     <main class="container">
-        <h1 id="titulo_list">UNIDADES DO CONDOMÍNIO</h1>
+        <h1 id="titulo_list">VEÍCULOS</h1>
 
         <!-- Opções de Pesquisa e Cadastro -->
         <div class="container_1">
             <div class="box">
-                <a href="{% url 'unidades_create' %}" class="btn btn-primary" id="cadastrar">CADASTRAR UNIDADES</a>
+                <a href="{% url 'veiculos_create' %}" class="btn btn-primary" id="cadastrar">CADASTRAR VEÍCULOS</a>
             </div>
 
             <div class="box" id="divBusca">
-                <input type="text" id="txtBusca" placeholder="Unidade" />
+                <input type="text" id="txtBusca" placeholder="Placa" />
                 <button id="btnBusca">BUSCAR</button>
             </div>
         </div>
 
         <!-- Tabela de Unidades -->
-        <table id="unidadesTable" class="table auto-layout">
+        <table id="veiculoTable" class="table auto-layout">
             <thead>
                 <tr>
                     <th scope="col" class="close-th">CPF CONDÔMINO</th>
-                    <th scope="col" class="close-th">CONDÔMINO</th>
-                    <th scope="col" class="close-th">BLOCO</th>
-                    <th scope="col" class="close-th">UNIDADE</th>
+                    <th scope="col" class="close-th">PLACA</th>
+                    <th scope="col" class="close-th">MARCA</th>
+                    <th scope="col" class="close-th">MODELO</th>
+                    <th scope="col" class="close-th">COR</th>
                 </tr>
             </thead>
             <tbody>
-                {% for unid in unidades_list %}
+                {% for veic in veiculo_list %}
                 <tr>
-                    <td>{{ unid.cpf_condomino.cpf_condomino }}</td>
-                    <td>{{ unid.cpf_condomino.nome_condomino }}</td>
-                    <td>{{ unid.bloco_id.bloco }}</td>
-                    <td>{{ unid.unidade }}</td>
+                    <td class="cpf-condomino">{{ veic.cpf_condomino.cpf_condomino }}</td>
+                    <td class="placa-veiculo">{{ veic.placa_veiculo }}</td>
+                    <td>{{ veic.marca_veiculo }}</td>
+                    <td>{{ veic.modelo_veiculo }}</td>
+                    <td>{{ veic.cor_veiculo }}</td>
                     <td style="border: none; width:200px">
-                        <a href="{% url 'unidades_update' pk=unid.pk %}" class="btn btn-primary btn-sm">ALTERAR</a>
-                        <a href="{% url 'unidades_delete' pk=unid.pk %}" class="btn btn-danger btn-sm">EXCLUIR</a>
+                        <a href="{% url 'veiculos_update' pk=veic.pk %}" class="btn btn-primary btn-sm">ALTERAR</a>
+                        <a href="{% url 'veiculos_delete' pk=veic.pk %}" class="btn btn-danger btn-sm">EXCLUIR</a>
                     </td>
                 </tr>
                 {% endfor %}
@@ -109,12 +111,11 @@
         function handleSearch() {
             document.getElementById('txtBusca').addEventListener('input', function () {
                 var searchText = this.value.toLowerCase();
-                var rows = document.querySelectorAll('#unidadesTable tbody tr');
+                var rows = document.querySelectorAll('#veiculoTable tbody tr');
 
                 rows.forEach(function (row) {
-                    var unidade = row.querySelector('td').textContent.toLowerCase();
-                    // Check if bloco contains the search text
-                    if (unidade.includes(searchText)) {
+                    var placa = row.querySelector('.placa-veiculo').textContent.toLowerCase();
+                    if (placa.includes(searchText)) {
                         row.style.display = '';
                     } else {
                         row.style.display = 'none';
@@ -123,9 +124,29 @@
             });
         }
 
+        // Função para formatar o CPF
+        function formatCPF(cpf) {
+            if (cpf.length === 11) {
+                return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+            } else if (cpf.length === 10) {
+                return cpf.replace(/(\d{2})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+            }
+            return cpf;
+        }
+
+        // Função para formatar todos os CPFs na tabela
+        function formatAllCPFs() {
+            var cpfElements = document.querySelectorAll('.cpf-condomino');
+            cpfElements.forEach(function (element) {
+                var cpf = element.textContent.trim();
+                element.textContent = formatCPF(cpf);
+            });
+        }
+
         // Ouvinte de evento para DOMContentLoaded para chamar as funções necessárias
         document.addEventListener('DOMContentLoaded', function () {
             handleSearch();
+            formatAllCPFs();  // Chama a função para formatar os CPFs quando o DOM é carregado
         });
     </script>
 
