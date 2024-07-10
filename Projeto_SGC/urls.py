@@ -8,6 +8,7 @@ from App_SGC.views import CondominiosListViews,CondominiosCreateViews,Condominio
 from App_SGC.views import MoradoresListViews,MoradoresCreateViews,MoradoresUpdateViews,MoradoresDeleteViews
 from App_SGC.views import BlocosListViews,BlocosCreateViews,BlocosUpdateViews,BlocosDeleteViews
 from App_SGC.views import UnidadesListViews,UnidadesCreateViews,UnidadesUpdateViews,UnidadesDeleteViews
+from App_SGC.views import ColaboradoresListViews,ColaboradoresCreateViews,ColaboradoresUpdateViews,ColaboradoresDeleteViews
 from django.views.generic import ListView
 from django.urls import reverse_lazy
 
@@ -55,7 +56,7 @@ urlpatterns = [
     path('moradores_list',MoradoresListViews.as_view(template_name="moradores/moradores_list.html"), name="moradores_list"),
     path('moradores_verify',views.verificar_cpf_condomino,name='verificar_cpf_condomino'),
     path('moradores_create/',MoradoresCreateViews.as_view(template_name="moradores/moradores_create.html"), name="moradores_create"),
-    path('moradores_update/<str:pk>',MoradoresUpdateViews.as_view(template_name="moradores/moradores_update.html"), name="moradores_update"),
+    path('moradores_update/<str:pk>/', MoradoresUpdateViews.as_view(), name="moradores_update"),
     path("moradores_delete/<str:pk>",MoradoresDeleteViews.as_view(template_name="moradores/moradores_confirm_delete.html"), name="moradores_delete"),
     path('verificar_cpf_condomino/', views.verificar_cpf_condomino, name='verificar_cpf_condomino'),
 
@@ -70,6 +71,12 @@ urlpatterns = [
     path('unidades_create',UnidadesCreateViews.as_view(template_name="unidades/unidades_create.html"), name="unidades_create"),
     path('unidades_update/<str:pk>',UnidadesUpdateViews.as_view(template_name="unidades/unidades_update.html"), name="unidades_update"),
     path("unidades_delete/<str:pk>",UnidadesDeleteViews.as_view(template_name="unidades/unidades_confirm_delete.html"), name="unidades_delete"),
+
+#  Caminhos dos Colaboradores
+    path('colaboradores_list',ColaboradoresListViews.as_view(template_name="colaboradores/colaboradores_list.html"), name="colaboradores_list"),
+    path('colaboradores_create',ColaboradoresCreateViews.as_view(template_name="colaboradores/colaboradores_create.html"), name="colaboradores_create"),
+    path('colaboradores_update/<str:pk>',ColaboradoresUpdateViews.as_view(template_name="colaboradores/colaboradores_update.html"), name="colaboradores_update"),
+    path("colaboradores_delete/<str:pk>",ColaboradoresDeleteViews.as_view(template_name="colaboradores/colaboradores_confirm_delete.html"), name="colaboradores_delete"),
 
 
 

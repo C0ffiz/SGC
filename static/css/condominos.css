@@ -92,7 +92,8 @@ th {
 
 #cadastrar {
     width: 250px;
-    height: 32px;
+    min-height: 32px;
+    max-height: 45px;
     display: flex;
     justify-content: center;  /* Centraliza horizontalmente */
     align-items: center;   /* Centraliza verticalmente */

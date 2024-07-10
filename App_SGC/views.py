@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login
-from .models import CustomUser, CustomCondominio, CustomCondomino, CustomMorador, CustomBloco, CustomUnidade
+from .models import CustomUser, CustomCondominio, CustomCondomino, CustomMorador, CustomBloco, CustomUnidade, CustomColaborador
 from django.contrib import messages
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy, reverse
@@ -382,35 +382,20 @@ class MoradoresCreateViews(CreateView):
 # Tela Alteração De Moradores
 class MoradoresUpdateViews(UpdateView):
     model = CustomMorador
-    # context_object_name = 'usuarios_list'
-    # fields = ["username", "password", "cpf_usuario", "nivel", "n_condominio"]
-    # success_url = reverse_lazy("usuarios_list") 
-    # widgets = {
-    #     'n_condominio': forms.Select(attrs={'class': 'form-control'}),
-    # }
-    
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['condominios'] = CustomCondominio.objects.all()
-#         return context
-    
-    # def form_valid(self, form):
-        # Strip mask from CPF
-        # cpf_usuario = form.cleaned_data['cpf_usuario'].replace(".", "").replace("-", "")
-        # form.instance.cpf_usuario = cpf_usuario
-        
-        # Get the selected condominium instance
-        # condominio_instance = form.cleaned_data['n_condominio']
+    template_name = 'moradores/moradores_update.html'
+    fields = ["cpf_condomino", "cpf_morador", "nome_morador", "data_nascimento_morador", "celular_morador", "email_morador", "parentesco_condomino"]
+    success_url = reverse_lazy("moradores_list")
 
-        # Assign the primary key of the selected condominium to the field
-        # form.instance.n_condominio_id = condominio_instance.n_condominio
+    def get_object(self, queryset=None):
+        pk = self.kwargs.get('pk')  # Obtém o valor do parâmetro 'pk' da URL (No futuro será um token para questões de segurança)
+        return get_object_or_404(CustomMorador, pk=pk)
 
-        # Check if the selected condominium number exists
-        # if not CustomCondominio.objects.filter(n_condominio=form.instance.n_condominio_id).exists():
-        #     messages.error(self.request, 'Número de condomínio inválido.')
-        #     return self.form_invalid(form)
-        
-        # return super().form_valid(form)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['cpf_condomino'] = self.request.GET.get('cpf_condomino', '')  # Pass the parameter to the context
+        context['cpf_morador'] = self.request.GET.get('cpf_morador', '')  # Pass the cpf_morador parameter to the context
+        return context
+
     
 
 # Tela Exclusão De Moradores
@@ -611,13 +596,6 @@ class UnidadesUpdateViews(View):
         
         return HttpResponseRedirect(self.success_url)
 
-      
-      
-       
-
-
-
-
 
 # Tela Exclusão das Unidades
 class UnidadesDeleteViews(DeleteView):
@@ -626,3 +604,89 @@ class UnidadesDeleteViews(DeleteView):
     # template_name = 'App_SGC\templates\Blocos\blocos_confirm_delete.html'  
    
 
+#-----------------------Views Condômino.................................................................
+
+# Tela Lista Condominos
+class ColaboradoresListViews(ListView):
+    model = CustomColaborador
+    context_object_name = 'colaboradores_list'
+
+
+# Tela Cadastro de Colaboradores
+class ColaboradoresCreateViews(CreateView):
+    model = CustomColaborador
+    fields = ["cpf_colaborador", "nome_colaborador", "data_nascimento_colaborador", "endereco_colaborador", "telefone_colaborador", "celular_colaborador", "email_colaborador", "nome_contato_colaborador", "celular_contato_colaborador", "n_condominio"]
+    success_url = reverse_lazy("colaboradores_list")
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['condominios'] = CustomCondominio.objects.all()
+        return context
+
+    def form_valid(self, form):
+        # Strip mask from CPF
+        cpf_colaborador = str(form.cleaned_data['cpf_colaborador']).replace(".", "").replace("-", "")
+        form.instance.cpf_colaborador = cpf_colaborador
+
+        # Get the selected condominio instance
+        colaborador_instance = form.cleaned_data['n_condominio']
+
+        # Assign the primary key of the selected condominium to the field
+        form.instance.n_condominio_id = colaborador_instance.n_condominio
+
+        # Check if the selected condominium number exists
+        if not CustomCondominio.objects.filter(n_condominio=form.instance.n_condominio_id).exists():
+            messages.error(self.request, 'Número de condomínio inválido.')
+            return self.form_invalid(form)
+       
+        # Verifica se o condômino já está cadastrado
+        if CustomColaborador.objects.filter(cpf_colaborador=cpf_colaborador).exists():
+            messages.error(self.request, 'Colaborador já cadastrado')
+            return self.form_invalid(form)
+
+        return super().form_valid(form)
+    
+    def form_invalid(self, form):
+        # Customize error message for existing username
+        if 'cpf_colaborador' in form.errors:
+            form.errors['cpf_colaborador'] = ['Colaborador já cadastrado']
+        return super().form_invalid(form)
+    
+
+# Tela Alteração De Condôminos
+class ColaboradoresUpdateViews(UpdateView):
+    model = CustomColaborador
+    context_object_name = 'condominos_list'    
+    fields = ["cpf_colaborador", "nome_colaborador", "data_nascimento_colaborador", "endereco_colaborador", "telefone_colaborador", "celular_colaborador", "email_colaborador", "nome_contato_colaborador", "celular_contato_colaborador", "n_condominio"]
+    success_url = reverse_lazy("colaboradores_list")
+    widgets = {
+        'n_condominio': forms.Select(attrs={'class': 'form-control'}),
+    }
+   
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['condominios'] = CustomCondominio.objects.all()        
+        return context
+    
+    def form_valid(self, form):
+        # Strip mask from CPF
+        cpf_colaborador = str(form.cleaned_data['cpf_colaborador']).replace(".", "").replace("-", "")
+        form.instance.cpf_colaborador = cpf_colaborador
+        
+        # Get the selected condominium instance
+        condominio_instance = form.cleaned_data['n_condominio']
+
+        # Assign the primary key of the selected condominium to the field
+        form.instance.n_condominio_id = condominio_instance.n_condominio
+
+        # Check if the selected condominium number exists
+        if not CustomCondominio.objects.filter(n_condominio=form.instance.n_condominio_id).exists():
+            messages.error(self.request, 'Número de condomínio inválido.')
+            return self.form_invalid(form)
+        
+        return super().form_valid(form)         
+    
+# Tela Exclusão De Condôminos
+class ColaboradoresDeleteViews(DeleteView):
+    model = CustomColaborador
+    success_url = reverse_lazy("colaboradores_list")
