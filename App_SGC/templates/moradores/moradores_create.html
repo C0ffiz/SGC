@@ -62,9 +62,16 @@
                                 <label for="cpf_condomino">CPF Condômino:</label> <br>
                                 <input id="cpf_condomino" name="cpf_condomino" autofocus class="form-control-sm {% if form.cpf_condomino.errors %}field-error{% endif %}" type="text" value="{{ request.GET.cpf_condomino }}" readonly="readonly">
                                 {% if form.cpf_condomino.errors %}
-                                    <div class="text-danger">{{ form.cpf_condomino.errors|join:" " }}</div>
+                                    <div class="text-danger"></div>
                                 {% endif %}
                             </div>
+                        </div>
+                        <div class="input-bottom">
+                            <label for="email_morador">Email Morador:</label> <br>
+                            <input id="email_morador" name="email_morador" class="form-control-sm {% if form.email_morador.errors %}field-error{% endif %}" type="text" tabindex="1">
+                            {% if form.email_morador.errors %}
+                                <div class="text-danger"></div>
+                            {% endif %}
                         </div>
                     </div>
                     <div id="coluna" class="input-col-md-2">
@@ -73,21 +80,21 @@
                                 <label for="cpf_morador">CPF Morador:</label> <br>
                                 <input id="cpf_morador" name="cpf_morador" class="form-control-sm {% if form.cpf_morador.errors %}field-error{% endif %}" type="text" tabindex="1">
                                 {% if form.cpf_morador.errors %}
-                                    <div class="text-danger">{{ form.cpf_morador.errors|join:" " }}</div>
+                                    <div class="text-danger"></div>
                                 {% endif %}
-                            </div>
+                            </div>                
                             <div class="input-bottom">
                                 <label for="nome_morador">Morador:</label> <br>
                                 <input id="nome_morador" name="nome_morador" class="form-control-sm {% if form.nome_morador.errors %}field-error{% endif %}" type="text" maxlength="40" tabindex="2">
                                 {% if form.nome_morador.errors %}
-                                    <div class="text-danger">{{ form.nome_morador.errors|join:" " }}</div>
+                                    <div class="text-danger"></div>
                                 {% endif %}
                             </div>
                             <div class="input-bottom">
                                 <label for="data_nascimento_morador">Nascimento:</label> <br>
                                 <input id="data_nascimento_morador" name="data_nascimento_morador" class="form-control-sm {% if form.data_nascimento_morador.errors %}field-error{% endif %}" type="date" tabindex="3">
                                 {% if form.data_nascimento_morador.errors %}
-                                    <div class="text-danger">{{ form.data_nascimento_morador.errors|join:" " }}</div>
+                                    <div class="text-danger"></div>
                                 {% endif %}
                             </div>
                             <div class="input-bottom">
@@ -99,16 +106,15 @@
                                     <option value="mae">Mãe</option>
                                     <option value="outros">Outros</option>
                                 </select>
-                                <option value="">Parentesco</option>
                                 {% if form.parentesco_condomino.errors %}
-                                    <div class="text-danger">{{ form.parentesco_condomino.errors|join:" " }}</div>
+                                    <div class="text-danger"></div>
                                 {% endif %}
                             </div>
                             <div class="input-bottom">
                                 <label for="celular_morador">Celular:</label><br>
                                 <input id="celular_morador" name="celular_morador" class="form-control-sm {% if form.celular_morador.errors %}field-error{% endif %}" type="text" minlength="11" maxlength="11" tabindex="5">
                                 {% if form.celular_morador.errors %}
-                                    <div class="text-danger">{{ form.celular_morador.errors|join:" " }}</div>
+                                    <div class="text-danger"></div>
                                 {% endif %}
                             </div>
                         </div>
