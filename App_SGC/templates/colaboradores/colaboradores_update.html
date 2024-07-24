@@ -1,41 +1,47 @@
 <!doctype html>
 <html lang="pt-br">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- Folhas de Estilo Externas -->
+    <title>SGC</title>
     <link rel="stylesheet" href="/static/node_modules/@fortawesome/fontawesome-free/css/all.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <!-- Folhas de Estilo Locais -->
-    <link rel="stylesheet" href="/static/css/condominos.css">
-    <title>SGC</title>
+    <link rel="stylesheet" href="/static/css/colaboradores.css">
     <style>
         .container-cols {
             display: flex;
-            gap: 20px;
-            /* Espaçamento entre as colunas */
+            gap: 20px; /* Espaçamento entre as colunas */
         }
-
         .input-col {
-            flex: 1;
-            /* Cada coluna ocupa o mesmo espaço */
+            flex: 1; /* Cada coluna ocupa o mesmo espaço */
             display: flex;
             flex-direction: column;
         }
-
         .input-col .input-row {
-            margin-bottom: 20px;
-            /* Espaçamento entre as linhas */
+            margin-bottom: 20px; /* Espaçamento entre as linhas */
         }
-
-        input[type="text"],
-        input[type="date"],
-        select {
+        .form-control-sm {
+            /* width: 50%;  */
+        }
+        input[type="text"], input[type="tel"], input[type="email"], input[type="date"], select {
             width: 220px;
         }
+        .field-error {
+            border: 2px solid red;
+        }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $('#cpf_colaborador').mask('000.000.000-00');
+            $('#btnsalvar').click(function(event) {
+                var cpf = $('#cpf_colaborador').val().replace(/\D/g, '');
+                $('#cpf_colaborador').val(cpf);
+            });
+        });
+    </script>
 </head>
 
 <body>
@@ -46,87 +52,133 @@
     </nav>
 
     <main class="container">
-        <h1 id="titulo_list">ATUALIZAÇÃO DE COLABORADORES</h1> <br>
+        <h1 id="titulo_list">ALTERAÇÃO DE COLABORADORES</h1> <br>
         <form id="updateForm" method="POST">
             {% csrf_token %}
+            <div>
+                {% if form.errors %}
+                <div class="alert alert-danger error-duplicate" role="alert">
+                    <ul>
+                        {% for field, errors in form.errors.items %}
+                        {% for error in errors %}
+                        <li><strong>{{ field }}:</strong> {{ error }}</li>
+                        {% endfor %}
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+            </div>
+            <div class="container-cols d-flex justify-content-center">
 
-            <!-- Contêiner das Colunas -->
-            <div class="container-cols">
                 <!-- Coluna 1 -->
-                <div id="coluna1" class="input-col">
+
+                <div id="coluna1" class="input-col-md-2">
                     <div class="input-row">
                         <div class="update-form">
                             <label for="cpf_colaborador">CPF:</label><br>
-                            <input id="cpf_colaborador" name="cpf_colaborador" class="form-control-sm" type="text" minlength="11" maxlength="14"
-                                value="{{ colaboradores_list.cpf_colaborador }}" readonly>
+                            <input id="cpf_colaborador" name="cpf_colaborador" class="form-control-sm {% if form.cpf_colaborador.errors %}field-error{% endif %}" type="text" minlength="11" maxlength="11" 
+                            value="{{ colaborador.cpf_colaborador }}" tabindex="1" autofocus>
+                            {% if form.cpf_colaborador.errors %}
+                                <div class="text-danger"></div>
+                            {% endif %}
                         </div>
 
                         <div class="update-form">
-                            <label for="endereco_colaborador">Endereço:</label><br>
-                            <input id="endereco_colaborador" name="endereco_colaborador" class="form-control-sm" type="text" minlength="1" maxlength="2"
-                                value="{{ colaboradores_list.endereco_colaborador }}">
+                            <label for="endereco_colaborador">Endereço Colaborador:</label><br>
+                            <input id="endereco_colaborador" name="endereco_colaborador" class="form-control-sm {% if form.endereco_colaborador.errors %}field-error{% endif %}" type="text" 
+                            value="{{ colaborador.endereco_colaborador }}" maxlength="70" tabindex="4">
+                            {% if form.endereco_colaborador.errors %}
+                                <div class="text-danger"></div>
+                            {% endif %}
                         </div>
 
                         <div class="update-form">
-                            <label for="telefone_colaborador">Telefone:</label><br>
-                            <input id="telefone_colaborador" name="telefone_colaborador" class="form-control-sm" type="text" minlength="10" maxlength="14"
-                                value="{{ colaboradores_list.telefone_colaborador }}">
-                        </div>
-
+                            <label for="email_colaborador">Email Colaborador:</label><br>
+                            <input id="email_colaborador" name="email_colaborador" class="form-control-sm {% if form.email_colaborador.errors %}field-error{% endif %}" type="email" 
+                            value="{{ colaborador.email_colaborador }}" maxlength="40" tabindex="7">
+                            {% if form.email_colaborador.errors %}
+                                <div class="text-danger"></div>
+                            {% endif %}
+                        </div>                        
+                       
                         <div class="update-form">
                             <label for="n_condominio">Condomínio:</label><br>
-                            <select id="n_condominio" name="n_condominio" class="form-control-sm">
+                            <select id="n_condominio" name="n_condominio" class="form-control-sm {% if form.n_condominio.errors %}field-error{% endif %}" tabindex="10"> 
+                                <option value="">Condomínio</option>
                                 {% for condominio in condominios %}
-                                <option value="{{ condominio.n_condominio }}">{{ condominio.n_condominio }} - {{ condominio.nome_condominio }}</option>
+                                <option value="{{ condominio.n_condominio }}" {% if condominio.n_condominio == colaborador.n_condominio.n_condominio %}selected{% endif %}>{{ condominio.n_condominio }} - {{ condominio.nome_condominio }}</option>
                                 {% endfor %}
                             </select>
+                            {% if form.n_condominio.errors %}
+                                <div class="text-danger"></div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
 
-                <!-- Coluna 2 -->
-                <div id="coluna2" class="input-col">
+                <!-- Coluna 2 -->       
+
+                <div id="coluna2" class="input-col-md-2">
                     <div class="input-row">
                         <div class="update-form">
-                            <label for="nome_colaborador">Nome:</label><br>
-                            <input id="nome_colaborador" name="nome_colaborador" class="form-control-sm" type="text" maxlength="40"
-                                value="{{ colaboradores_list.nome_colaborador }}" autofocus>
+                            <label for="nome_colaborador">Nome Colaborador:</label><br>
+                            <input id="nome_colaborador" name="nome_colaborador" class="form-control-sm {% if form.nome_colaborador.errors %}field-error{% endif %}" type="text" 
+                            value="{{ colaborador.nome_colaborador }}" minlength="1" maxlength="40" tabindex="2">
+                            {% if form.nome_colaborador.errors %}
+                                <div class="text-danger"></div>
+                            {% endif %}
                         </div>
 
                         <div class="update-form">
-                            <label for="nome_contato_colaborador">Nome Contato:</label><br>
-                            <input id="nome_contato_colaborador" name="nome_contato_colaborador" class="form-control-sm" type="text" minlength="1" maxlength="4"
-                                value="{{ colaboradores_list.nome_contato_colaborador }}">
+                            <label for="telefone_colaborador">Telefone Colaborador:</label><br>
+                            <input id="telefone_colaborador" name="telefone_colaborador" class="form-control-sm {% if form.telefone_colaborador.errors %}field-error{% endif %}" 
+                            value="{{ colaborador.telefone_colaborador }}" type="tel" maxlength="9" tabindex="5">
+                            {% if form.telefone_colaborador.errors %}
+                                <div class="text-danger"></div>
+                            {% endif %}
                         </div>
 
                         <div class="update-form">
-                            <label for="celular_colaborador">Celular:</label><br>
-                            <input id="celular_colaborador" name="celular_colaborador" class="form-control-sm" type="text" minlength="11" maxlength="15"
-                                value="{{ colaboradores_list.celular_colaborador }}">
-                        </div>
+                            <label for="nome_contato_colaborador">Nome Contato Colaborador:</label><br>
+                            <input id="nome_contato_colaborador" name="nome_contato_colaborador" class="form-control-sm {% if form.nome_contato_colaborador.errors %}field-error{% endif %}" 
+                            value="{{ colaborador.nome_contato_colaborador }}" type="text" minlength="1" maxlength="40" tabindex="8">
+                            {% if form.nome_contato_colaborador.errors %}
+                                <div class="text-danger"></div>
+                            {% endif %}
+                        </div>                         
                     </div>
                 </div>
 
                 <!-- Coluna 3 -->
-                <div id="coluna3" class="input-col">
+
+                <div id="coluna3" class="input-col-md-2">
                     <div class="input-row">
                         <div class="update-form">
-                            <label for="data_nascimento_colaborador">Nascimento:</label><br>
-                            <input id="data_nascimento_colaborador" name="data_nascimento_colaborador" class="form-control-sm" type="date" minlength="10" maxlength="10"
-                                value="{{ colaboradores_list.data_nascimento_colaborador|date:'Y-m-d' }}">
+                            <label for="data_nascimento_colaborador">Data Nascimento Colaborador:</label><br>
+                            <input id="data_nascimento_colaborador" name="data_nascimento_colaborador" class="form-control-sm {% if form.data_nascimento_colaborador.errors %}field-error{% endif %}" 
+                            value="{{ colaborador.data_nascimento_colaborador|date:'Y-m-d' }}" type="date" tabindex="3">
+                            {% if form.data_nascimento_colaborador.errors %}
+                                <div class="text-danger"></div>
+                            {% endif %}
                         </div>
 
                         <div class="update-form">
-                            <label for="data_aquisicao_imovel">Celular Contato Colaborador:</label><br>
-                            <input id="celular_contato_colaborador" name="celular_contato_colaborador" class="form-control-sm" type="date" minlength="10" maxlength="10"
-                                value="{{ colaboradores_list.celular_contato_colaborador }}">
+                            <label for="celular_colaborador">Celular Colaborador:</label><br>
+                            <input id="celular_colaborador" name="celular_colaborador" class="form-control-sm {% if form.celular_colaborador.errors %}field-error{% endif %}" type="tel" 
+                            value="{{ colaborador.celular_colaborador }}" minlength="9" maxlength="11" tabindex="6">
+                            {% if form.celular_colaborador.errors %}
+                                <div class="text-danger"></div>
+                            {% endif %}
                         </div>
-
+                        
                         <div class="update-form">
-                            <label for="email_colaborador">E-mail:</label><br>
-                            <input id="email_colaborador" name="email_colaborador" class="form-control-sm" type="text" minlength="4" maxlength="40"
-                                value="{{ colaboradores_list.email_colaborador }}">
-                        </div>
+                            <label for="celular_contato_colaborador">Celular Contato Colaborador:</label><br>
+                            <input id="celular_contato_colaborador" name="celular_contato_colaborador" class="form-control-sm {% if form.celular_contato_colaborador.errors %}field-error{% endif %}" type="tel" 
+                            value="{{ colaborador.celular_contato_colaborador }}" minlength="9" maxlength="11" tabindex="9">
+                            {% if form.celular_contato_colaborador.errors %}
+                                <div class="text-danger"></div>
+                            {% endif %}
+                        </div>                       
                     </div>
                 </div>
             </div>
@@ -134,85 +186,6 @@
             <button id="btnsalvar" type="submit" value="Update">SALVAR</button>
         </form>
     </main>
-
-    <script>
-        function validaCPF(cpf) {
-            cpf = cpf.replace(/\D+/g, '');
-            if (cpf.length !== 11) return false;
-
-            let soma = 0;
-            let resto;
-            if (/^(\d)\1{10}$/.test(cpf)) return false;
-
-            for (let i = 1; i <= 9; i++) soma += parseInt(cpf.substring(i - 1, i)) * (11 - i);
-            resto = (soma * 10) % 11;
-            if ((resto === 10) || (resto === 11)) resto = 0;
-            if (resto !== parseInt(cpf.substring(9, 10))) return false;
-
-            soma = 0;
-            for (let i = 1; i <= 10; i++) soma += parseInt(cpf.substring(i - 1, i)) * (12 - i);
-            resto = (soma * 10) % 11;
-            if ((resto === 10) || (resto === 11)) resto = 0;
-            if (resto !== parseInt(cpf.substring(10, 11))) return false;
-
-            return true;
-        }
-
-        function mascaraCPF(i) {
-            var v = i.value.replace(/\D/g, '');
-
-            if (v.length <= 8) {
-                v = v.replace(/^(\d{2})(\d{3})(\d{3})(\d{0,2}).*/, "$1.$2.$3-$4");
-            } else {
-                v = v.replace(/^(\d{3})(\d{3})(\d{3})(\d{0,2}).*/, "$1.$2.$3-$4");
-            }
-
-            return v;
-        }
-
-        function mascaraCelular(i) {
-            var v = i.value.replace(/\D/g, '');
-            v = v.replace(/^(\d{2})(\d{5})(\d{4}).*/, "($1) $2-$3");
-            return v;
-        }
-
-        function removeMascara(valor) {
-            return valor.replace(/\D/g, '');
-        }
-
-        document.addEventListener('DOMContentLoaded', function () {
-            var cpfInput = document.getElementById('cpf_colaborador');
-            var celularInput = document.getElementById('celular_colaborador');
-
-            cpfInput.value = mascaraCPF({ value: cpfInput.value });
-            celularInput.value = mascaraCelular({ value: celularInput.value });
-
-            cpfInput.addEventListener('input', function (e) {
-                e.target.value = mascaraCPF(e.target);
-            });
-
-            celularInput.addEventListener('input', function (e) {
-                e.target.value = mascaraCelular(e.target);
-            });
-
-            document.getElementById('updateForm').addEventListener('submit', function (e) {
-                cpfInput.value = removeMascara(cpfInput.value);
-                celularInput.value = removeMascara(celularInput.value);
-            });
-
-            document.getElementById('btnsalvar').addEventListener('click', function (e) {
-                var cpf = cpfInput.value;
-                if (!validaCPF(cpf)) {
-                    e.preventDefault();
-                    alert('CPF inválido. Verifique o número digitado.');
-                    cpfInput.focus();
-                }
-            });
-        });
-    </script>
-
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-KsvD5xP8ZL1P1QZ6QlyH7xIomL32p5lZpnFZcCvL6gGq0PpN9+MT+XqRaKNx7g1+" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGcbhGeqd4ZDKi5qF2n10KDso4Ud+I69FAd6GlFxP3cOtlWl9BO1ZMX/y3C" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-
 </html>

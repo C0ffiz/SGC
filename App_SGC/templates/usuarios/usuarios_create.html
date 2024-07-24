@@ -68,14 +68,9 @@
                 </div>
 
                 <div class="input-bottom">
-                    <label for="nivel">Nível:</label> <br>
-                    <input id="nivel" name="nivel" class="form-control-sm" type="number" minlength="2" maxlength="2" tabindex="4" >
-                    <br>
-                </div>
-
-                <div class="input-bottom">
                     <label for="n_condominio">Condomínio:</label> <br>
-                    <select id="n_condominio" name="n_condominio" class="form-control-sm" tabindex="5" >
+                    <select id="n_condominio" name="n_condominio" class="form-control-sm" tabindex="5">
+                        <option value="">Condomínio</option>
                         {% for condominio in condominios %}
                         <option value="{{ condominio.n_condominio }}">{{ condominio.n_condominio}} - {{ condominio.nome_condominio }}</option>
                         {% endfor %}

@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,7 +9,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <!-- Folhas de Estilo Locais -->
-    <link rel="stylesheet" href="/static/css/garagens.css">
+    <link rel="stylesheet" href="/static/css/ocorrencias.css">
     <title>SGC</title>
     <style>
         .container-cols {
@@ -48,21 +49,9 @@
             margin-right: 20px; /* Adiciona margem à direita para separar as divs horizontalmente */
             margin-bottom: 20px; /* Adiciona margem inferior para separar as divs verticalmente */
         }
-        .link-arrow {
-            display: inline-flex;
-            align-items: center;
-            cursor: pointer;
-        }
-        .link-arrow.down .sort-icon:after {
-            content: '▼';
-            margin-left: 5px;
-        }
-        .link-arrow.up .sort-icon:after {
-            content: '▲';
-            margin-left: 5px;
-        }
     </style>
 </head>
+
 <body>
     <!-- Barra de Navegação -->
     <nav class="navbar bg-dark mb-30" data-bs-theme="dark">
@@ -73,42 +62,46 @@
 
     <!-- Corpo da Página -->
     <main class="container">
-        <h1 id="titulo_list">GARAGENS</h1>
+        <h1 id="titulo_list">OCORRÊNCIAS</h1>
 
         <!-- Opções de Pesquisa e Cadastro -->
         <div class="container_1">
             <div class="box">
-                <a href="{% url 'garagens_create' %}" class="btn btn-primary" id="cadastrar">CADASTRAR GARAGENS</a>
+                <a href="{% url 'ocorrencias_create' %}" class="btn btn-primary" id="cadastrar">CADASTRAR OCORRÊNCIAS</a>
             </div>
 
             <div class="box" id="divBusca">
-                <input type="text" id="txtBusca" placeholder="Nº Garagem" />
+                <input type="text" id="txtBusca" placeholder="CPF Condômino" />
                 <button id="btnBusca">BUSCAR</button>
             </div>
         </div>
 
         <!-- Tabela de Unidades -->
-        <table id="garagensTable" class="table auto-layout">
+        <table id="veiculoTable" class="table auto-layout">
             <thead>
                 <tr>
-                    <th scope="col" class="close-th">CPF CONDÔMINO</th> 
-                    <th scope="col" class="close-th">BLOCO</th> 
-                    <th scope="col" class="close-th">Nº GARAGEM</th>                    
-                    <th scope="col" class="close-th">CONDOMÍNIO</th>
+                    <th scope="col" class="close-th">CPF CONDÔMINO</th>
+                    <th scope="col" class="close-th">DATA OCORRÊNCIA</th>
+                    <th scope="col" class="close-th">HORA OCORRÊNCIA</th>
+                    <th scope="col" class="close-th">DESCRIÇÃO</th>
+                    <th scope="col" class="close-th">DOCUMENTO</th>
+                    <th scope="col" class="close-th">Nº CONDOMÍNIO</th>
                 </tr>
             </thead>
             <tbody>
-                {% for gara in garagens_list %}
-                <tr>
-                    <td>{{ gara.cpf_condomino.cpf_condomino }}</td>
-                    <td>{{ gara.bloco_id.bloco }}</td>
-                    <td>{{ gara.n_garagem }}</td>
-                    <td>{{ gara.n_condominio.n_condominio }}</td>
-                    <td style="border: none; width:200px">
-                        <a href="{% url 'garagens_update' pk=gara.pk %}" class="btn btn-primary btn-sm">ALTERAR</a>
-                        <a href="{% url 'garagens_delete' pk=gara.pk %}" class="btn btn-danger btn-sm">EXCLUIR</a>
-                    </td>
-                </tr>
+                {% for ocor in ocorrencias_list %}
+                    <tr>
+                        <td class="cpf-condomino">{{ ocor.cpf_condomino.cpf_condomino }}</td>
+                        <td>{{ ocor.data_ocorrencia }}</td>
+                        <td>{{ ocor.hora_ocorrencia }}</td>
+                        <td>{{ ocor.dsc_ocorrencia }}</td>
+                        <td>{{ ocor.documento_ocorrencia }}</td>
+                        <td>{{ ocor.n_condominio.n_condominio }}</td>
+                        <td style="border: none; width:200px">
+                            <a href="{% url 'ocorrencias_update' pk=ocor.pk %}" class="btn btn-primary btn-sm">ALTERAR</a>
+                            <a href="{% url 'ocorrencias_delete' pk=ocor.pk %}" class="btn btn-danger btn-sm">EXCLUIR</a>
+                        </td>
+                    </tr>
                 {% endfor %}
             </tbody>
         </table>
@@ -120,12 +113,11 @@
         function handleSearch() {
             document.getElementById('txtBusca').addEventListener('input', function () {
                 var searchText = this.value.toLowerCase();
-                var rows = document.querySelectorAll('#garagensTable tbody tr');
+                var rows = document.querySelectorAll('#ocorrenciaTable tbody tr');
 
                 rows.forEach(function (row) {
-                    var garagem = row.querySelector('td').textContent.toLowerCase();
-                    // Check if bloco contains the search text
-                    if (garagem.includes(searchText)) {
+                    var cpf_condomino = row.querySelector('.cpf-condomino').textContent.toLowerCase();
+                    if (cpf_condomino.includes(searchText)) {
                         row.style.display = '';
                     } else {
                         row.style.display = 'none';
@@ -134,13 +126,34 @@
             });
         }
 
+        // Função para formatar o CPF
+        function formatCPF(cpf) {
+            if (cpf.length === 11) {
+                return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+            } else if (cpf.length === 10) {
+                return cpf.replace(/(\d{2})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+            }
+            return cpf;
+        }
+
+        // Função para formatar todos os CPFs na tabela
+        function formatAllCPFs() {
+            var cpfElements = document.querySelectorAll('.cpf-condomino');
+            cpfElements.forEach(function (element) {
+                var cpf = element.textContent.trim();
+                element.textContent = formatCPF(cpf);
+            });
+        }
+
         // Ouvinte de evento para DOMContentLoaded para chamar as funções necessárias
         document.addEventListener('DOMContentLoaded', function () {
             handleSearch();
+            formatAllCPFs();  // Chama a função para formatar os CPFs quando o DOM é carregado
         });
     </script>
 
     <!-- Bootstrap JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

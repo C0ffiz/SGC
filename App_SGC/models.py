@@ -10,7 +10,6 @@ class CustomUser(AbstractUser):
     username = models.CharField(primary_key=True, max_length=30, null=False, blank=False)
     password = models.CharField(max_length=128, null=False, blank=False)
     cpf_usuario = models.CharField(max_length=14, validators=[MinLengthValidator(11), MaxLengthValidator(14)], null=False, blank=False)
-    nivel = models.IntegerField(null=False, blank=False, default=0)
     n_condominio = models.ForeignKey(
         'CustomCondominio',  
         on_delete=models.CASCADE,
@@ -38,9 +37,7 @@ class CustomCondominio(models.Model):
 class CustomCondomino(models.Model):
     cpf_condomino = models.CharField(verbose_name="CPF Condômino *", max_length=14, primary_key=True, null=False, blank=False) 
     nome_condomino = models.CharField(verbose_name="Nome Condômino *",max_length=40, null=False, blank=False)
-    data_nascimento_condomino = models.DateField(verbose_name="Data Nascimento *", null=False, blank=False, default='0000-00-00')
-    bloco = models.CharField(verbose_name="Bloco *",max_length=2, null=False, blank=False)
-    apartamento = models.CharField(verbose_name="Apartamento *",max_length=4, null=False, blank=False)
+    data_nascimento_condomino = models.DateField(verbose_name="Data Nascimento *", null=False, blank=False, default='0000-00-00')    
     telefone_condomino = models.CharField(verbose_name="Telefone",max_length=10, null=True, blank=True, default='-')
     celular_condomino = models.CharField(verbose_name="Celular",max_length=11, null=True, blank=True)
     email_condomino = models.CharField(verbose_name="E-mail",max_length=40, null=True, blank=True, default='-')
@@ -220,23 +217,77 @@ class CustomGaragem(models.Model):
         ordering = ['bloco_id__bloco', 'n_garagem']
 
 
+# Definição da Tabela Mudanças................................................................... 
+class CustomMudanca(models.Model):
+    mudanca_id = models.AutoField(primary_key=True)
+    data_mudanca = models.DateField(verbose_name="Data mudança *", null=False, blank=False)
+    hora_mudanca = models.TimeField(verbose_name="Hora mudança *", null=False, blank=False)
+    transportadora = models.CharField(verbose_name="Transportadora *", max_length=40, null=True, blank=True)
+    placa_veiculo_transportadora = models.CharField(verbose_name="Placa Veículo *", max_length=7, null=True, blank=True)
+    cpf_condomino = models.ForeignKey(
+        'CustomCondomino', 
+        on_delete=models.CASCADE, 
+        verbose_name="CPF Condômino *", 
+        null=False, 
+        blank=False,
+        related_name='mudanca_por_cpf')
+    bloco_id = models.ForeignKey(
+        'CustomBloco', 
+        on_delete=models.CASCADE, 
+        verbose_name="Bloco *", 
+        null=False, 
+        blank=False,
+        related_name='mudanca_por_bloco')
+    unidade_id = models.ForeignKey(
+        'CustomUnidade', 
+        on_delete=models.CASCADE, 
+        verbose_name="Mudança *", 
+        null=False, 
+        blank=False,
+        related_name='mudanca_por_unidade')
+    n_condominio = models.ForeignKey(
+        'CustomCondominio',  # Foreign key to CustomCondominio
+        on_delete=models.CASCADE,
+        verbose_name="Número Condominio *",
+        null=False,
+        blank=False)
+               
+    class Meta:
+        db_table = 'mudanca'
+        managed = True
+        ordering = ['bloco_id__bloco', 'data_mudanca']
 
 
-        # Definição da Tabela Nivel de acesso ao sistema
-# class CustomNivel(models.Model):
-#     nivel = models.IntegerField(verbose_name="Nível usuário *", primary_key=True, null=False, blank=False) 
-#     n_tela = models.ForeignKey('CustomTela', verbose_name="Número tela *", on_delete=models.CASCADE)  # Adicione 'to' e 'on_delete'
+# Definição da Tabela Ocorrências................................................................... 
+class CustomOcorrencia(models.Model):
+    ocorrencia_id = models.AutoField(primary_key=True)
+    data_ocorrencia = models.DateField(verbose_name="Data mudança *", null=False, blank=False)
+    hora_ocorrencia = models.TimeField(verbose_name="Hora mudança *", null=False, blank=False)
+    dsc_ocorrencia = models.CharField(verbose_name="Transportadora *", max_length=60, null=True, blank=True)
+    documento_ocorrencia = models.FileField(upload_to='documentos_ocorrencias/', null=False, blank=False)
+    cpf_condomino = models.ForeignKey(
+        'CustomCondomino', 
+        on_delete=models.CASCADE, 
+        verbose_name="CPF Condômino *", 
+        null=False, 
+        blank=False,
+        related_name='ocorrencia_por_cpf')
+  
+    n_condominio = models.ForeignKey(
+        'CustomCondominio',  # Foreign key to CustomCondominio
+        on_delete=models.CASCADE,
+        verbose_name="Número Condominio *",
+        null=False,
+        blank=False)
+               
+    class Meta:
+        db_table = 'ocorrencia'
+        managed = True
+        ordering = ['data_ocorrencia', 'hora_ocorrencia']
 
-#     class Meta:
-#         db_table = 'nivel'
-#         managed = True
 
-    
+# Definição da Tabela Ocorrências...................................................................
 
-#  7 Definição da Tabela de Telas do sistema
-# class CustomTela(models.Model):
-#     n_tela = models.IntegerField(verbose_name="Nº da tela *", primary_key=True) 
-#     nome_tela = models.CharField(verbose_name="Nome da tela *",max_length=40, null=False, blank=False)
-#     class Meta:
-#         db_table='tela'
-#         managed = True
+
+
+

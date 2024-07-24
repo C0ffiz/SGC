@@ -49,15 +49,7 @@
                             <span class="sorting-label"></span>
                         </a>
                     </th>
-                    <th scope="col">NASCIMENTO</th>
-                    <th scope="col">
-                        <a href="#" class="sort-header link-arrow down" data-sort="bloco">
-                            BLOCO
-                            <span class="sort-icon"></span>
-                            <span class="sorting-label"></span>
-                        </a>
-                    </th>
-                    <th scope="col">APT</th>
+                    <th scope="col">NASCIMENTO</th>                  
                     <th scope="col">TELEFONE</th>
                     <th scope="col">CELULAR</th>
                     <th scope="col">EMAIL</th>
@@ -71,26 +63,25 @@
                     <th scope="col">CONDOMÍNIO</th>
                 </tr>
             </thead>
+            
             <tbody>
                 {% for cond in condominos_list %}
-                <tr>
-                    <td>{{ cond.cpf_condomino }}</td>
-                    <td>{{ cond.nome_condomino }}</td>
-                    <td>{{ cond.data_nascimento_condomino|date:'Y-m-d' }}</td>
-                    <td>{{ cond.bloco }}</td>
-                    <td>{{ cond.apartamento }}</td>
-                    <td class="celular">{{ cond.telefone_condomino }}</td>
-                    <td class="celular">{{ cond.celular_condomino }}</td>
-                    <td>{{ cond.email_condomino }}</td>
-                    <td>{{ cond.data_aquisicao_imovel|date:'Y-m-d' }}</td>
-                    <td>{{ cond.n_condominio.n_condominio }}</td>
-                    <td>
-                        <div class="btn-group">
-                            <a href="{% url 'condominos_update' pk=cond.pk %}" class="btn btn-primary btn-sm">ALTERAR</a>
-                            <a href="{% url 'condominos_delete' pk=cond.pk %}" class="btn btn-danger btn-sm">EXCLUIR</a>
-                        </div>
-                    </td>
-                </tr>
+                    <tr>
+                        <td>{{ cond.cpf_condomino }}</td>
+                        <td>{{ cond.nome_condomino }}</td>
+                        <td>{{ cond.data_nascimento_condomino|date:'d/m/Y' }}</td>
+                        <td class="telefone">{{ cond.telefone_condomino }}</td>
+                        <td class="celular">{{ cond.celular_condomino }}</td>
+                        <td>{{ cond.email_condomino }}</td>
+                        <td>{{ cond.data_aquisicao_imovel|date:'d/m/Y' }}</td>
+                        <td>{{ cond.n_condominio.n_condominio }}</td>
+                        <td>
+                            <div class="btn-group">
+                                <a href="{% url 'condominos_update' pk=cond.pk %}" class="btn btn-primary btn-sm">ALTERAR</a>
+                                <a href="{% url 'condominos_delete' pk=cond.pk %}" class="btn btn-danger btn-sm">EXCLUIR</a>
+                            </div>
+                        </td>
+                    </tr>
                 {% endfor %}
             </tbody>
         </table>
@@ -110,6 +101,34 @@
                 }
 
                 element.textContent = cpf;
+            });
+        }
+
+        // Função para formatar número de telefone no modelo (xx) xxxx-xxxx
+        function formatarTelefone() {
+            var telefones = document.querySelectorAll('#condominosTable tbody .telefone');
+            telefones.forEach(function (element) {
+                var telefone = element.textContent.trim().replace(/\D/g, '');
+
+                if (telefone.length === 10) {
+                    telefone = telefone.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3');
+                }
+
+                element.textContent = telefone;
+            });
+        }
+
+        // Função para formatar número de celular no modelo (xx) xxxxx-xxxx
+        function formatarCelular() {
+            var celulares = document.querySelectorAll('#condominosTable tbody .celular');
+            celulares.forEach(function (element) {
+                var celular = element.textContent.trim().replace(/\D/g, '');
+
+                if (celular.length === 11) {
+                    celular = celular.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+                }
+
+                element.textContent = celular;
             });
         }
 
@@ -177,6 +196,8 @@
             handleSort();
             handleSearch();
             formatCPF();
+            formatarTelefone(); // Chama a função para formatar telefone
+            formatarCelular(); // Chama a função para formatar celular
         });
     </script>
 

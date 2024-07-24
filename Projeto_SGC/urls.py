@@ -9,8 +9,13 @@ from App_SGC.views import MoradoresListViews,MoradoresCreateViews,MoradoresUpdat
 from App_SGC.views import BlocosListViews,BlocosCreateViews,BlocosUpdateViews,BlocosDeleteViews
 from App_SGC.views import UnidadesListViews,UnidadesCreateViews,UnidadesUpdateViews,UnidadesDeleteViews
 from App_SGC.views import VeiculosListViews,VeiculosCreateViews,VeiculosUpdateViews,VeiculosDeleteViews
+from App_SGC.views import ColaboradoresListViews,ColaboradoresCreateViews,ColaboradoresUpdateViews,ColaboradoresDeleteViews
+from App_SGC.views import GaragensListViews,GaragensCreateViews,GaragensUpdateViews,GaragensDeleteViews
+from App_SGC.views import MudancasListViews,MudancasCreateViews,MudancasUpdateViews,MudancasDeleteViews
+from App_SGC.views import OcorrenciasListViews,OcorrenciasCreateViews,OcorrenciasUpdateViews,OcorrenciasDeleteViews
 from django.views.generic import ListView
 from django.urls import reverse_lazy
+
 
 
 urlpatterns = [
@@ -20,10 +25,8 @@ urlpatterns = [
 
 
 
-#  Caminhos do Login
-    path('',VeiculosListViews.as_view(template_name="veiculos/veiculos_list.html"), name="veiculos_list"),
-
-    # path('',views.exibirLogin,name='exibirLogin'), 
+#  Caminhos do Login    
+    path('',views.exibirLogin,name='exibirLogin'), 
     path('login',views.exibirLogin,name='exibirLogin'),
     path('signin',views.verificarLogin,name='verificarLogin'),
     
@@ -56,7 +59,7 @@ urlpatterns = [
     path('moradores_list',MoradoresListViews.as_view(template_name="moradores/moradores_list.html"), name="moradores_list"),
     path('moradores_verify',views.verificar_cpf_condomino,name='verificar_cpf_condomino'),
     path('moradores_create/',MoradoresCreateViews.as_view(template_name="moradores/moradores_create.html"), name="moradores_create"),
-    path('moradores_update/<str:pk>',MoradoresUpdateViews.as_view(template_name="moradores/moradores_update.html"), name="moradores_update"),
+    path('moradores_update/<str:pk>/', MoradoresUpdateViews.as_view(), name="moradores_update"),
     path("moradores_delete/<str:pk>",MoradoresDeleteViews.as_view(template_name="moradores/moradores_confirm_delete.html"), name="moradores_delete"),
     path('verificar_cpf_condomino/', views.verificar_cpf_condomino, name='verificar_cpf_condomino'),
 
@@ -79,8 +82,40 @@ urlpatterns = [
     path("veiculos_delete/<str:pk>",VeiculosDeleteViews.as_view(template_name="veiculos/veiculos_confirm_delete.html"), name="veiculos_delete"),
 
 
+#  Caminhos dos Colaboradores
+    path('colaboradores_list',ColaboradoresListViews.as_view(template_name="colaboradores/colaboradores_list.html"), name="colaboradores_list"),
+    path('colaboradores_create',ColaboradoresCreateViews.as_view(template_name="colaboradores/colaboradores_create.html"), name="colaboradores_create"),
+    path('colaboradores_update/<str:pk>',ColaboradoresUpdateViews.as_view(template_name="colaboradores/colaboradores_update.html"), name="colaboradores_update"),
+    path("colaboradores_delete/<str:pk>",ColaboradoresDeleteViews.as_view(template_name="colaboradores/colaboradores_confirm_delete.html"), name="colaboradores_delete"),
+
+
+#  Caminhos das Garagens
+    path('garagens_list',GaragensListViews.as_view(template_name="garagens/garagens_list.html"), name="garagens_list"),
+    path('garagens_create',GaragensCreateViews.as_view(template_name="garagens/garagens_create.html"), name="garagens_create"),
+    path('garagens_update/<str:pk>',GaragensUpdateViews.as_view(template_name="garagens/garagens_update.html"), name="garagens_update"),
+    path("garagens_delete/<str:pk>",GaragensDeleteViews.as_view(template_name="garagens/garagens_confirm_delete.html"), name="garagens_delete"),
+
+
+#  Caminhos das Mudanças
+    path('mudancas_list', MudancasListViews.as_view(template_name="mudancas/mudancas_list.html"), name="mudancas_list"),
+    path('mudancas_create', MudancasCreateViews.as_view(template_name="mudancas/mudancas_create.html"), name="mudancas_create"),
+    path('mudancas_update/<str:pk>', MudancasUpdateViews.as_view(template_name="mudancas/mudancas_update.html"), name="mudancas_update"),
+    path('mudancas_delete/<str:pk>', MudancasDeleteViews.as_view(template_name="mudancas/mudancas_confirm_delete.html"), name="mudancas_delete"),
+
+
+#  Caminhos das Ocorrências
+    path('ocorrencias_list', OcorrenciasListViews.as_view(template_name="ocorrencias/ocorrencias_list.html"), name="ocorrencias_list"),
+    path('ocorrencias_create', OcorrenciasCreateViews.as_view(template_name="ocorrencias/ocorrencias_create.html"), name="ocorrencias_create"),
+    path('ocorrencias_update/<int:pk>', OcorrenciasUpdateViews.as_view(template_name="ocorrencias/ocorrencias_update.html"), name="ocorrencias_update"),
+    path('ocorrencias_delete/<int:pk>', OcorrenciasDeleteViews.as_view(template_name="ocorrencias/ocorrencias_confirm_delete.html"), name="ocorrencias_delete"),
+
 
 
 
 ]
+
+
+
+
+
 

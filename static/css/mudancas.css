@@ -13,6 +13,7 @@ body {
     text-wrap: nowrap;
 }
 
+
 #titulo {
     width: 100%;
     align-items: center;
@@ -63,6 +64,7 @@ a:hover{
     align-items: center;
     align-content: center;
 }
+
 
 th {
     font-weight: bold;
@@ -155,13 +157,14 @@ td {
 
 #btnsalvar {
     border: none;
+    float: center;
     height: 32px;
-    border-radius: 5px;
+    border-radius: 5px 5px 5px 5px;
     width: 140px;
     font-weight: bold;
     background: #0d6efd;
     color: #fbf5f5;
-    margin-top: 5px; /* Ajusta a margem superior para ficar mais próxima do campo anterior */
+    
 }
 
 .sort-header {
@@ -217,14 +220,6 @@ td {
     border: 0;
     list-style-position: inside;
     padding: 0;
-}
-
-/* Reduza a margem inferior dos elementos acima do botão */
-.input-bottom {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 5px;
 }
 
 

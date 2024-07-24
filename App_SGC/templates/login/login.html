@@ -16,7 +16,7 @@
             </nav>
 
             <div class="container">
-                <img id="imagem" src="https://grandaladvocacia.com.br/wp-content/uploads/2023/07/site.jpg" alt="nao"> <br><br><br>        
+                <img id="imagem" src="https://grandaladvocacia.com.br/wp-content/uploads/2023/07/site.jpg" alt="nao"> <br><br>        
                 <div class="painel">
                                        
                     <form action="/signin" method="post">
@@ -24,9 +24,9 @@
                         
                         <div class="message">
                             {% for message in messages %}
-                             <div class="alert alert-custom" style="padding: 0;">
-                                {{message}}
-                              </div>
+                                <div class="alert alert-custom" style="padding: 0;">
+                                    {{message}}
+                                </div>
                             {% endfor %}
                         </div>                        
                         
@@ -41,11 +41,6 @@
                         </div>                            
 
                         <button class="form-control-sm input-top" type="submit"> LOGIN</button>
-
-                        <!-- <div id="sign-up" style="height: 70px;">
-                            <span>Não tem uma conta?</span>
-                            <a href=""><span class="spaceitem">Cadastre-se</span></a>
-                        </div> -->
                     </form>
                 </div>
             </div>
