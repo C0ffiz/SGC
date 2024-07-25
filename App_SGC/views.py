@@ -1071,16 +1071,16 @@ class OcorrenciasListViews(ListView):
 class OcorrenciasCreateViews(View):
     template_name = 'ocorrencias/ocorrencias_create.html'
     success_url = reverse_lazy("ocorrencias_list")
-
+    print("oi")
     def get_context_data(self, **kwargs):
         context = {}   
         context['condominios'] = CustomCondominio.objects.all()
         return context
-
+    print("oi2")
     def get(self, request, *args, **kwargs):
         context = self.get_context_data()
         return render(request, self.template_name, context)
-
+    print("oi3")
     def post(self, request, *args, **kwargs):
         cpf_condomino = request.POST.get('cpf_condomino')
         data_ocorrencia = request.POST.get('data_ocorrencia')
@@ -1090,12 +1090,17 @@ class OcorrenciasCreateViews(View):
         n_condominio_id = request.POST.get('n_condominio')
 
         context = self.get_context_data()
-
+        print("oi4");
+        print(cpf_condomino);
+        print(documento_ocorrencia);
+        print(documento_ocorrencia.name);
         # Obter a instância do condômino associada ao ID do condômino
         try:
             condomino_instance = CustomCondomino.objects.get(cpf_condomino=cpf_condomino)
+            
         except CustomCondomino.DoesNotExist:
-            context['form_errors'] = {'cpf_condomino': 'CPF não cadastrado'}
+            print(condomino_instance);
+            context['form_errors'] = {'cpf_condomino': 'test não cadastrado'}
             return render(request, self.template_name, context)
 
         # Obter a instância do condomínio associada ao ID do condomínio

@@ -222,5 +222,26 @@ td {
     padding: 0;
 }
 
+.input-row{     
+    align-items: center;
+    
+}
+
+.file-hover-color:hover {
+    background-color: #dde0e3;
+    cursor: pointer;
+}
+
+.custom-file-button{
+    width: 220px;
+}
+
+.review-image-label{
+    
+    display: block; /* Make the text inside label behave like a block element */
+    width: 100%; /* Allow the text to take full width inside label */
+    word-wrap: break-word; /* Wrap words that exceed the width */
 
 
+
+}

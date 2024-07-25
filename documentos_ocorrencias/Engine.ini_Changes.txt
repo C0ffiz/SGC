@@ -1,0 +1,22 @@
+Do NOT include the words surrounded by hashtags.
+
+
+#HUD DECREASER#
+
+[/Script/Engine.UserInterfaceSettings]
+ApplicationScale=0.8
+
+
+
+#DISABLES MOUSE ACCELERATION#
+
+[/Script/Engine.InputSettings]
+bEnableMouseSmoothing=False
+bDisableMouseAcceleration=True
+
+
+
+#DISABLES ANTI-ALIASING#
+
+[/script/engine.streamingsettings]
+r.DefaultFeature.AntiAliasing=0
