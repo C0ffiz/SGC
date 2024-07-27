@@ -13,6 +13,7 @@ from App_SGC.views import ColaboradoresListViews,ColaboradoresCreateViews,Colabo
 from App_SGC.views import GaragensListViews,GaragensCreateViews,GaragensUpdateViews,GaragensDeleteViews
 from App_SGC.views import MudancasListViews,MudancasCreateViews,MudancasUpdateViews,MudancasDeleteViews
 from App_SGC.views import OcorrenciasListViews,OcorrenciasCreateViews,OcorrenciasUpdateViews,OcorrenciasDeleteViews
+from App_SGC.views import EstruturaPcListViews,EstruturaPcCreateViews,EstruturaPcUpdateViews,EstruturaPcDeleteViews
 from django.views.generic import ListView
 from django.urls import reverse_lazy
 
@@ -108,6 +109,12 @@ urlpatterns = [
     path('ocorrencias_create', OcorrenciasCreateViews.as_view(template_name="ocorrencias/ocorrencias_create.html"), name="ocorrencias_create"),
     path('ocorrencias_update/<int:pk>', OcorrenciasUpdateViews.as_view(template_name="ocorrencias/ocorrencias_update.html"), name="ocorrencias_update"),
     path('ocorrencias_delete/<int:pk>', OcorrenciasDeleteViews.as_view(template_name="ocorrencias/ocorrencias_confirm_delete.html"), name="ocorrencias_delete"),
+
+#  Caminhos do Plano de contas
+    path('plano_conta_list', EstruturaPcListViews.as_view(template_name="estrutura-contas/plano_conta_list.html"), name="plano_conta_list"),
+    path('plano_conta_create', EstruturaPcCreateViews.as_view(template_name="estrutura-contas/plano_conta_create.html"), name="plano_conta_create"),
+    path('plano_conta_update/<int:pk>', EstruturaPcUpdateViews.as_view(template_name="estrutura-contas/plano_conta_update.html"), name="plano_conta_update"),
+    path('plano_conta_delete/<int:pk>', EstruturaPcDeleteViews.as_view(template_name="estrutura-contas/plano_conta_confirm_delete.html"), name="plano_conta_delete"),
 
 
 
