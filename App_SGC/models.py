@@ -3,6 +3,7 @@ from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.urls import reverse
 from django.core.validators import MinLengthValidator, MaxLengthValidator
+from datetime import date
 
 
 # Definição da Tabela Usuário...................................................................
@@ -20,7 +21,8 @@ class CustomUser(AbstractUser):
     
     class Meta:
         db_table='usuario'
-        managed = True      
+        managed = True
+        ordering = ['username']      
 
 
 # Definição da Tabela Condomínio...................................................................
@@ -31,6 +33,7 @@ class CustomCondominio(models.Model):
     class Meta:
         db_table='condominio'
         managed = True
+        ordering = ['nome_condominio']
 
 
 # Definição da Tabela Condômino...................................................................
@@ -53,6 +56,7 @@ class CustomCondomino(models.Model):
     class Meta:
         db_table='condomino'
         managed = True
+        ordering = ['nome_condomino']
 
 
 # Definição da Tabela Morador...................................................................
@@ -72,6 +76,7 @@ class CustomMorador(models.Model):
         ('filho', 'Filho(a)'),
         ('pai', 'Pai'),
         ('mae', 'Mãe'),
+        ('locatario', 'Locatário'),
         ('outros', 'Outros'),
     ]
     parentesco_condomino = models.CharField(
@@ -90,7 +95,12 @@ class CustomMorador(models.Model):
         null=False, 
         blank=False,
         related_name='numero_condominio')
-
+    
+    class Meta:
+        db_table='morador'
+        managed = True
+        ordering = ['nome_morador']
+        unique_together = ('cpf_condomino', 'cpf_morador')  
 
 
 #  Definição da Tabela do Veículo...................................................................
@@ -110,7 +120,7 @@ class CustomVeiculo(models.Model):
     class Meta:
         db_table='veiculo'
         managed = True
-
+        ordering = ['cpf_condomino']
 
 
 #  Definição da Tabela Colaborador...................................................................
@@ -134,7 +144,7 @@ class CustomColaborador(models.Model):
     class Meta:
         db_table='colaborador'
         managed = True
-
+        ordering = ['nome_colaborador']
 
 
 #  Definição da Tabela Bloco...................................................................
@@ -286,7 +296,7 @@ class CustomOcorrencia(models.Model):
         ordering = ['data_ocorrencia', 'hora_ocorrencia']
 
 
-# Definição da Tabela Benefícios................................................................... 
+# Definição da Tabela Benefícios...............................................................................
 class CustomBeneficio(models.Model):
     beneficio_id = models.AutoField(primary_key=True)
     nome_beneficio = models.CharField(verbose_name="Transportadora *", max_length=60, null=True, blank=True)    
@@ -330,6 +340,13 @@ class CustomBeneficioRecebido(models.Model):
         db_table = 'beneficio_recebido'
         managed = True
         ordering = ['cpf_colaborador', 'beneficio_id']
+        unique_together = ('beneficio_id', 'cpf_colaborador', 'n_condominio') 
+
+
+
+
+
+
 
 
 
@@ -365,6 +382,7 @@ class CustomPlano_Conta(models.Model):
 # Definição da Tabela Contas a Receber...................................................................
 class CustomConta_Receber(models.Model):
     data_conta_receber = models.DateField(verbose_name="Data vencimento *", null=False, blank=False)
+    data_recebimento = models.DateField(verbose_name="Data recebimento *", null=True, blank=True)
     n_documento_conta_receber = models.CharField(verbose_name="Nº documento *", max_length=20, null=False, blank=False)  
     tipo_documento_conta_receber_CHOICES = [
         ('NF', 'NF'),
@@ -427,7 +445,8 @@ class CustomConta_Receber(models.Model):
 
 # Definição da Tabela Contas a Pagar...................................................................
 class CustomConta_Pagar(models.Model):
-    data_conta_pagar = models.DateField(verbose_name="Data vencimento *", null=False, blank=False)
+    data_conta_pagar = models.DateField(verbose_name="Data vencimento *", default=date.today, null=False, blank=False)
+    data_pagamento = models.DateField(verbose_name="Data pagamento *", null=True, blank=True)
     n_documento_conta_pagar = models.CharField(verbose_name="Nº documento *", max_length=20, null=False, blank=False)  
     tipo_documento_conta_pagar_CHOICES = [
         ('NF', 'NF'),

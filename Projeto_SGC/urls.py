@@ -13,9 +13,10 @@ from App_SGC.views import ColaboradoresListViews,ColaboradoresCreateViews,Colabo
 from App_SGC.views import GaragensListViews,GaragensCreateViews,GaragensUpdateViews,GaragensDeleteViews
 from App_SGC.views import MudancasListViews,MudancasCreateViews,MudancasUpdateViews,MudancasDeleteViews
 from App_SGC.views import OcorrenciasListViews,OcorrenciasCreateViews,OcorrenciasUpdateViews,OcorrenciasDeleteViews
+from App_SGC.views import BeneficiosListViews,BeneficiosCreateViews,BeneficiosUpdateViews,BeneficiosDeleteViews
+from App_SGC.views import BeneficiosRecebidosListViews,BeneficiosRecebidosCreateViews,BeneficiosRecebidosUpdateViews,BeneficiosRecebidosDeleteViews
 from django.views.generic import ListView
 from django.urls import reverse_lazy
-
 
 
 urlpatterns = [
@@ -108,6 +109,21 @@ urlpatterns = [
     path('ocorrencias_create', OcorrenciasCreateViews.as_view(template_name="ocorrencias/ocorrencias_create.html"), name="ocorrencias_create"),
     path('ocorrencias_update/<int:pk>', OcorrenciasUpdateViews.as_view(template_name="ocorrencias/ocorrencias_update.html"), name="ocorrencias_update"),
     path('ocorrencias_delete/<int:pk>', OcorrenciasDeleteViews.as_view(template_name="ocorrencias/ocorrencias_confirm_delete.html"), name="ocorrencias_delete"),
+
+
+#  Caminhos dos Benefícios
+    path('beneficios_list', BeneficiosListViews.as_view(template_name="beneficios/beneficios_list.html"), name="beneficios_list"),
+    path('beneficios_create', BeneficiosCreateViews.as_view(template_name="beneficios/beneficios_create.html"), name="beneficios_create"),
+    path('beneficios_update/<int:pk>', BeneficiosUpdateViews.as_view(template_name="beneficios/beneficios_update.html"), name="beneficios_update"),
+    path('beneficios_delete/<int:pk>', BeneficiosDeleteViews.as_view(template_name="beneficios/beneficios_confirm_delete.html"), name="beneficios_delete"),
+
+
+#  Caminhos dos Benefícios recebidos pelos Calaboradores
+    path('beneficios_recebidos_list/', BeneficiosRecebidosListViews.as_view(template_name="beneficios_recebidos/beneficios_recebidos_list.html"), name="beneficios_recebidos_list"),
+    path('beneficios_recebidos_create/', BeneficiosRecebidosCreateViews.as_view(template_name="beneficios_recebidos/beneficios_recebidos_create.html"), name="beneficios_recebidos_create"),
+    path('beneficios_recebidos_update/<int:pk>/', BeneficiosRecebidosUpdateViews.as_view(template_name="beneficios_recebidos/beneficios_recebidos_update.html"), name="beneficios_recebidos_update"),
+    path('beneficios_recebidos_delete/<int:pk>/', BeneficiosRecebidosDeleteViews.as_view(template_name="beneficios_recebidos/beneficios_recebidos_confirm_delete.html"), name="beneficios_recebidos_delete"),
+
 
 
 

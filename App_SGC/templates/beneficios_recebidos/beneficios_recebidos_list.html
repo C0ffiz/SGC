@@ -9,7 +9,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <!-- Folhas de Estilo Locais -->
-    <link rel="stylesheet" href="/static/css/beneficios.css">
+    <link rel="stylesheet" href="/static/css/beneficios_recebidos.css">
     <title>SGC</title>
     <style>
         .container-cols {
@@ -62,12 +62,12 @@
 
     <!-- Corpo da Página -->
     <main class="container">
-        <h1 id="titulo_list">BENEFÍCIOS PARA COLABORADORES</h1>
+        <h1 id="titulo_list">BENEFÍCIOS RECEBIDOS PELOS COLABORADORES</h1>
 
         <!-- Opções de Pesquisa e Cadastro -->
         <div class="container_1">
             <div class="box">
-                <a href="{% url 'beneficios_create' %}" class="btn btn-primary" id="cadastrar">CADASTRAR BENEFÍCIOS</a>
+                <a href="{% url 'beneficios_recebidos_create' %}" class="btn btn-primary" id="cadastrar">CADASTRAR BENEFÍCIOS</a>
             </div>
 
             <div class="box" id="divBusca">
@@ -80,19 +80,20 @@
         <table id="beneficiosTable" class="table auto-layout">
             <thead>
                 <tr>
-                    <th scope="col" class="close-th">Benefício</th>
-                    <th scope="col" class="close-th">Condomínio</th>            
+                    <th scope="col" class="close-th">Colaborador</th>
+                    <th scope="col" class="close-th">Benefício</th>   
+                    <th scope="col" class="close-th">Condomínio</th>   
                 </tr>
             </thead>
             <tbody>
-                {% for bene in beneficios_list %}
+                {% for bene in beneficios_recebidos_list %}
                 <tr>
-                    <td>{{ bene.nome_beneficio }}</td>
+                    <td>{{ bene.cpf_colaborador.nome_colaborador }}</td>
+                    <td>{{ bene.beneficio_id.nome_beneficio }}</td>
                     <td>{{ bene.n_condominio.nome_condominio }}</td>
-
                     <td style="border: none; width:200px">
-                        <a href="{% url 'beneficios_update' pk=bene.pk %}" class="btn btn-primary btn-sm">ALTERAR</a>
-                        <a href="{% url 'beneficios_delete' pk=bene.pk %}" class="btn btn-danger btn-sm">EXCLUIR</a>
+                        <a href="{% url 'beneficios_recebidos_update' pk=bene.pk %}" class="btn btn-primary btn-sm">ALTERAR</a>
+                        <a href="{% url 'beneficios_recebidos_delete' pk=bene.pk %}" class="btn btn-danger btn-sm">EXCLUIR</a>
                     </td>
                 </tr>
                 {% endfor %}
@@ -106,10 +107,10 @@
         function handleSearch() {
             document.getElementById('txtBusca').addEventListener('input', function () {
                 var searchText = this.value.toLowerCase();
-                var rows = document.querySelectorAll('#beneficiosTable tbody tr');
+                var rows = document.querySelectorAll('#beneficios_recebidosTable tbody tr');
 
                 rows.forEach(function (row) {
-                    var beneficio = row.querySelector('td').textContent.toLowerCase();
+                    var beneficio_recebido = row.querySelector('td').textContent.toLowerCase();
                     // Check if beneficio contains the search text
                     if (beneficio.includes(searchText)) {
                         row.style.display = '';

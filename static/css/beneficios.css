@@ -13,6 +13,7 @@ body {
     text-wrap: nowrap;
 }
 
+
 #titulo {
     width: 100%;
     align-items: center;
@@ -24,18 +25,19 @@ body {
 
 p {
     width: 100%;
+    /* align-items:; */
     text-align: center;
     color: #fbf5f5;
     font-size: 30px;
     padding-bottom: 30px;
 }
 
-a {
+a{
     color: #fff;
 }
 
-a:hover {
-    color: #fff;
+a:hover{
+    color:#fff
 }
 
 #titulo_list {
@@ -63,9 +65,11 @@ a:hover {
     align-content: center;
 }
 
+
 th {
     font-weight: bold;
     color: #fbf5f5;
+    /* forced-color-adjust: #ffffff; */
 }
 
 td {
@@ -75,7 +79,7 @@ td {
 }
 
 .btn-primary {
-    font-weight: bold;
+    font-weight: bold;   
 }
 
 .btn-danger {
@@ -86,13 +90,16 @@ td {
     width: 250px;
     height: 32px;
     display: flex;
-    justify-content: center;
-    align-items: center;
+    justify-content: center;  /* Centraliza horizontalmente */
+    align-items: center;   /* Centraliza verticalmente */
+    /* font-weight: bold; */
 }
+
+/* Busca na tabela */
 
 #divBusca {
     background-color: #E0EEEE;
-    border: solid 0px #0d6efd;
+    border: solid 0px#0d6efd;
     border-radius: 5px;
     width: auto;
     height: 32px;
@@ -112,6 +119,7 @@ td {
     border: none;
     float: left;
     height: 32px;
+    /* border-radius:0 7px 7px 0; */
     border-radius: 0 5px 5px 0;
     width: 70px;
     font-weight: bold;
@@ -143,6 +151,7 @@ td {
     height: 32px;
     display: inline-block;
     margin-right: 20px;
+    /* Adicione margem para separar as divs */
     margin-bottom: 0%;
 }
 
@@ -155,6 +164,7 @@ td {
     font-weight: bold;
     background: #0d6efd;
     color: #fbf5f5;
+    
 }
 
 .sort-header {
@@ -193,17 +203,17 @@ td {
     transform: rotate(-90deg);
 }
 
-.btn-excluir {
+.btn-excluir{
     width: 90px;
     height: 31px;
 }
 
-.btn-cancelar {
+.btn-cancelar{
     width: 90px;
     height: 31px;
 }
 
-.error-duplicate {
+.error-duplicate{
     background-color: transparent;
     color: #fff;
     text-decoration: none;
@@ -212,108 +222,5 @@ td {
     padding: 0;
 }
 
-.bloco1 {
-    display: inline-flex;
-    justify-content: left;
-}
 
-.sort-header {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    text-decoration: none;
-    color: inherit;
-    cursor: pointer;
-    white-space: nowrap;
-}
 
-.sort-icon {
-    margin-left: 5px;
-    border: solid currentColor;
-    border-width: 0 3px 3px 0;
-    display: inline-block;
-    padding: 3px;
-    transform: rotate(45deg);
-    -webkit-transform: rotate(45deg);
-    visibility: hidden;
-}
-
-.sort-header.asc .sort-icon {
-    transform: rotate(-135deg);
-    -webkit-transform: rotate(-135deg);
-    visibility: visible;
-}
-
-.sort-header.desc .sort-icon {
-    transform: rotate(45deg);
-    -webkit-transform: rotate(45deg);
-    visibility: visible;
-}
-
-.sorting-label {
-    font-weight: bold;
-    color: inherit;
-    margin-left: 5px;
-}
-
-.sort-header {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    text-decoration: none;
-}
-
-.sort-header .label-text {
-    font-weight: bold;
-}
-
-#coluna {
-    display: inline-block;
-    vertical-align: top;
-    width: auto;
-    white-space: nowrap;
-}
-
-#linha {
-    display: inline-block;
-    white-space: nowrap;
-}
-
-#colunas-dados {
-    align-content: center;
-    justify-content: center;
-}
-
-.input-bottom {
-    margin-bottom: 5px;
-}
-
-input[type="text"], input[type="date"], input[type="password"], input[type="number"], select {
-    width: 220px;
-}
-
-.container-cols {
-    display: flex;
-    gap: 20px;
-}
-
-.input-col {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-}
-
-.input-col .input-row {
-    margin-bottom: 20px;
-}
-
-.field-error {
-    border: 2px solid red;
-}
-
-.input-section {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-}

@@ -2,7 +2,8 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login
 from .models import CustomUser, CustomCondominio, CustomCondomino, CustomMorador, CustomBloco, CustomUnidade    
-from .models import CustomVeiculo, CustomColaborador, CustomGaragem, CustomMudanca, CustomOcorrencia
+from .models import CustomVeiculo, CustomColaborador, CustomGaragem, CustomMudanca, CustomOcorrencia, CustomBeneficio
+from .models import CustomBeneficioRecebido
 from django.contrib import messages
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy, reverse
@@ -12,7 +13,9 @@ from django.views.generic.edit import CreateView
 from django.contrib import messages
 from django.views import View
 from django.shortcuts import get_object_or_404
-
+from django.db import IntegrityError
+from django.http import JsonResponse
+from django.core.exceptions import ObjectDoesNotExist
 
 
 #-----------------------Views Login.................................................................
@@ -376,15 +379,12 @@ class MoradoresCreateViews(CreateView):
         
 
 # Tela Alteração De Moradores
+
 class MoradoresUpdateViews(UpdateView):
     model = CustomMorador
     template_name = 'moradores/moradores_update.html'
     fields = ["cpf_condomino", "cpf_morador", "nome_morador", "data_nascimento_morador", "celular_morador", "email_morador", "parentesco_condomino"]
     success_url = reverse_lazy("moradores_list")
-
-    def get_object(self, queryset=None):
-        pk = self.kwargs.get('pk')  # Obtém o valor do parâmetro 'pk' da URL (No futuro será um token para questões de segurança)
-        return get_object_or_404(CustomMorador, pk=pk)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -392,7 +392,29 @@ class MoradoresUpdateViews(UpdateView):
         context['cpf_morador'] = self.request.GET.get('cpf_morador', '')  # Pass the cpf_morador parameter to the context
         return context
 
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data(pk=kwargs['pk'])
+        return render(request, self.template_name, context)
     
+    def post(self, request, *args, **kwargs):
+               
+        # Obter a instância do condomínio associada ao condômino
+    
+        
+       
+        # Atualizar a unidade existente
+        cpf_condomino = request.POST.get('cpf_condomino')
+        cpf_morador =request.POST.get('cpf_morador')
+        nome_morador = request.POST.get('nome_morador')
+        data_nascimento_morador = request.POST.get('data_nascimento_morador')
+        celular_morador = request.POST.get('celular_morador')
+        email_morador = request.POST.get('email_morador')
+        parentesco_condomino = request.POST.get('parentesco_condomino')
+        morador.save()        
+        return HttpResponseRedirect(self.success_url)  
+
+
+
 
 # Tela Exclusão De Moradores
 class MoradoresDeleteViews(DeleteView):
@@ -571,7 +593,7 @@ class UnidadesUpdateViews(View):
         try:
             condomino_instance = CustomCondomino.objects.get(cpf_condomino=unidade.cpf_condomino.cpf_condomino)
         except CustomCondomino.DoesNotExist:
-            context['form_errors'] = {'cpf_condomino': ' - CPF não cadastrado'}
+            context['form_errors'] = {'CPF do condômino não cadastrado'}
             return render(request, self.template_name, context)
         
         # Obter a instância do condomínio associada ao condômino
@@ -1117,7 +1139,6 @@ class OcorrenciasCreateViews(View):
         return HttpResponseRedirect(self.success_url)
 
 
-
 # Tela Alteração das Ocorrências
 class OcorrenciasUpdateViews(UpdateView):
     model = CustomOcorrencia
@@ -1157,15 +1178,176 @@ class OcorrenciasUpdateViews(UpdateView):
         self.object.n_condominio = condominio_instance
         self.object.save()
         return super().form_valid(form)
-
-
-
-
-
-
     
 
 # Tela Exclusão das Ocorrências
 class OcorrenciasDeleteViews(DeleteView):
     model = CustomOcorrencia
     success_url = reverse_lazy("mudancas_list")
+
+
+#-----------------------Views Benefícios.................................................................
+
+# Tela Lista os Benefícios 
+class BeneficiosListViews(ListView):
+    model = CustomBeneficio
+    context_object_name = 'beneficios_list'
+    template_name = 'beneficios/beneficios_list.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['beneficios'] = CustomBeneficio.objects.all()
+        return context   
+ 
+
+# Tela Cadastro de Benefícios
+class BeneficiosCreateViews(View):
+    template_name = 'beneficios/beneficios_create.html'
+    success_url = reverse_lazy("beneficios_list")
+
+    # Obtém dados do condomínio p a caixa select
+    def get_context_data(self, **kwargs):
+        context = {}   
+        context['condominios'] = CustomCondominio.objects.all()
+        return context
+
+    # Obtém dados de contexto e renderiza um template HTML com esses dados
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data()
+        return render(request, self.template_name, context)
+
+    # Estrutura as informações para inserir na tabela nova linha
+    def post(self, request, *args, **kwargs):
+        nome_beneficio = request.POST.get('nome_beneficio')
+        n_condominio_id = request.POST.get('n_condominio')  # Obtém o valor do ID do condomínio a partir do formulário
+        context = self.get_context_data()
+
+        # Obter a instância do condomínio associada ao ID do condomínio
+        try:
+            condominio_instance = CustomCondominio.objects.get(pk=n_condominio_id)
+        except CustomCondominio.DoesNotExist:
+            context['form_errors'] = {'n_condominio': 'Condomínio não cadastrado'}
+            return render(request, self.template_name, context)        
+        
+        # Insere na tabela ocorrência nova linha
+        CustomBeneficio.objects.create(
+            nome_beneficio=nome_beneficio,       
+            n_condominio=condominio_instance
+        )
+        return HttpResponseRedirect(self.success_url)
+
+
+# Tela Alteração dos Benefícios
+class BeneficiosUpdateViews(UpdateView):
+    model = CustomBeneficio
+    template_name = 'beneficios/beneficios_update.html'
+    context_object_name = 'beneficio'
+    fields = ["nome_beneficio", "n_condominio"]
+    success_url = reverse_lazy("beneficios_list")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['condominios'] = CustomCondominio.objects.all()
+        return context
+
+    def form_valid(self, form):
+        n_condominio_id = self.request.POST.get('n_condominio')
+        
+        try:
+            condominio_instance = CustomCondominio.objects.get(pk=n_condominio_id)
+        except CustomCondominio.DoesNotExist:
+            form.add_error('n_condominio', 'Condomínio não cadastrado')
+            return self.form_invalid(form)
+        
+        form.instance.n_condominio = condominio_instance
+        return super().form_valid(form)
+
+
+# Tela Exclusão de Benefícios
+class BeneficiosDeleteViews(DeleteView):
+    model = CustomBeneficio
+    success_url = reverse_lazy("beneficios_list")
+
+
+#-----------------------Views Benefícios recebidos pelos colaboradores....................................
+
+# Tela Lista os Benefícios recebidos
+class BeneficiosRecebidosListViews(ListView):
+    model = CustomBeneficioRecebido
+    context_object_name = 'beneficios_recebidos_list'
+    template_name = 'beneficios_recebidos/beneficios_recebidos_list.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['beneficios_recebidos'] = CustomBeneficioRecebido.objects.all()
+        return context   
+
+
+# Tela Cadastro de Benefícios recebidos
+class BeneficiosRecebidosCreateViews(View):
+    template_name = 'beneficios_recebidos/beneficios_recebidos_create.html'
+    success_url = reverse_lazy("beneficios_recebidos_list")
+
+    def get_context_data(self, **kwargs):
+        context = {}
+        context['condominios'] = CustomCondominio.objects.all()
+        context['beneficios'] = CustomBeneficio.objects.all()
+        return context
+
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data()
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        cpf_colaborador_id = request.POST.get('cpf_colaborador')
+        beneficio_id = request.POST.get('beneficio_id')
+        n_condominio_id = request.POST.get('n_condominio')
+        context = self.get_context_data()
+
+        # try:
+        colaborador_instance = CustomColaborador.objects.get(pk=cpf_colaborador_id)
+        condominio_instance = CustomCondominio.objects.get(pk=n_condominio_id)
+        beneficio_instance = CustomBeneficio.objects.get(pk=beneficio_id)
+
+        CustomBeneficioRecebido.objects.create(
+            cpf_colaborador=colaborador_instance,
+            beneficio_id=beneficio_instance,
+            n_condominio=condominio_instance
+        )
+   
+        return HttpResponseRedirect(self.success_url)
+
+
+# Tela Alteração dos Benefícios recebidos
+class BeneficiosRecebidosUpdateViews(UpdateView):
+    model = CustomBeneficioRecebido
+    template_name = 'beneficios_recebidos/beneficios_recebidos_update.html'
+    context_object_name = 'beneficio_recebido'
+    fields = ["beneficio_id", "cpf_colaborador", "n_condominio"]
+    success_url = reverse_lazy("beneficios_recebidos_list")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['condominios'] = CustomCondominio.objects.all()
+        return context
+
+    def form_valid(self, form):
+        n_condominio_id = self.request.POST.get('n_condominio')
+
+        try:
+            condominio_instance = CustomCondominio.objects.get(pk=n_condominio_id)
+        except CustomCondominio.DoesNotExist:
+            form.add_error('n_condominio', 'Condomínio não cadastrado')
+            return self.form_invalid(form)
+        
+        form.instance.n_condominio = condominio_instance
+        return super().form_valid(form)
+
+
+# Tela Exclusão dos Benefícios recebidos
+class BeneficiosRecebidosDeleteViews(DeleteView):
+    model = CustomBeneficioRecebido
+    success_url = reverse_lazy("beneficios_recebidos_list")
+
+    
+
