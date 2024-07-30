@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>SGC</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="/static/css/ocorrencias.css">
@@ -36,6 +37,9 @@
             margin: auto;
             width: 140px;
         }
+        .field-error {
+            border: 2px solid red;
+        }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
@@ -62,7 +66,19 @@
 
             <form method="POST" action="{% url 'ocorrencias_update' ocorrencia.pk %}" enctype="multipart/form-data">
                 {% csrf_token %}
-            
+                <div>
+                    {% if form.errors %}
+                    <div class="alert alert-danger error-duplicate" role="alert">
+                        <ul>
+                            {% for field, errors in form.errors.items %}
+                            {% for error in errors %}
+                            <li><strong>{{ field }}:</strong> {{ error }}</li>
+                            {% endfor %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+                </div>
                 <div class="container-cols d-flex justify-content-center">
                     <!-- Coluna 1 -->
                     <div id="coluna1" class="input-col-md-2">
@@ -98,9 +114,14 @@
                         </div>
             
                         <div class="update-form input-center">
-                            <label for="documento_ocorrencia" class="form-label">Documento:</label>
-                            <input type="file" class="form-control" id="documento_ocorrencia" name="documento_ocorrencia" tabindex="4" 
-                                value="{{ ocorrencia.documento_ocorrencia }}" required>
+                            <label  class="form-label">Documento:</label>
+                            
+                                <div class="input-group custom-file-button">
+                                  <label class="input-group-text file-hover-color" for="review-image" role="button">Arquivo:</label>
+                                  <label for="review-image" class="form-control" id="review-image-label" role="button" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border-top-right-radius: 0.375rem; border-bottom-right-radius: 0.375rem;">{{ ocorrencia.documento_ocorrencia.name }}</label>
+                                  <input type="file" class="d-none" id="review-image" name="documento_ocorrencia">
+                                </div>
+                            
                             {% if form_errors.documento_ocorrencia %}
                                 <div class="text-danger">{{ for_errors.documento_ocorrencia }}</div>
                             {% endif %}
@@ -120,7 +141,7 @@
                         </div>
             
                         <div class="update-form input-center">
-                            <label for="n_condominio">Condomínio:</label>
+                            <label for="n_condominio" class="form-label">Condomínio:</label>
                             <select id="n_condominio" name="n_condominio" class="form-control" tabindex="5" required>
                                 <option value="">Condomínio</option>
                                 {% for condominio in condominios %}
@@ -138,3 +159,11 @@
                 <button type="submit" class="btn btn-primary" id="btnsalvar" value="Update">Salvar</button>
             </form>
             
+
+            
+            <script>
+                $('#review-image').change(function(e) {
+                    let fileName = (e.target.files.length > 0) ? e.target.files[0].name : 'choose_file_not';
+                    $('#review-image-label').text(fileName);
+                });
+            </script>

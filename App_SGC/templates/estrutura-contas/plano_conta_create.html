@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SGC</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="/static/css/plano-contas.css">
+
+    <style>
+        .container-cols {
+            display: flex;
+            gap: 20px; /* Espaçamento entre as colunas */
+        }
+        .input-col {
+            flex: 1; /* Cada coluna ocupa o mesmo espaço */
+            display: flex;
+            flex-direction: column;
+        }
+        .input-col .input-row {
+            margin-bottom: 80px; /* Espaçamento entre as linhas */
+        }
+        .input-bottom {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px; /* Espaçamento entre as linhas */
+        }
+        input[type="text"], input[type="tel"], input[type="email"], input[type="date"], select {
+            width: 220px;
+        }
+        #btnsalvar {
+            display: block;
+            margin: auto;
+            width: 140px;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+    
+</head>
+<body>
+    <nav class="navbar bg-dark mb-30" data-bs-theme="dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'plano_conta_list' %}">CONDOMINIUM</a>
+        </div>
+    </nav>
+    <main class="container">
+        <h1 id="titulo">CADASTRO DE PLANO DE CONTA</h1><br>
+
+        <div class="painel" style="height: 500px;">
+            <form method="POST" action="{% url 'plano_conta_create' %}">
+            {% csrf_token %}
+                <div class="horizontal-container">
+
+                    <div class="input-bottom">
+                        <label for="nivel_1" class="form-label">nivel_1:</label>
+                        <input type="text" class="form-control-sm" id="nivel_1" name="nivel_1" minlength="1" maxlength="1" required tabindex="1" autofocus>
+                        {% if form_errors.nivel_1 %}
+                        <div class="text-danger">{{ form_errors.nivel_1 }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    
+                    <div class="input-bottom">
+                        <label for="nivel_2" class="form-label">nivel_2:</label>
+                        <input type="text" class="form-control-sm" id="nivel_2" name="nivel_2" minlength="1" maxlength="1" required tabindex="1" autofocus>
+                        {% if form_errors.nivel_2 %}
+                        <div class="text-danger">{{ form_errors.nivel_2 }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="input-bottom">
+                        <label for="nivel_3" class="form-label">nivel_3:</label>
+                        <input type="text" class="form-control-sm" id="nivel_3" name="nivel_3" minlength="1" maxlength="1" required tabindex="1" autofocus>
+                        {% if form_errors.nivel_3 %}
+                        <div class="text-danger">{{ form_errors.nivel_3 }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="input-bottom">
+                        <label for="nivel_4" class="form-label">nivel_4:</label>
+                        <input type="text" class="form-control-sm" id="nivel_4" name="nivel_4" minlength="1" maxlength="1" required tabindex="1" autofocus>
+                        {% if form_errors.nivel_4 %}
+                            <div class="text-danger">{{ form_errors.nivel_4 }}</div>
+                        {% endif %}
+                    </div>
+                
+                </div>
+                
+                <div class="horizontal-container">
+                    <div>
+                            <select id="n_condominio" name="n_condominio" class="form-control-sm {% if form.n_condominio.errors %}field-error{% endif %}" tabindex="10">
+                                <option value="">Condomínio</option>
+                                {% for condominio in condominios %}
+                                <option value="{{ condominio.n_condominio }}">{{ condominio.n_condominio }} - {{ condominio.nome_condominio }}</option>
+                                {% endfor %}
+                            </select>
+                            {% if form.n_condominio.errors %}
+                                <div class="text-danger"></div>
+                            {% endif %}
+                    </div>
+                    <div>
+                        <div class="input-bottom">
+                            <input type="text" class="form-control-sm" id="dsc_plano_conta" name="dsc_plano_conta" required tabindex="1" autofocus>
+                            {% if form_errors.dsc_plano_conta %}
+                                <div class="text-danger">{{ form_errors.dsc_plano_conta }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                
+                <br><br>
+                
+                <button type="submit" class="btn btn-primary" id="btnsalvar">Salvar</button>
+            </form>
+        </div>
+    </main>
+</body>
+</html>

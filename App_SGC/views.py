@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login
 from .models import CustomUser, CustomCondominio, CustomCondomino, CustomMorador, CustomBloco, CustomUnidade    
-from .models import CustomVeiculo, CustomColaborador, CustomGaragem, CustomMudanca, CustomOcorrencia, CustomBeneficio
+from .models import CustomVeiculo, CustomColaborador, CustomGaragem, CustomMudanca, CustomOcorrencia, CustomBeneficio, CustomPlano_Conta
 from .models import CustomBeneficioRecebido
 from django.contrib import messages
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
@@ -1093,16 +1093,16 @@ class OcorrenciasListViews(ListView):
 class OcorrenciasCreateViews(View):
     template_name = 'ocorrencias/ocorrencias_create.html'
     success_url = reverse_lazy("ocorrencias_list")
-
+    
     def get_context_data(self, **kwargs):
         context = {}   
         context['condominios'] = CustomCondominio.objects.all()
         return context
-
+    
     def get(self, request, *args, **kwargs):
         context = self.get_context_data()
         return render(request, self.template_name, context)
-
+    
     def post(self, request, *args, **kwargs):
         cpf_condomino = request.POST.get('cpf_condomino')
         data_ocorrencia = request.POST.get('data_ocorrencia')
@@ -1112,12 +1112,17 @@ class OcorrenciasCreateViews(View):
         n_condominio_id = request.POST.get('n_condominio')
 
         context = self.get_context_data()
-
+        
+        print(cpf_condomino);
+        print(documento_ocorrencia);
+        print(documento_ocorrencia.name);
         # Obter a instância do condômino associada ao ID do condômino
         try:
             condomino_instance = CustomCondomino.objects.get(cpf_condomino=cpf_condomino)
+            
         except CustomCondomino.DoesNotExist:
-            context['form_errors'] = {'cpf_condomino': 'CPF não cadastrado'}
+            print(condomino_instance);
+            context['form_errors'] = {'cpf_condomino': 'test não cadastrado'}
             return render(request, self.template_name, context)
 
         # Obter a instância do condomínio associada ao ID do condomínio
@@ -1178,7 +1183,8 @@ class OcorrenciasUpdateViews(UpdateView):
         self.object.n_condominio = condominio_instance
         self.object.save()
         return super().form_valid(form)
-    
+
+
 
 # Tela Exclusão das Ocorrências
 class OcorrenciasDeleteViews(DeleteView):
@@ -1245,28 +1251,9 @@ class BeneficiosUpdateViews(UpdateView):
     fields = ["nome_beneficio", "n_condominio"]
     success_url = reverse_lazy("beneficios_list")
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['condominios'] = CustomCondominio.objects.all()
-        return context
-
-    def form_valid(self, form):
-        n_condominio_id = self.request.POST.get('n_condominio')
-        
-        try:
-            condominio_instance = CustomCondominio.objects.get(pk=n_condominio_id)
-        except CustomCondominio.DoesNotExist:
-            form.add_error('n_condominio', 'Condomínio não cadastrado')
-            return self.form_invalid(form)
-        
-        form.instance.n_condominio = condominio_instance
-        return super().form_valid(form)
-
-
-# Tela Exclusão de Benefícios
-class BeneficiosDeleteViews(DeleteView):
-    model = CustomBeneficio
-    success_url = reverse_lazy("beneficios_list")
+    
+    
+    
 
 
 #-----------------------Views Benefícios recebidos pelos colaboradores....................................
@@ -1351,3 +1338,102 @@ class BeneficiosRecebidosDeleteViews(DeleteView):
 
     
 
+        
+# Tela Lista a Estrutura Plano Contas 
+class EstruturaPcListViews(ListView):
+    model = CustomPlano_Conta
+    context_object_name = 'plano_conta_list'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['plano_conta'] = CustomPlano_Conta.objects.all()
+        return context    
+    
+    
+# Tela Cadastro de Plano de contas
+class EstruturaPcCreateViews(CreateView):
+    model = CustomPlano_Conta
+    fields = ["nivel_1", "nivel_2", "nivel_3", "nivel_4", "dsc_plano_conta", "n_condominio"]
+    success_url = reverse_lazy("plano_conta_list")
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['condominios'] = CustomCondominio.objects.all()
+        return context
+
+    def form_valid(self, form):
+        n_condominio_id = self.request.POST.get('n_condominio')
+        
+        try:
+            condominio_instance = CustomCondominio.objects.get(pk=n_condominio_id)
+        except CustomCondominio.DoesNotExist:
+            form.add_error('n_condominio', 'Condomínio não cadastrado')
+            return self.form_invalid(form)
+        
+        form.instance.n_condominio = condominio_instance
+        return super().form_valid(form)
+
+        # Get the selected condominio instance
+        condominio_instance = form.cleaned_data['n_condominio']
+
+        # Assign the primary key of the selected condominium to the field
+        form.instance.n_condominio_id = condominio_instance.n_condominio
+
+        # Check if the selected condominium number exists
+        if not CustomCondominio.objects.filter(n_condominio=form.instance.n_condominio_id).exists():
+            messages.error(self.request, 'Número de condomínio inválido.')
+            return self.form_invalid(form)
+       
+        # Verifica se o plano de contas já está cadastrado
+        if CustomPlano_Conta.objects.filter(dsc_plano_conta=form.instance.dsc_plano_conta).exists():
+            messages.error(self.request, 'Plano de contas já existe')
+            return self.form_invalid(form)
+
+        return super().form_valid(form)
+    
+    def form_invalid(self, form):
+        # Customize error message for existing dsc_plano_conta
+        if 'dsc_plano_conta' in form.errors:
+            form.errors['dsc_plano_conta'] = ['Plano de contas já cadastrado']
+        return super().form_invalid(form)
+
+# Tela Exclusão de Benefícios
+class BeneficiosDeleteViews(DeleteView):
+    model = CustomBeneficio
+    success_url = reverse_lazy("beneficios_list")
+    
+    
+# Tela Alteração De Condôminos
+class EstruturaPcUpdateViews(UpdateView):
+    model = CustomPlano_Conta
+    context_object_name = 'plano_conta'    
+    fields = ["nivel_1", "nivel_2", "nivel_3", "nivel_4", "dsc_plano_conta", "n_condominio"]
+    success_url = reverse_lazy("plano_conta_list")
+    widgets = {
+        'n_condominio': forms.Select(attrs={'class': 'form-control'}),
+    }
+   
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['condominios'] = CustomCondominio.objects.all()        
+        return context
+    
+    def form_valid(self, form):
+        
+        # Get the selected condominium instance
+        condominio_instance = form.cleaned_data['n_condominio']
+
+        # Assign the primary key of the selected condominium to the field
+        form.instance.n_condominio_id = condominio_instance.n_condominio
+
+        # Check if the selected condominium number exists
+        # if not CustomCondominio.objects.filter(n_condominio=form.instance.n_condominio_id).exists():
+        #     messages.error(self.request, 'Número de condomínio inválido.')
+        #     return self.form_invalid(form)
+        
+        return super().form_valid(form)         
+    
+# Tela Exclusão De Condôminos
+class EstruturaPcDeleteViews(DeleteView):
+    model = CustomPlano_Conta
+    success_url = reverse_lazy("plano_conta_list")

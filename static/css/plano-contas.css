@@ -1,5 +1,10 @@
+html, body {
+    overflow-x: auto;
+}
+
 body {
     background-color: rgb(0, 74, 112);
+    
 }
 
 .navbar {
@@ -9,8 +14,9 @@ body {
     display: flex;
     align-content: center;
     align-items: center;
-    flex-wrap: nowrap;
-    text-wrap: nowrap;
+    /* flex-wrap: nowrap;
+    text-wrap: nowrap; */
+    width: 100%;
 }
 
 
@@ -58,7 +64,7 @@ a:hover{
 }
 
 .container_1 {
-    display: flex;
+    display: inline-block;
     width: 100%;
     height: 60px;
     align-items: center;
@@ -222,26 +228,14 @@ td {
     padding: 0;
 }
 
-.input-row{     
-    align-items: center;
+
+.horizontal-container {
+    display: flex;
+    justify-content: center;
     
 }
 
-.file-hover-color:hover {
-    background-color: #dde0e3;
-    cursor: pointer;
-}
-
-.custom-file-button{
-    width: 220px;
-}
-
-.review-image-label{
-    
-    display: block; /* Make the text inside label behave like a block element */
-    width: 100%; /* Allow the text to take full width inside label */
-    word-wrap: break-word; /* Wrap words that exceed the width */
-
-
-
+.form-control-sm{
+    border-radius: 0;
+    border-width: 1px;
 }
