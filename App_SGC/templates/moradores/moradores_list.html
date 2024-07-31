@@ -11,6 +11,9 @@
     <!-- Folhas de Estilo Locais -->
     <link rel="stylesheet" href="/static/css/moradores.css">
     <title>SGC</title>
+    <!-- jQuery e jQuery Mask Plugin -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
 </head>
 
 <body>
@@ -40,8 +43,7 @@
         <!-- Tabela de Usuários -->
         <table id="usuariosTable" class="table">
             <thead>
-                <tr>
-                    <th scope="col">NÚMERO</th>
+                <tr>                    
                     <th scope="col">
                         <a href="#" class="sort-header link-arrow down" data-sort="bloco">
                             CPF CONDÔMINO
@@ -61,17 +63,17 @@
             <tbody>
                 {% for mora in moradores_list %}
                 <tr>
-                    <td class="linha">{{ forloop.counter }}</td>
                     <td class="cpf_condomino">{{ mora.cpf_condomino.cpf_condomino }}</td>
                     <td class="cpf_morador">{{ mora.cpf_morador }}</td>
                     <td class="nome_morador">{{ mora.nome_morador }}</td>
-                    <td class="data_nascimento_morador">{{ mora.data_nascimento_morador }}</td>
+                    <td class="data_nascimento_morador">{{ mora.data_nascimento_morador|date:"d/m/Y" }}</td>
                     <td class="parentesco_condomino">{{ mora.parentesco_condomino }}</td>
                     <td class="celular_morador">{{ mora.celular_morador }}</td>
                     <td class="email_morador">{{ mora.email_morador }}</td>
                     <td class="email_morador">{{ mora.n_condominio.n_condominio }}</td>
                     <td style="border: none; width:200px">
-                        <a href="{% url 'moradores_update' pk=mora.pk %}?cpf_condomino={{ mora.cpf_condomino.cpf_condomino }}&cpf_morador={{ mora.cpf_morador }}" class="btn btn-primary btn-sm">ALTERAR</a>
+                        <!-- <a href="{% url 'moradores_update' pk=mora.pk %}?cpf_condomino={{ mora.cpf_condomino }}&cpf_morador={{ mora.cpf_morador }}" class="btn btn-primary btn-sm">ALTERAR</a> -->
+                        <a href="{% url 'moradores_update' pk=mora.pk %}" class="btn btn-primary btn-sm">ALTERAR</a>
                         <a href="{% url 'moradores_delete' pk=mora.pk %}" class="btn btn-danger btn-sm">EXCLUIR</a>
                     </td>
                 </tr>
@@ -82,9 +84,9 @@
 
     <!-- Scripts JavaScript -->
     <script>
-        // Função para formatar CPF no modelo xxx.xxx.xxx-xx
-        function formatCPF() {
-            var cpfsCond = document.querySelectorAll('#usuariosTable tbody tr td:nth-child(2)');
+        // Função para formatar CPF e Celular
+        function formatCPFandCelular() {
+            var cpfsCond = document.querySelectorAll('#usuariosTable tbody tr td:nth-child(1)');
             cpfsCond.forEach(function (element) {
                 var cpfCond = element.textContent.trim();
 
@@ -97,7 +99,7 @@
                 element.textContent = cpfCond;
             });
 
-            var cpfsMor = document.querySelectorAll('#usuariosTable tbody tr td:nth-child(3)');
+            var cpfsMor = document.querySelectorAll('#usuariosTable tbody tr td:nth-child(2)');
             cpfsMor.forEach(function (element) {
                 var cpfMor = element.textContent.trim();
 
@@ -109,29 +111,40 @@
 
                 element.textContent = cpfMor;
             });
+
+            var celulares = document.querySelectorAll('#usuariosTable tbody tr td:nth-child(6)');
+            celulares.forEach(function (element) {
+                var celular = element.textContent.trim();
+
+                if (celular.length === 11) {
+                    celular = celular.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+                }
+
+                element.textContent = celular;
+            });
         }
 
         // Função para manipular a pesquisa/filtragem
         function handleSearch() {
-                document.getElementById('txtBusca').addEventListener('input', function () {
-                    var searchText = this.value.toLowerCase();
-                    var rows = document.querySelectorAll('#usuariosTable tbody tr');
+            document.getElementById('txtBusca').addEventListener('input', function () {
+                var searchText = this.value.toLowerCase();
+                var rows = document.querySelectorAll('#usuariosTable tbody tr');
 
-                    rows.forEach(function (row) {
-                        var nome_morador = row.cells[1].textContent.toLowerCase();
-                        var cpf_condomino = row.cells[0].textContent.toLowerCase();
-                        // Check if either username or CPF contains the search text
-                        if (nome_morador.includes(searchText) || cpf_condomino.includes(searchText)) {
-                            row.style.display = '';
-                        } else {
-                            row.style.display = 'none';
-                        }
-                    });
+                rows.forEach(function (row) {
+                    var nome_morador = row.cells[1].textContent.toLowerCase();
+                    var cpf_condomino = row.cells[0].textContent.toLowerCase();
+                    // Check if either username or CPF contains the search text
+                    if (nome_morador.includes(searchText) || cpf_condomino.includes(searchText)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
                 });
-            }
+            });
+        }
 
         document.addEventListener('DOMContentLoaded', function () {
-            formatCPF();
+            formatCPFandCelular();
             handleSearch();
         });
     </script>

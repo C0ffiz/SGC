@@ -396,8 +396,8 @@ class CustomConta_Receber(models.Model):
         default='NF',  # Defina o valor padrão conforme necessário
         null=False,
         blank=False)
-    dsc_conta_receber = models.CharField(verbose_name="Dsc *", max_length=60, null=False, blank=False)
-    valor_conta_receber = models.IntegerField(verbose_name="Valor *", null=False, blank=False)
+    dsc_conta_receber = models.CharField(verbose_name="Dsc *", max_length=60, null=True, blank=True)
+    valor_conta_receber = models.IntegerField(verbose_name="Valor *", null=False, blank=False)    
     nivel_1 = models.ForeignKey(
         'CustomPlano_Conta',  
         on_delete=models.CASCADE,
@@ -460,8 +460,9 @@ class CustomConta_Pagar(models.Model):
         default='NF',  # Defina o valor padrão conforme necessário
         null=False,
         blank=False)
-    dsc_conta_pagar = models.CharField(verbose_name="Dsc *", max_length=60, null=False, blank=False)
+    dsc_conta_pagar = models.CharField(verbose_name="Dsc *", max_length=60, null=True, blank=True)
     valor_conta_pagar = models.IntegerField(verbose_name="Valor *", null=False, blank=False)
+    documento_contas_pagar = models.FileField(upload_to='documentos_ocorrencias/', null=False, blank=False)
     nivel_1 = models.ForeignKey(
         'CustomPlano_Conta',  
         on_delete=models.CASCADE,

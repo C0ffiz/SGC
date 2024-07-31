@@ -10,7 +10,7 @@
         .input-bottom {
             margin-bottom: 5px;
         }
-        input[type="text"], input[type="date"], input[type="password"], input[type="number"], select {
+        input[type="text"], input[type="date"], input[type="number"], select {
             width: 220px;
         }
         .container-cols {
@@ -29,22 +29,7 @@
             border: 2px solid red;
         }
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
-    <script>
-        $(document).ready(function(){
-            $('#cpf_condomino, #cpf_morador').mask('000.000.000-00');
-            $('#btnsalvar').click(function(event) {
-                var cpf_condomino = $('#cpf_condomino').val().replace(/\D/g, '');
-                $('#cpf_condomino').val(cpf_condomino);
-                
-                var cpf_morador = $('#cpf_morador').val().replace(/\D/g, '');
-                $('#cpf_morador').val(cpf_morador);
-            });
-        });
-    </script>
 </head>
-
 <body>
     <nav class="navbar bg-dark mb-30" data-bs-theme="dark">
         <div class="container-fluid">
@@ -55,49 +40,46 @@
     <main class="container">
         <h1 id="titulo">ALTERAÇÃO DE MORADORES</h1>
         <div class="painel" style="height: 500px;">
-            <form method="POST" novalidate>
+            <form method="POST">
                 {% csrf_token %}
                 <div>
                     {% if form.errors %}
-                    <div class="alert alert-danger error-duplicate" role="alert">
-                        <ul>
-                            {% for field, errors in form.errors.items %}
-                            {% for error in errors %}
-                            <li><strong>{{ field }}:</strong> {{ error }}</li>
-                            {% endfor %}
-                            {% endfor %}
-                        </ul>
-                    </div>
+                        <div class="alert alert-danger error-duplicate" role="alert">
+                            <ul>
+                                {% for field, errors in form.errors.items %}
+                                    {% for error in errors %}
+                                        <li><strong>{{ field }}:</strong> {{ error }}</li>
+                                    {% endfor %}
+                                {% endfor %}
+                            </ul>
+                        </div>
                     {% endif %}
                 </div>
                 <!-- Coluna 1 -->
                 <div id="bloco1" class="container-cols d-flex justify-content-center">
-
+                   
                     <div id="coluna" class="input-col-md-2">
                         <div id="linha" class="input-row no-gutters">
-
+                            
                             <div class="input-bottom">
-                                <label for="cpf_condomino">CPF Condômino:</label> <br>
+                                <label for="cpf_condomino">CPF condômino:</label> <br>
                                 <input id="cpf_condomino" name="cpf_condomino" class="form-control-sm {% if form.cpf_condomino.errors %}field-error{% endif %}" type="text" 
-                                        value="{{ request.GET.cpf_condomino }}" readonly="readonly">
+                                    value="{{ form.instance.cpf_condomino.cpf_condomino }}" readonly="readonly">
                                 {% if form.cpf_condomino.errors %}
                                     <div class="text-danger"></div>
                                 {% endif %}
                             </div>
-
                         </div>
                     </div> 
-                </div>      
+                </div> 
 
                 <div id="bloco2" class="container-cols d-flex justify-content-center">
                     
                     <!-- Coluna 1 -->
                     <div id="coluna" class="input-col-md-2">
-
                         <div class="input-bottom"><br> 
-                            <label for="cpf_morador">CPF Morador:</label> <br>
-                            <input id="cpf_morador" name="cpf_morador" class="form-control-sm {% if form.cpf_morador.errors %}field-error{% endif %}" type="text" 
-                                value="{{ morador.cpf_morador }}" readonly>
+                            <label for="cpf_morador">CPF morador:</label> <br>
+                            <input id="cpf_morador" name="cpf_morador" class="form-control-sm {% if form.cpf_morador.errors %}field-error{% endif %}" type="text" value="{{ form.instance.cpf_morador }}" readonly>
                             {% if form.cpf_morador.errors %}
                                 <div class="text-danger"></div>
                             {% endif %}
@@ -106,7 +88,7 @@
                         <div class="input-bottom">
                             <label for="data_nascimento_morador">Data nascimento:</label> <br>
                             <input id="data_nascimento_morador" name="data_nascimento_morador" class="form-control-sm {% if form.data_nascimento_morador.errors %}field-error{% endif %}" type="date" 
-                                value="{{ morador.data_nascimento_morador }}" tabindex="2">
+                                value="{{ form.instance.data_nascimento_morador|date:'Y-m-d' }}" tabindex="2">
                             {% if form.data_nascimento_morador.errors %}
                                 <div class="text-danger"></div>
                             {% endif %}
@@ -114,23 +96,34 @@
 
                         <div class="input-bottom">
                             <label for="email_morador">Email:</label> <br>
-                            <input id="email_morador" name="email_morador" class="form-control-sm {% if form.email_morador.errors %}field-error{% endif %}" type="text" 
-                                value="{{ morador.email_morador }}" tabindex="4">
+                            <input id="email_morador" name="email_morador" class="form-control-sm {% if form.email_morador.errors %}field-error{% endif %}" type="text" value="{{ form.instance.email_morador }}" tabindex="4">
                             {% if form.email_morador.errors %}
+                                <div class="text-danger"></div>
+                            {% endif %}
+                        </div>   
+                        
+                        <div class="input-bottom">
+                            <label for="n_condominio">Número do condomínio:</label> <br>
+                            <select id="n_condominio" name="n_condominio" class="form-control-sm {% if form.n_condominio.errors %}field-error{% endif %}">
+                                <option value="">---</option>
+                                {% for condominio in condominios %}
+                                    <option value="{{ condominio.id }}" {% if form.instance.n_condominio == condominio.id %}selected{% endif %}>{{ condominio.nome }}</option>
+                                {% endfor %}
+                            </select>
+                            {% if form.n_condominio.errors %}
                                 <div class="text-danger"></div>
                             {% endif %}
                         </div>
                         
                     </div>
-                    
+
                     <!-- Coluna 2 -->
                     <div id="coluna" class="input-col-md-2">
-                        <div id="linha" class="input-row no-gutters"><br>                            
+                        <div id="linha" class="input-row no-gutters"><br>   
 
                             <div class="input-bottom">
                                 <label for="nome_morador">Nome do morador:</label> <br>
-                                <input id="nome_morador" name="nome_morador" class="form-control-sm {% if form.nome_morador.errors %}field-error{% endif %}" type="text" 
-                                    value="{{ morador.nome_morador }}" maxlength="60"  autofocus tabindex="1">
+                                <input id="nome_morador" name="nome_morador" class="form-control-sm {% if form.nome_morador.errors %}field-error{% endif %}" type="text" value="{{ form.instance.nome_morador }}" maxlength="60" autofocus tabindex="1">
                                 {% if form.nome_morador.errors %}
                                     <div class="text-danger"></div>
                                 {% endif %}
@@ -138,8 +131,7 @@
                             
                             <div class="input-bottom">
                                 <label for="celular_morador">Celular:</label><br>
-                                <input id="celular_morador" name="celular_morador" class="form-control-sm {% if form.celular_morador.errors %}field-error{% endif %}" type="text" 
-                                    value="{{ morador.celular_morador }}" minlength="11" maxlength="11" tabindex="3">
+                                <input id="celular_morador" name="celular_morador" class="form-control-sm {% if form.celular_morador.errors %}field-error{% endif %}" type="text" value="{{ form.instance.celular_morador }}" minlength="11" maxlength="11" tabindex="3">
                                 {% if form.celular_morador.errors %}
                                     <div class="text-danger"></div>
                                 {% endif %}
@@ -147,25 +139,23 @@
 
                             <div class="input-bottom">
                                 <label for="parentesco_condomino">Parentesco c/ condômino:</label> <br>
-                                <select id="parentesco_condomino" name="parentesco_condomino" class="form-control-sm {% if form.parentesco_condomino.errors %}field-error{% endif %}" 
-                                    value="{{ morador.parentesco_condomino }}" tabindex="5">
-                                    <option value="esposo">Esposo(a)</option>
-                                    <option value="filho">Filho(a)</option>
-                                    <option value="pai">Pai</option>
-                                    <option value="mae">Mãe</option>
-                                    <option value="locatario">Locatário</option>
-                                    <option value="outros">Outros</option>
+                                <select id="parentesco_condomino" name="parentesco_condomino" class="form-control-sm {% if form.parentesco_condomino.errors %}field-error{% endif %}">
+                                    <option value="">---</option>
+                                    {% for key, value in form.parentesco_condomino.field.choices %}
+                                        <option value="{{ key }}" {% if form.instance.parentesco_condomino == key %}selected{% endif %}>{{ value }}</option>
+                                    {% endfor %}
                                 </select>
                                 {% if form.parentesco_condomino.errors %}
                                     <div class="text-danger"></div>
                                 {% endif %}
-                            </div>
+                            </div>                         
                                                       
                         </div>
                     </div>
                 </div>
-                <br><br><br>                
-                <button class="btn btn-primary col-2 me-2 btn-block" value="Update" type="submit" >SALVAR</button>                
+                <br><br><br>    
+                            
+                <button class="btn btn-primary col-2 me-2 btn-block" value="Update" id="btnsalvar" type="submit">SALVAR</button>                
             </form>
         </div>
     </main>

@@ -2,8 +2,9 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login
 from .models import CustomUser, CustomCondominio, CustomCondomino, CustomMorador, CustomBloco, CustomUnidade    
-from .models import CustomVeiculo, CustomColaborador, CustomGaragem, CustomMudanca, CustomOcorrencia, CustomBeneficio, CustomPlano_Conta
+from .models import CustomVeiculo, CustomColaborador, CustomGaragem, CustomMudanca, CustomOcorrencia, CustomBeneficio
 from .models import CustomBeneficioRecebido
+from .models import CustomPlano_Conta
 from django.contrib import messages
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy, reverse
@@ -331,7 +332,6 @@ class MoradoresCreateViews(CreateView):
     template_name = 'moradores_create.html'
     fields = ["cpf_condomino", "cpf_morador", "nome_morador", "data_nascimento_morador", "celular_morador", "email_morador", "parentesco_condomino"]
     
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['condominos'] = CustomCondomino.objects.all()
@@ -351,7 +351,6 @@ class MoradoresCreateViews(CreateView):
         # Verifica se o CPF do morador já está cadastrado
         if CustomMorador.objects.filter(cpf_morador=cpf_morador).exists():
             messages.error(self.request, 'Morador já cadastrado')
-            print("ERROR 1 ######################################")
             return self.form_invalid(form)
         
         # Verifica se o CPF do condômino já está cadastrado
@@ -359,7 +358,6 @@ class MoradoresCreateViews(CreateView):
         print("Queryset result:", condomino)
         if not condomino:
             messages.error(self.request, 'CPF de condômino não encontrado.')
-            print("ERROR 2 ######################################")
             return self.form_invalid(form)
             
         # Assign the condomínio to the morador
@@ -367,59 +365,46 @@ class MoradoresCreateViews(CreateView):
         form.instance.n_condominio = condomino.n_condominio
 
         self.object = form.save()
-        print("passou ######################################")
         
         # Recarrega página com o mesmo cpf
-        return redirect(reverse('moradores_create') + f'?cpf_condomino={cpf_condomino_str}')
-    
+        return redirect(reverse('moradores_create') + f'?cpf_condomino={cpf_condomino_str}')    
 
     def form_invalid(self, form):
-        print("NNNNNNNNN passou ######################################")
         return super().form_invalid(form)
         
 
 # Tela Alteração De Moradores
 
+
 class MoradoresUpdateViews(UpdateView):
     model = CustomMorador
     template_name = 'moradores/moradores_update.html'
-    fields = ["cpf_condomino", "cpf_morador", "nome_morador", "data_nascimento_morador", "celular_morador", "email_morador", "parentesco_condomino"]
+    context_object_name = 'morador'
+    fields = ["cpf_condomino", "cpf_morador", "nome_morador", "data_nascimento_morador", "celular_morador", "email_morador", "parentesco_condomino", "n_condominio"]
     success_url = reverse_lazy("moradores_list")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['cpf_condomino'] = self.request.GET.get('cpf_condomino', '')  # Pass the parameter to the context
-        context['cpf_morador'] = self.request.GET.get('cpf_morador', '')  # Pass the cpf_morador parameter to the context
+        context['condominios'] = CustomCondominio.objects.all()
+        context['condominos'] = CustomCondomino.objects.all()
         return context
 
-    def get(self, request, *args, **kwargs):
-        context = self.get_context_data(pk=kwargs['pk'])
-        return render(request, self.template_name, context)
-    
-    def post(self, request, *args, **kwargs):
-               
-        # Obter a instância do condomínio associada ao condômino
-    
-        
-       
-        # Atualizar a unidade existente
-        cpf_condomino = request.POST.get('cpf_condomino')
-        cpf_morador =request.POST.get('cpf_morador')
-        nome_morador = request.POST.get('nome_morador')
-        data_nascimento_morador = request.POST.get('data_nascimento_morador')
-        celular_morador = request.POST.get('celular_morador')
-        email_morador = request.POST.get('email_morador')
-        parentesco_condomino = request.POST.get('parentesco_condomino')
-        morador.save()        
-        return HttpResponseRedirect(self.success_url)  
+    def form_valid(self, form):
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        return super().form_invalid(form)
+
 
 
 
 
 # Tela Exclusão De Moradores
+
 class MoradoresDeleteViews(DeleteView):
     model = CustomMorador
-    success_url = reverse_lazy("moradores_list")
+    template_name = 'moradores/moradores_confirm_delete.html'
+    success_url = reverse_lazy('moradores_list')
 
 
     #-----------------------Views Blocos.................................................................
@@ -1341,7 +1326,7 @@ class BeneficiosRecebidosDeleteViews(DeleteView):
     success_url = reverse_lazy("beneficios_recebidos_list")
 
     
-
+#-----------------------Views Plano de Contas.......................................................
         
 # Tela Lista a Estrutura Plano Contas 
 class EstruturaPcListViews(ListView):
@@ -1352,7 +1337,7 @@ class EstruturaPcListViews(ListView):
         context = super().get_context_data(**kwargs)
         context['plano_conta'] = CustomPlano_Conta.objects.all()
         return context    
-    
+        
     
 # Tela Cadastro de Plano de contas
 class EstruturaPcCreateViews(CreateView):
@@ -1390,10 +1375,9 @@ class EstruturaPcCreateViews(CreateView):
         if 'dsc_plano_conta' in form.errors:
             form.errors['dsc_plano_conta'] = ['Plano de contas já cadastrado']
         return super().form_invalid(form)
-
     
     
-# Tela Alteração De Condôminos
+# Tela Alteração de Plano de contas
 class EstruturaPcUpdateViews(UpdateView):
     model = CustomPlano_Conta
     context_object_name = 'plano_conta'    
@@ -1421,9 +1405,10 @@ class EstruturaPcUpdateViews(UpdateView):
         #     messages.error(self.request, 'Número de condomínio inválido.')
         #     return self.form_invalid(form)
         
-        return super().form_valid(form)         
+        return super().form_valid(form)     
+        
     
-# Tela Exclusão De Condôminos
+# Tela Exclusão de Plano de contas
 class EstruturaPcDeleteViews(DeleteView):
     model = CustomPlano_Conta
     success_url = reverse_lazy("plano_conta_list")

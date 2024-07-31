@@ -30,19 +30,7 @@
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
-    <script>
-        $(document).ready(function(){
-            $('#cpf_condomino, #cpf_morador').mask('000.000.000-00');
-            $('#btnsalvar').click(function(event) {
-                var cpf_condomino = $('#cpf_condomino').val().replace(/\D/g, '');
-                $('#cpf_condomino').val(cpf_condomino);
-                
-                var cpf_morador = $('#cpf_morador').val().replace(/\D/g, '');
-                $('#cpf_morador').val(cpf_morador);
-            });
-        });
-    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>   
 </head>
 <body>
     <nav class="navbar bg-dark mb-30" data-bs-theme="dark">
@@ -76,7 +64,7 @@
                         <div id="linha" class="input-row no-gutters">
 
                             <div class="input-bottom">
-                                <label for="cpf_condomino">CPF Condômino:</label> <br>
+                                <label for="cpf_condomino">CPF condômino:</label> <br>
                                 <input id="cpf_condomino" name="cpf_condomino" class="form-control-sm {% if form.cpf_condomino.errors %}field-error{% endif %}" type="text" 
                                         value="{{ request.GET.cpf_condomino }}" readonly="readonly">
                                 {% if form.cpf_condomino.errors %}
@@ -93,7 +81,7 @@
                     <!-- Coluna 1 -->
                     <div id="coluna" class="input-col-md-2">
                         <div class="input-bottom"><br> 
-                            <label for="cpf_morador">CPF Morador:</label> <br>
+                            <label for="cpf_morador">CPF morador:</label> <br>
                             <input id="cpf_morador" name="cpf_morador" class="form-control-sm {% if form.cpf_morador.errors %}field-error{% endif %}" type="text" autofocus tabindex="1">
                             {% if form.cpf_morador.errors %}
                                 <div class="text-danger"></div>
@@ -109,7 +97,7 @@
                         </div>
 
                         <div class="input-bottom">
-                            <label for="email_morador">Email Morador:</label> <br>
+                            <label for="email_morador">Email:</label> <br>
                             <input id="email_morador" name="email_morador" class="form-control-sm {% if form.email_morador.errors %}field-error{% endif %}" type="text" tabindex="5">
                             {% if form.email_morador.errors %}
                                 <div class="text-danger"></div>
@@ -139,7 +127,7 @@
                             </div>
 
                             <div class="input-bottom">
-                                <label for="parentesco_condomino">Parentesco:</label> <br>
+                                <label for="parentesco_condomino">Parentesco c/ condômino:</label> <br>
                                 <select id="parentesco_condomino" name="parentesco_condomino" class="form-control-sm {% if form.parentesco_condomino.errors %}field-error{% endif %}" tabindex="6">
                                     <option value="esposo">Esposo(a)</option>
                                     <option value="filho">Filho(a)</option>
@@ -158,13 +146,19 @@
                 <br>
                 <div>
                     <button class="btn btn-primary col-2 me-2 btn-block" type="submit">SALVAR</button>
-                    <button onclick="window.location.href='{% url 'moradores_list' %}'" type="button" class="btn btn-danger col-2 btn-block">Sair</button>
+                    <button onclick="window.location.href='{% url 'moradores_list' %}' " type="button" class="btn btn-danger col-2 btn-block">Sair</button>
                 </div>
             </form>
         </div>
     </main>
 
     <script>
+        $(document).ready(function() {
+            $('#cpf_condomino').mask('000.000.000-00');
+            $('#cpf_morador').mask('000.000.000-00');
+            $('#celular_morador').mask('(00) 00000-0000');
+        });
+
         function validaCPF(cpf) {
             cpf = cpf.replace(/\D+/g, '');
             if (cpf.length !== 11) return false;
@@ -187,6 +181,11 @@
             if (!validaCPF(cpfCondominoInput.value) || !validaCPF(cpfMoradorInput.value)) {
                 event.preventDefault();
                 alert('CPF inválido');
+            } else {
+                cpfCondominoInput.value = cpfCondominoInput.value.replace(/\D+/g, '');
+                cpfMoradorInput.value = cpfMoradorInput.value.replace(/\D+/g, '');
+                const celularMoradorInput = document.getElementById('celular_morador');
+                celularMoradorInput.value = celularMoradorInput.value.replace(/\D+/g, '');
             }
         });
     </script>
