@@ -1252,6 +1252,10 @@ class BeneficiosUpdateViews(UpdateView):
     success_url = reverse_lazy("beneficios_list")
 
     
+# Tela Exclusão de Benefícios
+class BeneficiosDeleteViews(DeleteView):
+    model = CustomBeneficio
+    success_url = reverse_lazy("beneficios_list")
     
     
 
@@ -1362,17 +1366,7 @@ class EstruturaPcCreateViews(CreateView):
         return context
 
     def form_valid(self, form):
-        n_condominio_id = self.request.POST.get('n_condominio')
         
-        try:
-            condominio_instance = CustomCondominio.objects.get(pk=n_condominio_id)
-        except CustomCondominio.DoesNotExist:
-            form.add_error('n_condominio', 'Condomínio não cadastrado')
-            return self.form_invalid(form)
-        
-        form.instance.n_condominio = condominio_instance
-        return super().form_valid(form)
-
         # Get the selected condominio instance
         condominio_instance = form.cleaned_data['n_condominio']
 
@@ -1397,10 +1391,6 @@ class EstruturaPcCreateViews(CreateView):
             form.errors['dsc_plano_conta'] = ['Plano de contas já cadastrado']
         return super().form_invalid(form)
 
-# Tela Exclusão de Benefícios
-class BeneficiosDeleteViews(DeleteView):
-    model = CustomBeneficio
-    success_url = reverse_lazy("beneficios_list")
     
     
 # Tela Alteração De Condôminos
