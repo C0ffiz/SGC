@@ -19,17 +19,18 @@
             display: flex;
             flex-direction: column;
         }
-        .input-col .input-row {
-            margin-bottom: 40px; /* Espaçamento entre as linhas */
+        .input-row, .update-form {
+            margin-bottom: 20px; /* Espaçamento entre as linhas */
         }
         .input-bottom {
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin-bottom: 3px; /* Espaçamento entre as linhas */
+            margin-bottom: 40px; /* Espaçamento entre as linhas */
         }
-        input[type="text"], input[type="date"], input[type="file"], select.form-control {
+        input[type="text"], input[type="date"], input[type="file"], input[type="time"], select.form-control-sm {
             width: 220px;
+            height: 30px;
             margin: auto;
         }
         #btnsalvar {
@@ -80,6 +81,7 @@
                     {% endif %}
                 </div>
                 <div class="container-cols d-flex justify-content-center">
+
                     <!-- Coluna 1 -->
                     <div id="coluna1" class="input-col-md-2">
                         <div class="update-form input-center">
@@ -92,13 +94,23 @@
                         </div>
             
                         <div class="update-form input-center">
-                            <label for="dsc_ocorrencia" class="form-label">Descrição:</label>
-                            <input type="text" class="form-control" id="dsc_ocorrencia" name="dsc_ocorrencia" maxlength="60" tabindex="3" 
-                                value="{{ ocorrencia.dsc_ocorrencia }}" required>
-                            {% if form_errors.dsc_ocorrencia %}
-                                <div class="text-danger">{{ form_errors.dsc_ocorrencia }}</div>
+                            <label for="hora_ocorrencia" class="form-label">Hora ocorrência:</label>
+                            <input type="time" class="form-control" id="hora_ocorrencia" name="hora_ocorrencia" tabindex="2" 
+                                value="{{ ocorrencia.hora_ocorrencia|time:'H:i' }}" required>
+                            {% if form_errors.hora_ocorrencia %}
+                                <div class="text-danger">{{ form_errors.hora_ocorrencia }}</div>
                             {% endif %}
                         </div>
+
+                        <div class="update-form input-center">
+                            <label for="documento_ocorrencia" class="form-label">Documento:</label>
+                            <input type="file" class="form-control" id="documento_ocorrencia" name="documento_ocorrencia" 
+                            value="{{ ocorrencia.documento_ocorrencia }}" required tabindex="5">
+                            {% if form_errors.documento_ocorrencia %}
+                                <div class="text-danger">{{ form_errors.documento_ocorrencia }}</div>
+                            {% endif %}
+                        </div>
+
                     </div>
             
                     <!-- Coluna 2 -->
@@ -112,37 +124,19 @@
                                 <div class="text-danger">{{ form_errors.data_ocorrencia }}</div>
                             {% endif %}
                         </div>
-            
-                        <div class="update-form input-center">
-                            <label  class="form-label">Documento:</label>
-                            
-                                <div class="input-group custom-file-button">
-                                  <label class="input-group-text file-hover-color" for="review-image" role="button">Arquivo:</label>
-                                  <label for="review-image" class="form-control" id="review-image-label" role="button" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border-top-right-radius: 0.375rem; border-bottom-right-radius: 0.375rem;">{{ ocorrencia.documento_ocorrencia.name }}</label>
-                                  <input type="file" class="d-none" id="review-image" name="documento_ocorrencia">
-                                </div>
-                            
-                            {% if form_errors.documento_ocorrencia %}
-                                <div class="text-danger">{{ for_errors.documento_ocorrencia }}</div>
-                            {% endif %}
-                        </div>  
-                    </div>
-            
-                    <!-- Coluna 3 -->
-                    <div id="coluna3" class="input-col-md-2">                        
 
                         <div class="update-form input-center">
-                            <label for="hora_ocorrencia" class="form-label">Hora ocorrência:</label>
-                            <input type="time" class="form-control" id="hora_ocorrencia" name="hora_ocorrencia" tabindex="2" 
-                                value="{{ ocorrencia.hora_ocorrencia|time:'H:i' }}" required>
-                            {% if form_errors.hora_ocorrencia %}
-                                <div class="text-danger">{{ form_errors.hora_ocorrencia }}</div>
+                            <label for="dsc_ocorrencia" class="form-label">Descrição:</label>
+                            <input type="text" class="form-control" id="dsc_ocorrencia" name="dsc_ocorrencia" maxlength="60" tabindex="3" 
+                                value="{{ ocorrencia.dsc_ocorrencia }}" required>
+                            {% if form_errors.dsc_ocorrencia %}
+                                <div class="text-danger">{{ form_errors.dsc_ocorrencia }}</div>
                             {% endif %}
                         </div>
             
                         <div class="update-form input-center">
-                            <label for="n_condominio" class="form-label">Condomínio:</label>
-                            <select id="n_condominio" name="n_condominio" class="form-control" tabindex="5" required>
+                            <label for="n_condominio" class="form-label">Condomínio:</label><br>
+                            <select id="n_condominio" name="n_condominio" class="form-control-sm" tabindex="5" required>
                                 <option value="">Condomínio</option>
                                 {% for condominio in condominios %}
                                     <option value="{{ condominio.n_condominio }}" {% if ocorrencia.n_condominio.n_condominio == condominio.n_condominio %}selected{% endif %}>
@@ -154,12 +148,11 @@
                                 <div class="text-danger">{{ form_errors.n_condominio }}</div>
                             {% endif %}
                         </div>
-                    </div>
-                </div><br><br><br>                
-                <button type="submit" class="btn btn-primary" id="btnsalvar" value="Update">Salvar</button>
-            </form>
-            
 
+                    </div>    
+                </div><br><br>                
+                <button type="submit" class="btn btn-primary" id="btnsalvar" value="Update">Salvar</button>
+            </form>    
             
             <script>
                 $('#review-image').change(function(e) {
@@ -167,3 +160,5 @@
                     $('#review-image-label').text(fileName);
                 });
             </script>
+</body>
+</html>

@@ -15,7 +15,6 @@ body {
     text-wrap: nowrap;
 }
 
-
 #titulo {
     width: 100%;
     align-items: center;
@@ -52,20 +51,20 @@ a:hover{
 }
 
 .container {
-    width: 1000px;
+    /* width: 1000px; */
     text-align: center;
     padding-top: 60px;
     color: #fbf5f5;
-    /* align-items: left;
-    align-content: left; */
+    align-items: center;
+    align-content: center;
 }
 
 .container_1 {
     display: flex;
-    width: 100%;
+    width: auto;
     height: 60px;
     align-items: center;
-    align-content: center;
+    align-content: left;
 }
 
 /* Ajusta o tamanho da linha do cabeçalho */
@@ -82,7 +81,7 @@ a:hover{
 /* Ajusta o tamanho da linha total do corpo dos dados */
 .table {
     /* --bs-table-color: #fff; */
-    width: 900px;
+    /* width: 900px; */
     color: #fff;
     align-items: center;
     align-content: center;    

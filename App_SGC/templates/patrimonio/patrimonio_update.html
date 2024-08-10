@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SGC</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="/static/css/patrimonio.css">
+    <style>
+        .input-bottom {
+            margin-bottom: 5px;
+        }
+        input[type="text"], input[type="date"], input[type="password"], input[type="number"], select {
+            width: 220px;
+            height: 30px;
+        }
+        .container-cols {
+            display: flex;
+            gap: 20px;
+        }
+        .input-col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .input-col .input-row {
+            margin-bottom: 20px;
+        }
+        .field-error {
+            border: 2px solid red;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>   
+</head>
+<body>
+    <nav class="navbar bg-dark mb-30" data-bs-theme="dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'patrimonio_list' %}">CONDOMINIUM</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <h1 id="titulo">ALTERAÇÃO DE PATRIMÔNIO DO CONDOMÍNIO</h1><br>
+        <div class="painel" style="height: 500px;">
+            <form method="POST" novalidate>
+                {% csrf_token %}
+                <div>
+                    {% if error %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ error }}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div id="bloco1" class="container-cols d-flex justify-content-center">
+                    
+                    <!-- Coluna 1 -->
+                    <div id="coluna" class="input-col-md-2">
+
+                        <div class="input-top input-bottom">
+                            <label for="tipo_patrimonio_id" class="form-label">Patrimônio:</label><br>
+                            <select id="tipo_patrimonio_id" name="tipo_patrimonio_id" class="form-control-sm" tabindex="1" required autofocus>
+                                <option value="">Patrimônio</option>
+                                {% for patrimonio in tiposPatrimonio %}
+                                <option value="{{ patrimonio.pk }}" {% if patrimonio.pk == patrimonio.tipo_patrimonio_id %}selected{% endif %}>{{ patrimonio.nome_patrimonio }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="input-bottom">
+                            <label for="valor_patrimonio" class="form-label">Valor (R$):</label><br>
+                            <input id="valor_patrimonio" name="valor_patrimonio" class="form-control-sm" type="text" 
+                                value="{{ patrimonio.valor_patrimonio }}"required tabindex="3">
+                        </div> 
+
+                        <div class="input-bottom">
+                            <label for="data_baixa_patrimonio" class="form-label">Data da baixa:</label><br>
+                            <input id="data_baixa_patrimonio" name="data_baixa_patrimonio" type="date" class="form-control-sm" 
+                                value="{{ patrimonio.data_baixa_patrimonio|date:'Y-m-d' }}" tabindex="5">
+                            {% if form_errors.data_baixa_patrimonio %}
+                                <div class="text-danger">{{ form_errors.data_baixa_patrimonio }}</div>
+                            {% endif %}
+                        </div>     
+                        
+                    </div>
+                    
+                    <!-- Coluna 2 -->
+                    <div id="coluna" class="input-col-md-2">
+                        <div id="linha" class="input-row no-gutters">
+
+                            <div class="input-top input-bottom">
+                                <label for="espaco_adm_id" class="form-label">Espaço :</label><br>
+                                <select id="espaco_adm_id" name="espaco_adm_id" class="form-control-sm" tabindex="2" required>
+                                    <option value="">Espaço</option>
+                                    {% for espaco in espacos %}
+                                    <option value="{{ espaco.pk }}" {% if espaco.pk == patrimonio.espaco_adm_id.pk %}selected{% endif %}>{{ espaco.nome_espaco_adm }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="input-bottom">
+                                <label for="data_disposicao_patrimonio" class="form-label">Data da alocação:</label><br>
+                                <input id="data_disposicao_patrimonio" name="data_disposicao_patrimonio" class="form-control-sm" 
+                                    value="{{ patrimonio.data_disposicao_patrimonio|date:'Y-m-d' }}" type="date" required tabindex="4">
+                                {% if form_errors.data_disposicao_patrimonio %}
+                                    <div class="text-danger">{{ form_errors.data_disposicao_patrimonio }}</div>
+                                {% endif %}
+                            </div>   
+
+                            <div class="input-top input-bottom">
+                                <label for="n_condominio" class="form-label">Condomínio:</label><br>
+                                <select id="n_condominio" name="n_condominio" class="form-control-sm" tabindex="6" required>
+                                    <option value="">Condomínio</option>
+                                    {% for condominio in condominios %}                                  
+                                    <option value="{{ condominio.pk }}" {% if condominio.pk == patrimonio.n_condominio.pk %}selected{% endif %}>{{ condominio.nome_condominio }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                                                
+                        </div>
+                    </div>
+                </div>
+
+                <br><br>
+                <div>
+                    <button class="btn btn-primary col-2 me-2 btn-block" type="submit">SALVAR</button>                        
+                </div>
+
+            </form>
+        </div>
+    </main>      
+</body>
+</html>

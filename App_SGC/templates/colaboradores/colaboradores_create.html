@@ -1,181 +1,182 @@
 <!doctype html>
 <html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>SGC</title>
-    <link rel="stylesheet" href="/static/node_modules/@fortawesome/fontawesome-free/css/all.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <link rel="stylesheet" href="/static/css/colaboradores.css">
-    <style>
-        .container-cols {
-            display: flex;
-            gap: 20px; /* Espaçamento entre as colunas */
-        }
-        .input-col {
-            flex: 1; /* Cada coluna ocupa o mesmo espaço *
-            display: flex;
-            flex-direction: column;
-        }
-        .input-col .input-row {
-            margin-bottom: 20px; /* Espaçamento entre as linhas */
-        }
-        .form-control-sm {
-            /* width: 50%;  */
-        }
-        input[type="text"], input[type="tel"], input[type="email"], input[type="date"], select {
-            width: 220px;
-        }
-        .field-error {
-            border: 2px solid red;
-        }
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>SGC</title>
+        <link rel="stylesheet" href="/static/node_modules/@fortawesome/fontawesome-free/css/all.css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+            integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <link rel="stylesheet" href="/static/css/colaboradores.css">
+        <style>
+            .container-cols {
+                display: flex;
+                gap: 20px; /* Espaçamento entre as colunas */
+            }
+            .input-col {
+                flex: 1; /* Cada coluna ocupa o mesmo espaço *
+                display: flex;
+                flex-direction: column;
+            }
+            .input-col .input-row {
+                margin-bottom: 20px; /* Espaçamento entre as linhas */
+            }
+            .form-control-sm {
+                /* width: 50%;  */
+            }
+            input[type="text"], input[type="tel"], input[type="email"], input[type="date"], select {
+                width: 220px;
+                height: 30px;
+            }
+            .field-error {
+                border: 2px solid red;
+            }
         </style>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
-            <script>
-            $(document).ready(function(){
-                $('#cpf_colaborador').mask('000.000.000-00');
-                $('#btnsalvar').click(function(event) {
-                    var cpf = $('#cpf_colaborador').val().replace(/\D/g, '');
-                $('#cpf_colaborador').val(cpf);
-                });
-            });
-        </script>
-</head>
-<body>
-    <nav class="navbar bg-dark mb-30" data-bs-theme="dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="{% url 'colaboradores_list' %}">CONDOMINIUM</a>
-        </div>
-    </nav>
-
-    <main class="container">
-        <h1 id="titulo_list">CADASTRO DE COLABORADORES</h1> <br>
-        <form method="POST">
-            {% csrf_token %}
-            <div>
-                {% if form.errors %}
-                <div class="alert alert-danger error-duplicate" role="alert">
-                    <ul>
-                        {% for field, errors in form.errors.items %}
-                        {% for error in errors %}
-                        <li><strong>{{ field }}:</strong> {{ error }}</li>
-                        {% endfor %}
-                        {% endfor %}
-                    </ul>
-                </div>
-                {% endif %}
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+                <script>
+                    $(document).ready(function(){
+                        $('#cpf_colaborador').mask('000.000.000-00');
+                        $('#btnsalvar').click(function(event) {
+                            var cpf = $('#cpf_colaborador').val().replace(/\D/g, '');
+                        $('#cpf_colaborador').val(cpf);
+                        });
+                    });
+                </script>
+    </head>
+    <body>
+        <nav class="navbar bg-dark mb-30" data-bs-theme="dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="{% url 'colaboradores_list' %}">CONDOMINIUM</a>
             </div>
-            <div class="container-cols d-flex justify-content-center">
+        </nav>
 
-                <!-- Coluna 1 -->
-
-                <div id="coluna1" class="input-col-md-2">
-                    <div class="input-row">
-                        <div class="input-bottom">
-                            <label for="cpf_colaborador">CPF:</label><br>
-                            <input id="cpf_colaborador" name="cpf_colaborador" class="form-control-sm {% if form.cpf_colaborador.errors %}field-error{% endif %}" type="text" minlength="11" maxlength="11" tabindex="1" autofocus>
-                            {% if form.cpf_colaborador.errors %}
-                                <div class="text-danger"></div>
-                            {% endif %}
-                        </div>
-
-                        <div class="input-top input-bottom">
-                            <label for="endereco_colaborador">Endereço Colaborador:</label><br>
-                            <input id="endereco_colaborador" name="endereco_colaborador" class="form-control-sm {% if form.endereco_colaborador.errors %}field-error{% endif %}" type="text" maxlength="70" tabindex="4">
-                            {% if form.endereco_colaborador.errors %}
-                                <div class="text-danger"></div>
-                            {% endif %}
-                        </div>
-
-                        <div class="input-top input-bottom">
-                            <label for="email_colaborador">Email Colaborador:</label><br>
-                            <input id="email_colaborador" name="email_colaborador" class="form-control-sm {% if form.email_colaborador.errors %}field-error{% endif %}" type="email" maxlength="40" tabindex="7">
-                            {% if form.email_colaborador.errors %}
-                                <div class="text-danger"></div>
-                            {% endif %}
-                        </div>                        
-                       
-                        <div class="input-top input-bottom">
-                            <label for="n_condominio">Condomínio:</label><br>
-                            <select id="n_condominio" name="n_condominio" class="form-control-sm {% if form.n_condominio.errors %}field-error{% endif %}" tabindex="10">
-                                <option value="">Condomínio</option>
-                                {% for condominio in condominios %}
-                                <option value="{{ condominio.n_condominio }}">{{ condominio.n_condominio }} - {{ condominio.nome_condominio }}</option>
-                                {% endfor %}
-                            </select>
-                            {% if form.n_condominio.errors %}
-                                <div class="text-danger"></div>
-                            {% endif %}
-                        </div>
+        <main class="container">
+            <h1 id="titulo_list">CADASTRO DE COLABORADORES</h1> <br>
+            <form method="POST">
+                {% csrf_token %}
+                <div>
+                    {% if form.errors %}
+                    <div class="alert alert-danger error-duplicate" role="alert">
+                        <ul>
+                            {% for field, errors in form.errors.items %}
+                            {% for error in errors %}
+                            <li><strong>{{ field }}:</strong> {{ error }}</li>
+                            {% endfor %}
+                            {% endfor %}
+                        </ul>
                     </div>
+                    {% endif %}
                 </div>
+                <div class="container-cols d-flex justify-content-center">
 
-                <!-- Coluna 2 -->       
+                    <!-- Coluna 1 -->
 
-                <div id="coluna2" class="input-col-md-2">
-                    <div class="input-row">
-                        <div class="input-bottom">
-                            <label for="nome_colaborador">Nome Colaborador:</label><br>
-                            <input id="nome_colaborador" name="nome_colaborador" class="form-control-sm {% if form.nome_colaborador.errors %}field-error{% endif %}" type="text" minlength="1" maxlength="40" tabindex="2">
-                            {% if form.nome_colaborador.errors %}
-                                <div class="text-danger"></div>
-                            {% endif %}
-                        </div>
+                    <div id="coluna1" class="input-col-md-2">
+                        <div class="input-row">
+                            <div class="input-bottom">
+                                <label for="cpf_colaborador">CPF:</label><br>
+                                <input id="cpf_colaborador" name="cpf_colaborador" class="form-control-sm {% if form.cpf_colaborador.errors %}field-error{% endif %}" type="text" minlength="11" maxlength="11" tabindex="1" autofocus>
+                                {% if form.cpf_colaborador.errors %}
+                                    <div class="text-danger"></div>
+                                {% endif %}
+                            </div>
 
-                        <div class="input-top input-bottom">
-                            <label for="telefone_colaborador">Telefone Colaborador:</label><br>
-                            <input id="telefone_colaborador" name="telefone_colaborador" class="form-control-sm {% if form.telefone_colaborador.errors %}field-error{% endif %}" type="tel" maxlength="9" tabindex="5">
-                            {% if form.telefone_colaborador.errors %}
-                                <div class="text-danger"></div>
-                            {% endif %}
-                        </div>
+                            <div class="input-top input-bottom">
+                                <label for="endereco_colaborador">Endereço Colaborador:</label><br>
+                                <input id="endereco_colaborador" name="endereco_colaborador" class="form-control-sm {% if form.endereco_colaborador.errors %}field-error{% endif %}" type="text" maxlength="70" tabindex="4">
+                                {% if form.endereco_colaborador.errors %}
+                                    <div class="text-danger"></div>
+                                {% endif %}
+                            </div>
 
-                        <div class="input-bottom">
-                            <label for="nome_contato_colaborador">Nome Contato Colaborador:</label><br>
-                            <input id="nome_contato_colaborador" name="nome_contato_colaborador" class="form-control-sm {% if form.nome_contato_colaborador.errors %}field-error{% endif %}" type="text" minlength="1" maxlength="40" tabindex="8">
-                            {% if form.nome_contato_colaborador.errors %}
-                                <div class="text-danger"></div>
-                            {% endif %}
-                        </div>                         
-                    </div>
-                </div>
-
-                <!-- Coluna 3 -->
-
-                <div id="coluna3" class="input-col-md-2">
-                    <div class="input-row">
-                        <div class="input-top input-bottom">
-                            <label for="data_nascimento_colaborador">Data Nascimento Colaborador:</label><br>
-                            <input id="data_nascimento_colaborador" name="data_nascimento_colaborador" class="form-control-sm {% if form.data_nascimento_colaborador.errors %}field-error{% endif %}" type="date" tabindex="3">
-                            {% if form.data_nascimento_colaborador.errors %}
-                                <div class="text-danger"></div>
-                            {% endif %}
-                        </div>
-
-                        <div class="input-top input-bottom">
-                            <label for="celular_colaborador">Celular Colaborador:</label><br>
-                            <input id="celular_colaborador" name="celular_colaborador" class="form-control-sm {% if form.celular_colaborador.errors %}field-error{% endif %}" type="tel" minlength="9" maxlength="11" tabindex="6">
-                            {% if form.celular_colaborador.errors %}
-                                <div class="text-danger"></div>
-                            {% endif %}
-                        </div>
+                            <div class="input-top input-bottom">
+                                <label for="email_colaborador">Email Colaborador:</label><br>
+                                <input id="email_colaborador" name="email_colaborador" class="form-control-sm {% if form.email_colaborador.errors %}field-error{% endif %}" type="email" maxlength="40" tabindex="7">
+                                {% if form.email_colaborador.errors %}
+                                    <div class="text-danger"></div>
+                                {% endif %}
+                            </div>                        
                         
-                        <div class="input-top input-bottom">
-                            <label for="celular_contato_colaborador">Celular Contato Colaborador:</label><br>
-                            <input id="celular_contato_colaborador" name="celular_contato_colaborador" class="form-control-sm {% if form.celular_contato_colaborador.errors %}field-error{% endif %}" type="tel" minlength="9" maxlength="11" tabindex="9">
-                            {% if form.celular_contato_colaborador.errors %}
-                                <div class="text-danger"></div>
-                            {% endif %}
-                        </div>                       
+                            <div class="input-top input-bottom">
+                                <label for="n_condominio">Condomínio:</label><br>
+                                <select id="n_condominio" name="n_condominio" class="form-control-sm {% if form.n_condominio.errors %}field-error{% endif %}" tabindex="10">
+                                    <option value="">Condomínio</option>
+                                    {% for condominio in condominios %}
+                                    <option value="{{ condominio.n_condominio }}">{{ condominio.n_condominio }} - {{ condominio.nome_condominio }}</option>
+                                    {% endfor %}
+                                </select>
+                                {% if form.n_condominio.errors %}
+                                    <div class="text-danger"></div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Coluna 2 -->       
+
+                    <div id="coluna2" class="input-col-md-2">
+                        <div class="input-row">
+                            <div class="input-bottom">
+                                <label for="nome_colaborador">Nome Colaborador:</label><br>
+                                <input id="nome_colaborador" name="nome_colaborador" class="form-control-sm {% if form.nome_colaborador.errors %}field-error{% endif %}" type="text" minlength="1" maxlength="40" tabindex="2">
+                                {% if form.nome_colaborador.errors %}
+                                    <div class="text-danger"></div>
+                                {% endif %}
+                            </div>
+
+                            <div class="input-top input-bottom">
+                                <label for="telefone_colaborador">Telefone Colaborador:</label><br>
+                                <input id="telefone_colaborador" name="telefone_colaborador" class="form-control-sm {% if form.telefone_colaborador.errors %}field-error{% endif %}" type="tel" maxlength="9" tabindex="5">
+                                {% if form.telefone_colaborador.errors %}
+                                    <div class="text-danger"></div>
+                                {% endif %}
+                            </div>
+
+                            <div class="input-bottom">
+                                <label for="nome_contato_colaborador">Nome Contato Colaborador:</label><br>
+                                <input id="nome_contato_colaborador" name="nome_contato_colaborador" class="form-control-sm {% if form.nome_contato_colaborador.errors %}field-error{% endif %}" type="text" minlength="1" maxlength="40" tabindex="8">
+                                {% if form.nome_contato_colaborador.errors %}
+                                    <div class="text-danger"></div>
+                                {% endif %}
+                            </div>                         
+                        </div>
+                    </div>
+
+                    <!-- Coluna 3 -->
+
+                    <div id="coluna3" class="input-col-md-2">
+                        <div class="input-row">
+                            <div class="input-top input-bottom">
+                                <label for="data_nascimento_colaborador">Data Nascimento Colaborador:</label><br>
+                                <input id="data_nascimento_colaborador" name="data_nascimento_colaborador" class="form-control-sm {% if form.data_nascimento_colaborador.errors %}field-error{% endif %}" type="date" tabindex="3">
+                                {% if form.data_nascimento_colaborador.errors %}
+                                    <div class="text-danger"></div>
+                                {% endif %}
+                            </div>
+
+                            <div class="input-top input-bottom">
+                                <label for="celular_colaborador">Celular Colaborador:</label><br>
+                                <input id="celular_colaborador" name="celular_colaborador" class="form-control-sm {% if form.celular_colaborador.errors %}field-error{% endif %}" type="tel" minlength="9" maxlength="11" tabindex="6">
+                                {% if form.celular_colaborador.errors %}
+                                    <div class="text-danger"></div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="input-top input-bottom">
+                                <label for="celular_contato_colaborador">Celular Contato Colaborador:</label><br>
+                                <input id="celular_contato_colaborador" name="celular_contato_colaborador" class="form-control-sm {% if form.celular_contato_colaborador.errors %}field-error{% endif %}" type="tel" minlength="9" maxlength="11" tabindex="9">
+                                {% if form.celular_contato_colaborador.errors %}
+                                    <div class="text-danger"></div>
+                                {% endif %}
+                            </div>                       
+                        </div>
                     </div>
                 </div>
-            </div>
-            <br><br>
-            <button id="btnsalvar" type="submit">SALVAR</button>
-        </form>
-    </main>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+                <br><br>
+                <button id="btnsalvar" type="submit">SALVAR</button>
+            </form>
+        </main>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
 </html>

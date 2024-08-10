@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="pt-br">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- Folhas de Estilo Externas -->
+        <link rel="stylesheet" href="/static/node_modules/@fortawesome/fontawesome-free/css/all.css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+            integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <!-- Folhas de Estilo Locais -->
+        <link rel="stylesheet" href="/static/css/correspondencias.css">
+        <title>SGC</title>
+    </head>
+
+    <body>
+        <!-- Barra de Navegação -->
+        <nav class="navbar bg-dark mb-30" data-bs-theme="dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="home">CONDOMINIUM</a>
+            </div>
+        </nav>
+
+        <!-- Corpo da Página -->
+        <main class="container">
+            <h1 id="titulo_list">CORRESPONDÊNCIAS</h1>
+
+            <!-- Opções de Pesquisa e Cadastro -->
+            <div class="container_1">
+                <div class="box">
+                    <a href="{% url 'correspondencias_create' %}" class="btn btn-primary" id="cadastrar">CADASTRAR</a>
+                </div>
+
+                <div class="box" id="divBusca">
+                    <input type="text" id="txtBusca" placeholder="Bloco" />
+                    <button id="btnBusca">BUSCAR</button>
+                </div>
+            </div>
+
+            <!-- Tabela de Unidades -->
+            <table id="correspondenciasTable" class="table auto-layout">
+                <thead>
+                    <tr>
+                        <th scope="col" class="close-th">BLOCO</th>
+                        <th scope="col" class="close-th">UNIDADE</th>
+                        <th scope="col" class="close-th">DSC</th>
+                        <th scope="col" class="close-th">RECEBIMENTO</th>
+                        <th scope="col">
+                            <a href="#" class="sort-header link-arrow down" data-sort="data_retirada_correspondencia">
+                                RETIRADA
+                                <span class="sort-icon"></span>
+                                <span class="sorting-label"></span>
+                            </a>
+                        </th>
+                        <th scope="col" class="close-th">RETIRANTE</th>
+                        <th scope="col" class="close-th">CONDOMÍNIO</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for corr in correspondencias_list %}
+                    <tr>
+                        <td>{{ corr.bloco_id.bloco }}</td>
+                        <td>{{ corr.unidade_id.unidade }}</td>
+                        <td>{{ corr.dsc_correspondencia }}</td>
+                        <td class="date">{{ corr.data_recebimento_correspondencia }}</td>
+                        <td class="date">{{ corr.data_retirada_correspondencia }}</td>
+                        <td>{{ corr.retirante_correspondencia }}</td>
+                        <td>{{ corr.n_condominio.nome_condominio }}</td>
+                        <td style="border: none; width:200px">
+                            <a href="{% url 'correspondencias_update' pk=corr.pk %}" class="btn btn-primary btn-sm">ALTERAR</a>
+                            <a href="{% url 'correspondencias_delete' pk=corr.pk %}" class="btn btn-danger btn-sm">EXCLUIR</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </main>
+
+        <!-- Scripts JavaScript -->
+        <script>
+            // Função para formatar datas no formato dd/mm/yyyy
+            function formatDate(dateString) {
+                var date = new Date(dateString);
+                // Verifica se a data é válida
+                if (isNaN(date.getTime())) {
+                    return ''; // Retorna uma string vazia se a data for inválida
+                }
+                var day = ("0" + date.getDate()).slice(-2);
+                var month = ("0" + (date.getMonth() + 1)).slice(-2);
+                var year = date.getFullYear();
+                return `${day}/${month}/${year}`;
+            }
+
+            // Função para aplicar a formatação às datas na tabela
+            function formatTableDates() {
+                var dateCells = document.querySelectorAll('#correspondenciasTable .date');
+                dateCells.forEach(function(cell) {
+                    var originalDate = cell.textContent.trim();
+                    if (originalDate) {
+                        cell.textContent = formatDate(originalDate);
+                    } else {
+                        cell.textContent = ''; // Se não houver data, mantém o campo vazio
+                    }
+                });
+            }
+
+            // Função para manipular a pesquisa/filtragem
+            function handleSearch() {
+                document.getElementById('txtBusca').addEventListener('input', function () {
+                    var searchText = this.value.toLowerCase();
+                    var rows = document.querySelectorAll('#correspondenciasTable tbody tr');
+
+                    rows.forEach(function (row) {
+                        var bloco = row.querySelector('td').textContent.toLowerCase();
+                        // Check if bloco contains the search text
+                        if (bloco.includes(searchText)) {
+                            row.style.display = '';
+                        } else {
+                            row.style.display = 'none';
+                        }
+                    });
+                });
+            }
+
+        // Função para manipular a ordenação das colunas
+        function handleSort() {
+            var headers = document.querySelectorAll('.sort-header');
+            headers.forEach(function (header) {
+                header.addEventListener('click', function (event) {
+                    event.preventDefault(); // Evita comportamento padrão do link
+                    var column = this.getAttribute('data-sort');
+                    var isAscending = this.classList.contains('asc');
+                    toggleSortIcon(this, isAscending);
+                    sortTable(column, isAscending);
+                });
+            });
+        }
+
+        // Função para alternar o ícone de ordenação
+        function toggleSortIcon(header, isAscending) {
+            header.classList.toggle('asc', !isAscending);
+            header.classList.toggle('desc', isAscending);
+        }
+
+        // Função para ordenar as linhas da tabela
+        function sortTable(column, isAscending) {
+            var table = document.getElementById('correspondenciasTable');
+            var tbody = table.querySelector('tbody');
+            var rows = Array.from(tbody.rows);
+            var columnIndex = Array.from(table.querySelectorAll('th')).findIndex(th => th.querySelector(`[data-sort="${column}"]`));
+
+            rows.sort(function (a, b) {
+                var x = a.cells[columnIndex].textContent.trim().toLowerCase();
+                var y = b.cells[columnIndex].textContent.trim().toLowerCase();
+                return isAscending ? x.localeCompare(y) : y.localeCompare(x);
+            });
+
+            while (tbody.firstChild) {
+                tbody.removeChild(tbody.firstChild);
+            }
+
+            rows.forEach(function (row) {
+                tbody.appendChild(row);
+            });
+        }
+
+            // Ouvinte de evento para DOMContentLoaded para chamar as funções necessárias
+            document.addEventListener('DOMContentLoaded', function () {
+                formatTableDates();
+                handleSearch();
+                handleSort();
+            });
+        </script>
+
+        <!-- Bootstrap JavaScript -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+
+</html>

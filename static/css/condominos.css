@@ -61,7 +61,7 @@ a:hover{
 
 .container_1 {
     display: flex;
-    width: 100%;
+    width: auto;
     height: 60px;
     align-items: center;
     align-content: left;
@@ -74,9 +74,10 @@ th {
 }
 
 
-
+/* Ajusta o tamanho da linha total do corpo dos dados */
 .table {
     /* --bs-table-color: #fff; */
+    
     color: #fff;
     align-items: center;
     align-content: center;
@@ -289,19 +290,31 @@ th {
     font-weight: bold;
 }
 
+/* Ajustar o layout das colunas */
+.container-cols {
+    display: flex;
+    gap: 20px; /* Ajuste o espaço entre as colunas, se necessário */
+}
 
+/* As colunas devem ocupar o mesmo espaço */
 .input-col {
-    width: 120px;
-   
+    flex: 1; /* Cada coluna ocupa o mesmo espaço */
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Espaçamento entre as linhas de inputs dentro de cada coluna */
 }
 
-.input-row{     
+/* Ajustar o estilo dos campos de entrada */
+.input-row {
+    display: flex;
+    flex-direction: column;
     align-items: center;
-    
+    margin-bottom: 8px; 
+    gap: 10px; /* Espaçamento entre os campos de entrada */
 }
 
-.input-row > div {
-    margin-bottom: 8px; /* Espaçamento entre os elementos dentro de cada linha */
-    
+/* Ajustar o estilo dos campos de entrada */
+.form-control-sm {
+    width: 100%; /* Faz com que os campos de entrada ocupem toda a largura disponível */
+    box-sizing: border-box; /* Inclui o padding e a borda no cálculo da largura */
 }
-

@@ -24,8 +24,8 @@
             <p>Deseja realmente excluir o benefício?</p><br>
             <form method="POST">
                 {% csrf_token %}
-                <button type="submit" class="btn btn-danger btn-sm me-2 btn-excluir">EXCLUIR</button>
                 <a href="{% url 'beneficios_recebidos_list' %}" class="btn btn-primary btn-sm btn-cancelar">CANCELAR</a>
+                <button type="submit" class="btn btn-danger btn-sm me-2 btn-excluir">EXCLUIR</button>                
             </form>  
         </main>
 

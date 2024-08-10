@@ -14,26 +14,22 @@
     <style>
         .container-cols {
             display: flex;
-            gap: 20px;
-            /* Espaçamento entre as colunas */
+            gap: 20px; /* Espaçamento entre as colunas */
         }
-
         .input-col {
-            flex: 1;
-            /* Cada coluna ocupa o mesmo espaço */
+            flex: 1; /* Cada coluna ocupa o mesmo espaço */
             display: flex;
             flex-direction: column;
         }
-
         .input-col .input-row {
-            margin-bottom: 20px;
-            /* Espaçamento entre as linhas */
+            margin-bottom: 20px; /* Espaçamento entre as linhas */
         }
-
-        input[type="text"],
-        input[type="date"],
-        select {
+        .form-control-sm {
+            /* width: 50%;  */
+        }
+        input[type="text"], input[type="date"], select {
             width: 220px;
+            height: 30px;
         }
     </style>
 </head>
@@ -64,13 +60,13 @@
                         <div class="update-form">
                             <label for="telefone_condomino">Telefone:</label><br>
                             <input id="telefone_condomino" name="telefone_condomino" class="form-control-sm" type="text" minlength="10" maxlength="14"
-                                value="{{ condominos_list.telefone_condomino }}">
+                                value="{{ condominos_list.telefone_condomino }}" tabindex="3">
                         </div>
 
                         <div class="update-form">
                             <label for="data_aquisicao_imovel">Aquisição imóvel:</label><br>
                             <input id="data_aquisicao_imovel" name="data_aquisicao_imovel" class="form-control-sm" type="date" minlength="10" maxlength="10"
-                                value="{{ condominos_list.data_aquisicao_imovel|date:'Y-m-d' }}">
+                                value="{{ condominos_list.data_aquisicao_imovel|date:'Y-m-d' }}" tabindex="6">
                         </div>                       
                     </div>
                 </div>
@@ -81,18 +77,18 @@
                         <div class="update-form">
                             <label for="nome_condomino">Nome:</label><br>
                             <input id="nome_condomino" name="nome_condomino" class="form-control-sm" type="text" maxlength="40"
-                                value="{{ condominos_list.nome_condomino }}" autofocus>
+                                value="{{ condominos_list.nome_condomino }}" tabindex="1" autofocus>
                         </div>                    
 
                         <div class="update-form">
                             <label for="celular_condomino">Celular:</label><br>
                             <input id="celular_condomino" name="celular_condomino" class="form-control-sm" type="text" minlength="11" maxlength="15"
-                                value="{{ condominos_list.celular_condomino }}">
+                                value="{{ condominos_list.celular_condomino }}" tabindex="4">
                         </div>
 
                         <div class="update-form">
                             <label for="n_condominio">Condomínio:</label><br>
-                            <select id="n_condominio" name="n_condominio" class="form-control-sm">
+                            <select id="n_condominio" name="n_condominio" class="form-control-sm" tabindex="7">
                                 <option value="">Condomínio</option>
                                 {% for condominio in condominios %}
                                 <option value="{{ condominio.n_condominio }}">{{ condominio.n_condominio }} - {{ condominio.nome_condominio }}</option>
@@ -107,14 +103,14 @@
                     <div class="input-row">
                         <div class="update-form">
                             <label for="data_nascimento_condomino">Data Nascimento:</label><br>
-                            <input id="data_nascimento_condomino" name="data_nascimento_condomino" class="form-control-sm" type="date" minlength="10" maxlength="10"
+                            <input id="data_nascimento_condomino" name="data_nascimento_condomino" class="form-control-sm" type="date" minlength="10" maxlength="10" tabindex="2"
                                 value="{{ condominos_list.data_nascimento_condomino|date:'Y-m-d' }}">
                         </div>                       
 
                         <div class="update-form">
                             <label for="email_condomino">E-mail:</label><br>
                             <input id="email_condomino" name="email_condomino" class="form-control-sm" type="text" minlength="4" maxlength="40"
-                                value="{{ condominos_list.email_condomino }}">
+                                value="{{ condominos_list.email_condomino }}" tabindex="5">
                         </div>
                     </div>
                 </div>

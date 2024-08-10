@@ -343,6 +343,131 @@ class CustomBeneficioRecebido(models.Model):
         unique_together = ('beneficio_id', 'cpf_colaborador', 'n_condominio') 
 
 
+# Definição da Tabela correspondências................................................................... 
+class CustomCorrespondencia(models.Model):
+    correspondencia_id = models.AutoField(primary_key=True)
+    data_recebimento_correspondencia = models.DateField(verbose_name="Data recebiemento *", null=False, blank=False)
+    dsc_correspondencia = models.CharField(verbose_name="Dsc *", max_length=60, null=True, blank=True)
+    data_retirada_correspondencia = models.DateField(verbose_name="Data retirada *", null=True, blank=True)
+    retirante_correspondencia = models.CharField(verbose_name="Retirante *", max_length=60, null=True, blank=True)
+    bloco_id = models.ForeignKey(
+        'CustomBloco', 
+        on_delete=models.CASCADE, 
+        verbose_name="Bloco *", 
+        null=False, 
+        blank=False,
+        related_name='correspondencia_por_bloco')
+    unidade_id = models.ForeignKey(
+        'CustomUnidade', 
+        on_delete=models.CASCADE, 
+        verbose_name="Mudança *", 
+        null=False, 
+        blank=False,
+        related_name='correspondencia_por_unidade')
+    n_condominio = models.ForeignKey(
+        'CustomCondominio',  
+        on_delete=models.CASCADE,
+        verbose_name="Número Condominio *",
+        null=False,
+        blank=False)
+               
+    class Meta:
+        db_table = 'correspondencia'
+        managed = True
+        ordering = ['bloco_id__bloco', 'unidade_id__unidade']
+
+
+
+
+
+
+
+#
+# DEFINIÇÃO DE TABELAS DO SUBSISTEMA PATRIMÔNIO ........................................................
+#
+
+#  Definição da Tabela Tipos de Patrimônio................................................................
+class CustomTipoPatrimonio(models.Model):
+    tipo_patrimonio_id = models.AutoField(primary_key=True)
+    nome_patrimonio = models.CharField(verbose_name="Nome patrimônio *", max_length=40, null=False, blank=False)
+    n_patrimonio = models.CharField(verbose_name="Número patrimônio", max_length=20, null=True, blank=True)  
+    cor_patrimonio = models.CharField(verbose_name="Cor patrimônio", max_length=20, null=True, blank=True)  
+    descricao_patrimonio = models.CharField(verbose_name="Descrição patrimônio *", max_length=60, null=False, blank=False)  
+    n_condominio = models.ForeignKey(
+        CustomCondominio,  # Foreign key to CustomCondominio
+        on_delete=models.CASCADE,
+        verbose_name="Número condomínio *",
+        null=False,
+        blank=False,
+    )
+
+    class Meta:
+        db_table = 'tipo_patrimonio'
+        managed = True
+        ordering = ['nome_patrimonio']
+
+
+
+#  Definição da Tabela Espaços Administrativos............................................................
+class CustomEspacoAdm(models.Model):
+    espaco_adm_id = models.AutoField(primary_key=True)
+    nome_espaco_adm = models.CharField(verbose_name="Nome espaço *", max_length=60, null=False, blank=False)
+    n_condominio = models.ForeignKey(
+        CustomCondominio,  # Foreign key to CustomCondominio
+        on_delete=models.CASCADE,
+        verbose_name="Número condomínio *",
+        null=False,
+        blank=False,
+    )
+
+    class Meta:
+        db_table = 'espaco_adm'
+        managed = True
+        ordering = ['nome_espaco_adm']
+
+
+
+#  Definição da Tabela de Patrimônio............................................................
+from django.db import models
+
+class CustomPatrimonio(models.Model):
+    patrimonio_id = models.AutoField(primary_key=True)
+    tipo_patrimonio_id = models.ForeignKey(
+        'CustomTipoPatrimonio', 
+        on_delete=models.CASCADE, 
+        verbose_name="Tipo patrimônio *", 
+        null=False, 
+        blank=False,
+        related_name='patrimonio_por_tipo')    
+    espaco_adm_id = models.ForeignKey(
+        'CustomEspacoAdm', 
+        on_delete=models.CASCADE, 
+        verbose_name="Patrimônio *", 
+        null=False, 
+        blank=False,
+        related_name='patrimonio_por_espaco')
+    valor_patrimonio = models.DecimalField(
+        verbose_name="Valor do patrimônio *", 
+        max_digits=15, 
+        decimal_places=2, 
+        null=False, 
+        blank=False, 
+        default=0
+    )    
+    data_disposicao_patrimonio = models.DateField(verbose_name="Data disposição *", null=False, blank=False) 
+    data_baixa_patrimonio = models.DateField(verbose_name="Data baixa *", null=True, blank=True)        
+    n_condominio = models.ForeignKey(
+        CustomCondominio,  
+        on_delete=models.CASCADE,
+        verbose_name="Número Condomínio *",
+        null=False,
+        blank=False,        
+    )              
+    class Meta:
+        db_table = 'patrimonio'
+        managed = True
+
+        
 
 
 
@@ -397,7 +522,8 @@ class CustomConta_Receber(models.Model):
         null=False,
         blank=False)
     dsc_conta_receber = models.CharField(verbose_name="Dsc *", max_length=60, null=True, blank=True)
-    valor_conta_receber = models.IntegerField(verbose_name="Valor *", null=False, blank=False)    
+    valor_conta_receber = models.IntegerField(verbose_name="Valor a receber*", null=False, blank=False) 
+    valor_conta_recebido = models.IntegerField(verbose_name="Valor recebido *", null=True, blank=True)     
     nivel_1 = models.ForeignKey(
         'CustomPlano_Conta',  
         on_delete=models.CASCADE,
@@ -462,6 +588,7 @@ class CustomConta_Pagar(models.Model):
         blank=False)
     dsc_conta_pagar = models.CharField(verbose_name="Dsc *", max_length=60, null=True, blank=True)
     valor_conta_pagar = models.IntegerField(verbose_name="Valor *", null=False, blank=False)
+    valor_conta_paga = models.IntegerField(verbose_name="Valor recebido *", null=True, blank=True)  
     documento_contas_pagar = models.FileField(upload_to='documentos_ocorrencias/', null=False, blank=False)
     nivel_1 = models.ForeignKey(
         'CustomPlano_Conta',  

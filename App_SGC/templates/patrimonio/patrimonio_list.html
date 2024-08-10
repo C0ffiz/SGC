@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="pt-br">
+{% load custom_filters %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/static/node_modules/@fortawesome/fontawesome-free/css/all.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="/static/css/patrimonio.css">
+    <title>SGC</title>
+</head>
+
+<body>
+    <nav class="navbar bg-dark mb-30" data-bs-theme="dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="home">CONDOMINIUM</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <h1 id="titulo_list">PATRIMÔNIO DO CONDOMÍNIO</h1>
+
+        <div class="container_1">
+            <div class="box">
+                <a href="{% url 'patrimonio_create' %}" class="btn btn-primary" id="cadastrar">CADASTRAR</a>
+            </div>
+
+            <div class="box" id="divBusca">
+                <input type="text" id="txtBusca" placeholder="Patrimônio" />
+                <button id="btnBusca">BUSCAR</button>
+            </div>
+        </div>
+
+        <table id="patrimonioTable" class="table auto-layout">
+            <thead>
+                <tr>
+                    <th scope="col" class="close-th">PATRIMÔNIO</th>                        
+                    <th scope="col" class="close-th">LOCAL ALOCADO</th>  
+                    <th scope="col" class="close-th">VALOR (R$)</th>                      
+                    <th scope="col" class="close-th">DATA DA ALOCAÇÃO</th>
+                    <th scope="col">
+                        <a href="#" class="sort-header link-arrow down" data-sort="data_baixa_patrimonio">
+                            DATA BAIXA
+                            <span class="sort-icon"></span>
+                            <span class="sorting-label"></span>
+                        </a>
+                    </th>
+                    <th scope="col" class="close-th">CONDOMÍNIO</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for patr in patrimonio_list %}
+                    <tr>
+                        <td>{{ patr.tipo_patrimonio_id.nome_patrimonio }}</td>
+                        <td>{{ patr.espaco_adm_id.nome_espaco_adm }}</td>
+                        <td>{{ patr.valor_patrimonio|currency_brl |default_if_none:'' }}</td> 
+                        <td>{{ patr.data_disposicao_patrimonio|date:"d/m/y" }}</td>
+                        <td>{{ patr.data_baixa_patrimonio|date:"d/m/y"|default_if_none:'' }}</td>                        
+                        <td>{{ patr.n_condominio.nome_condominio }}</td>
+                        <td style="border: none; width:200px">
+                            <a href="{% url 'patrimonio_update' pk=patr.pk %}" class="btn btn-primary btn-sm">ALTERAR</a>
+                            <a href="{% url 'patrimonio_delete' pk=patr.pk %}" class="btn btn-danger btn-sm">EXCLUIR</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {                
+            handleSearch();
+            handleSort();
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
