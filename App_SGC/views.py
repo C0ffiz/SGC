@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login
 from .models import CustomUser, CustomCondominio, CustomCondomino, CustomMorador, CustomBloco, CustomUnidade    
-from .models import CustomVeiculo, CustomColaborador, CustomGaragem, CustomMudanca, CustomOcorrencia, CustomPlano_Conta
+from .models import CustomVeiculo, CustomColaborador, CustomGaragem, CustomMudanca, CustomOcorrencia, FinanceiroEstrutura, Receita
 from django.contrib import messages
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy, reverse
@@ -12,7 +12,8 @@ from django.views.generic.edit import CreateView
 from django.contrib import messages
 from django.views import View
 from django.shortcuts import get_object_or_404
-
+import json
+from django.http import JsonResponse
 
 
 #-----------------------Views Login.................................................................
@@ -1173,85 +1174,157 @@ class OcorrenciasDeleteViews(DeleteView):
     
     
 # Tela Lista a Estrutura Plano Contas 
-class EstruturaPcListViews(ListView):
-    model = CustomPlano_Conta
-    context_object_name = 'plano_conta_list'
+class FinanceiroEstruturaListViews(ListView):
+    model = FinanceiroEstrutura
+    context_object_name = 'financeiro_estrutura_list'
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['plano_conta'] = CustomPlano_Conta.objects.all()
-        return context    
+        financeiro_estrutura_list = FinanceiroEstrutura.objects.all()
+
+        # Ordenar as categorias baseando-se em sua posição na hierarquia
+        def sort_key(fel):
+            return [int(n) for n in fel.get_nivel().split('.') if n]
+
+        sorted_list = sorted(financeiro_estrutura_list, key=sort_key)
+
+        # Adicionar padding baseado no nível
+        for fel in sorted_list:
+            nivel_count = len(fel.get_nivel().split('.'))
+            fel.padding_left = nivel_count * 20  # Ajuste o valor conforme necessário
+
+        context['financeiro_estrutura_list'] = sorted_list
+        
+        return context
+
+        
     
     
 # Tela Cadastro de Plano de contas
-class EstruturaPcCreateViews(CreateView):
-    model = CustomPlano_Conta
-    fields = ["nivel_1", "nivel_2", "nivel_3", "nivel_4", "dsc_plano_conta", "n_condominio"]
-    success_url = reverse_lazy("plano_conta_list")
-    
+class FinanceiroEstruturaCreateViews(CreateView):
+    model = FinanceiroEstrutura
+    fields = ['nome', 'parent', 'n_condominio']
+    template_name = 'financeiro_estrutura_form.html'
+    success_url = reverse_lazy('financeiro_estrutura_list')
+    widgets = {
+            'n_condominio': forms.Select(choices=[(condominio.n_condominio, condominio.nome_condominio) for condominio in CustomCondominio.objects.all()]),
+    }
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['categorias'] = FinanceiroEstrutura.objects.all()  # Show all categories
         context['condominios'] = CustomCondominio.objects.all()
         return context
 
     def form_valid(self, form):
+        # Get the condominium object from the form
+        condominio_instance = form.cleaned_data.get('n_condominio')
         
-        # Get the selected condominio instance
-        condominio_instance = form.cleaned_data['n_condominio']
-
-        # Assign the primary key of the selected condominium to the field
-        form.instance.n_condominio_id = condominio_instance.n_condominio
-
-        # Check if the selected condominium number exists
-        if not CustomCondominio.objects.filter(n_condominio=form.instance.n_condominio_id).exists():
-            messages.error(self.request, 'Número de condomínio inválido.')
+        if condominio_instance:
+            # Get the condominium number from the object
+            condominio_number = condominio_instance.n_condominio
+            
+            # Ensure that a CustomCondominio with this number exists
+            if not CustomCondominio.objects.filter(n_condominio=condominio_number).exists():
+                messages.error(self.request, 'Número de condomínio inválido.')
+                return self.form_invalid(form)
+        else:
+            messages.error(self.request, 'Número de condomínio não fornecido.')
             return self.form_invalid(form)
-       
-        # Verifica se o plano de contas já está cadastrado
-        if CustomPlano_Conta.objects.filter(dsc_plano_conta=form.instance.dsc_plano_conta).exists():
-            messages.error(self.request, 'Plano de contas já existe')
-            return self.form_invalid(form)
-
+        
         return super().form_valid(form)
-    
+
+       
     def form_invalid(self, form):
-        # Customize error message for existing dsc_plano_conta
-        if 'dsc_plano_conta' in form.errors:
-            form.errors['dsc_plano_conta'] = ['Plano de contas já cadastrado']
         return super().form_invalid(form)
     
     
-# Tela Alteração De Condôminos
-class EstruturaPcUpdateViews(UpdateView):
-    model = CustomPlano_Conta
-    context_object_name = 'plano_conta'    
-    fields = ["nivel_1", "nivel_2", "nivel_3", "nivel_4", "dsc_plano_conta", "n_condominio"]
-    success_url = reverse_lazy("plano_conta_list")
-    widgets = {
-        'n_condominio': forms.Select(attrs={'class': 'form-control'}),
-    }
-   
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['condominios'] = CustomCondominio.objects.all()        
-        return context
-    
+class FinanceiroEstruturaUpdateViews(UpdateView):
+    model = FinanceiroEstrutura
+    context_object_name = 'financeiro_estrutura'
+    fields = ['nome', 'parent']  # Não inclui 'n_condominio' nos campos editáveis
+    success_url = reverse_lazy('financeiro_estrutura_list')
+
+    def get_form(self, form_class=None):
+        # Obtém o formulário padrão e remove o campo 'n_condominio'
+        form = super().get_form(form_class)
+        form.fields.pop('n_condominio', None)
+        return form
+
     def form_valid(self, form):
-        
-        # Get the selected condominium instance
-        condominio_instance = form.cleaned_data['n_condominio']
-
-        # Assign the primary key of the selected condominium to the field
-        form.instance.n_condominio_id = condominio_instance.n_condominio
-
-        # Check if the selected condominium number exists
-        # if not CustomCondominio.objects.filter(n_condominio=form.instance.n_condominio_id).exists():
-        #     messages.error(self.request, 'Número de condomínio inválido.')
-        #     return self.form_invalid(form)
-        
-        return super().form_valid(form)         
+        # Opcionalmente, se necessário, você pode definir o 'n_condominio' aqui
+        # por exemplo, para um valor padrão ou baseado em algum contexto
+        form.instance.n_condominio = self.get_object().n_condominio  # Mantém o valor existente
+        return super().form_valid(form)
     
 # Tela Exclusão De Condôminos
-class EstruturaPcDeleteViews(DeleteView):
-    model = CustomPlano_Conta
-    success_url = reverse_lazy("plano_conta_list")
+class FinanceiroEstruturaDeleteViews(DeleteView):
+    model = FinanceiroEstrutura
+    success_url = reverse_lazy("financeiro_estrutura_list")
+    
+    
+    
+    
+    
+# Tela Lista as Contas a Receber
+class ReceitaListViews(ListView):
+    model = Receita
+    context_object_name = 'receita_list'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['receita_list'] = Receita.objects.all()
+        return context    
+    
+    
+class ReceitaCreateViews(CreateView):
+    model = Receita
+    fields = [
+        "data_vencimento", "numero_documento", "tipo_documento",
+        "descricao", "valor", "categoria", "n_condominio"
+    ]
+    success_url = reverse_lazy("receita_list")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['condominios'] = CustomCondominio.objects.all()
+        context['categorias'] = FinanceiroEstrutura.objects.all()  # Show all categories
+        return context
+
+    def form_valid(self, form):
+        # Optionally print form details for debugging
+        print("Form is valid!")
+        print("Form cleaned data:", form.cleaned_data)
+        print("n_condominio value:", form.cleaned_data.get('n_condominio'))
+        
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        print("Form is invalid!")
+        print(form.errors)
+        return super().form_invalid(form)
+
+
+# Tela Alteração de Contas a Receber
+class ReceitaUpdateViews(UpdateView):
+    model = Receita
+    context_object_name = 'conta_receber'
+    fields = [
+        "data_vencimento", "numero_documento", "tipo_documento",
+        "descricao", "valor", "categoria", "n_condominio"
+    ]
+    success_url = reverse_lazy("receita_list")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['condominios'] = CustomCondominio.objects.all()
+        context['categorias'] = FinanceiroEstrutura.objects.all()
+        return context
+
+    def form_valid(self, form):
+        return super().form_valid(form)
+
+# Tela Exclusão de Contas a Receber
+class ReceitaDeleteViews(DeleteView):
+    model = Receita
+    success_url = reverse_lazy("receita_list")

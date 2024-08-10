@@ -67,7 +67,7 @@
         <!-- Opções de Pesquisa e Cadastro -->
         <div class="container_1">
             <div class="box">
-                <a href="{% url 'plano_conta_create' %}" class="btn btn-primary" id="cadastrar">CADASTRAR PLANO</a>
+                <a href="{% url 'financeiro_estrutura_create' %}" class="btn btn-primary" id="cadastrar">CADASTRAR PLANO</a>
             </div>
 
             <div class="box" id="divBusca">
@@ -80,31 +80,28 @@
         <table id="unidadesTable" class="table auto-layout">
             <thead>
                 <tr>
-                    <th scope="col" class="close-th">nivel_1</th>
-                    <th scope="col" class="close-th">nivel_2</th>
-                    <th scope="col" class="close-th">nivel_3</th>
-                    <th scope="col" class="close-th">nivel_4</th>
-                    <th scope="col" class="close-th">dsc_plano_conta</th>
-                    <th scope="col" class="close-th">n_condominio</th>
+                    <th scope="col" class="close-th">Nível</th>
+                    <th scope="col" class="close-th">Nome</th>
+                    <th scope="col" class="close-th">Condomínio</th>
                 </tr>
             </thead>
             <tbody>
-                {% for pc in plano_conta_list %}
+                {% for fel in financeiro_estrutura_list %}
                 <tr>
-                    <td>{{ pc.nivel_1 }}</td>
-                    <td>{{ pc.nivel_2 }}</td>
-                    <td>{{ pc.nivel_3 }}</td>
-                    <td>{{ pc.nivel_4 }}</td>
-                    <td>{{ pc.dsc_plano_conta }}</td>
-                    <td>{{ pc.n_condominio.n_condominio }} - {{ pc.n_condominio.nome_condominio }}</td>
+                    <td style="padding-left: {{ fel.padding_left }}px;">
+                        {{ fel.get_nivel }}
+                    </td>
+                    <td>{{ fel.nome }}</td>
+                    <td>{{ fel.n_condominio.n_condominio }} - {{ fel.n_condominio.nome_condominio }}</td>
                     <td style="border: none; width:200px">
-                        <a href="{% url 'plano_conta_update' pk=pc.pk %}" class="btn btn-primary btn-sm">ALTERAR</a>
-                        <a href="{% url 'plano_conta_delete' pk=pc.pk %}" class="btn btn-danger btn-sm">EXCLUIR</a>
+                        <a href="{% url 'financeiro_estrutura_update' pk=fel.pk %}" class="btn btn-primary btn-sm">ALTERAR</a>
+                        <a href="{% url 'financeiro_estrutura_delete' pk=fel.pk %}" class="btn btn-danger btn-sm">EXCLUIR</a>
                     </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
+        
     </main>
 
     <!-- Scripts JavaScript -->

@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SGC</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="/static/css/plano-contas.css">
+
+    <style>
+        .container-cols {
+            display: flex;
+            gap: 20px; /* Espaçamento entre as colunas */
+        }
+        .input-col {
+            flex: 1; /* Cada coluna ocupa o mesmo espaço */
+            display: flex;
+            flex-direction: column;
+        }
+        .input-col .input-row {
+            margin-bottom: 80px; /* Espaçamento entre as linhas */
+        }
+        .input-bottom {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px; /* Espaçamento entre as linhas */
+        }
+        input[type="text"], input[type="number"], input[type="tel"], input[type="email"], input[type="date"], select {
+            width: 220px;
+        }
+        .form-label{
+            width: 220px;
+            height: 31px;
+        }
+        #btnsalvar {
+            display: block;
+            margin: auto;
+            width: 140px;
+        }
+        .field-error {
+            border: 2px solid red;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+    
+</head>
+<body>
+    <nav class="navbar bg-dark mb-30" data-bs-theme="dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'receita_list' %}">CONDOMINIUM</a>
+        </div>
+    </nav>
+    <main class="container">
+        <h1 id="titulo">{% if form.instance.pk %}ALTERAÇÃO DE CONTA A RECEBER{% else %}CADASTRO DE CONTA A RECEBER{% endif %}</h1><br>
+        
+        <div class="painel" style="">
+            <form method="POST" action="{% url 'receita_update' form.instance.pk %}">
+                {% csrf_token %}
+            
+            <div class="horizontal-container">
+    
+                <div class="input-bottom">
+                    <label for="id_parent">Categoria:</label>
+                        <select name="categoria" id="id_categoria" class="form-control-sm">
+                            <option value="">-- Selecione --</option>
+                            {% for categoria in categorias %}
+                                <option value="{{ categoria.id }}" {% if categoria.id == form.instance.categoria.id %}selected{% endif %}>
+                                    {{ categoria.get_nivel }} {{ categoria.nome }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                </div>
+            </div>
+
+            <div class="input-bottom">
+                <label for="data_vencimento" class="form-label">Data Vencimento:</label>
+                <input type="date" class="form-control-sm {% if form.data_vencimento.errors %}field-error{% endif %}" id="data_vencimento" name="data_vencimento" value="{% if form.data_vencimento.value %}{{ form.data_vencimento.value|date:'Y-m-d' }}{% endif %}" required autofocus>
+                {% if form.data_vencimento.errors %}
+                <div class="text-danger">{{ form.data_vencimento.errors }}</div>
+                {% endif %}
+            </div>
+            
+            
+            <div class="input-bottom">
+                <label for="numero_documento" class="form-label">Nº Documento:</label>
+                <input type="text" class="form-control-sm {% if form.numero_documento.errors %}field-error{% endif %}" id="numero_documento" name="numero_documento" value="{{ form.numero_documento.value }}" required>
+                {% if form.numero_documento.errors %}
+                <div class="text-danger">{{ form.numero_documento.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="input-bottom">
+                <label for="tipo_documento" class="form-label">Tipo Documento:</label>
+                <select class="form-control-sm {% if form.tipo_documento.errors %}field-error{% endif %}" id="tipo_documento" name="tipo_documento" required>
+                    {% for value, label in form.tipo_documento.field.choices %}
+                        <option value="{{ value }}" {% if form.tipo_documento.value == value %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+                {% if form.tipo_documento.errors %}
+                <div class="text-danger">{{ form.tipo_documento.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="input-bottom">
+                <label for="descricao" class="form-label">Descrição:</label>
+                <input type="text" class="form-control-sm {% if form.descricao.errors %}field-error{% endif %}" id="descricao" name="descricao" value="{{ form.descricao.value }}" required>
+                {% if form.descricao.errors %}
+                <div class="text-danger">{{ form.descricao.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="input-bottom">
+                <label for="valor" class="form-label">Valor:</label>
+                <input type="number" class="form-control-sm {% if form.valor.errors %}field-error{% endif %}" id="valor" name="valor" value="{{ form.valor.value }}" required>
+                {% if form.valor.errors %}
+                    <div class="text-danger">{{ form.valor.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="input-bottom">
+                <label for="n_condominio" class="form-label">Número Condomínio:</label>
+                <select class="form-control-sm {% if form.n_condominio.errors %}field-error{% endif %}" id="n_condominio" name="n_condominio" required>
+                    <option value="">Condomínio</option>
+                    {% for condominio in condominios %}
+                    <option value="{{ condominio.n_condominio }}" {% if form.n_condominio.value == condominio.n_condominio %}selected{% endif %}>{{ condominio.n_condominio }} - {{ condominio.nome_condominio }}</option>
+                    {% endfor %}
+                </select>
+                {% if form.n_condominio.errors %}
+                    <div class="text-danger">{{ form.n_condominio.errors }}</div>
+                {% endif %}
+            </div>
+            
+            
+            
+            <div class="input-bottom">
+                <button type="submit" class="btn btn-primary" id="btnsalvar">Salvar</button>
+            </div>
+            
+            
+        </form>
+    </div>
+</main>
+</body>
+</html>

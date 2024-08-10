@@ -156,3 +156,19 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',  # Default authentication backend
     'App_SGC.auth_backends.plain_text_auth_backend.PlainTextAuthBackend',  #App_SGC\auth_backends
 ]
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'WARNING',  # Change this to 'INFO' or 'WARNING' to reduce output
+        },
+    },
+}

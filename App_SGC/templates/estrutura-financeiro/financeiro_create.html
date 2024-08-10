@@ -43,48 +43,32 @@
 <body>
     <nav class="navbar bg-dark mb-30" data-bs-theme="dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="{% url 'plano_conta_list' %}">CONDOMINIUM</a>
+            <a class="navbar-brand" href="{% url 'financeiro_estrutura_list' %}">CONDOMINIUM</a>
         </div>
     </nav>
     <main class="container">
         <h1 id="titulo">CADASTRO DE PLANO DE CONTA</h1><br>
 
         <div class="painel" style="height: 500px;">
-            <form method="POST" action="{% url 'plano_conta_create' %}">
+            <form method="POST" action="{% url 'financeiro_estrutura_create' %}">
             {% csrf_token %}
                 <div class="horizontal-container">
 
                     <div class="input-bottom">
-                        <label for="nivel_1" class="form-label">nivel_1:</label>
-                        <input type="text" class="form-control-sm" id="nivel_1" name="nivel_1" minlength="1" maxlength="1" required tabindex="1" autofocus>
-                        {% if form_errors.nivel_1 %}
-                        <div class="text-danger">{{ form_errors.nivel_1 }}</div>
-                        {% endif %}
+                        <label for="id_nome">Nome da Categoria</label>
+                        <input type="text" name="nome" id="id_nome" class="form-control-sm" required>
                     </div>
                     
                     
-                    <div class="input-bottom">
-                        <label for="nivel_2" class="form-label">nivel_2:</label>
-                        <input type="text" class="form-control-sm" id="nivel_2" name="nivel_2" minlength="1" maxlength="1" required tabindex="1" autofocus>
-                        {% if form_errors.nivel_2 %}
-                        <div class="text-danger">{{ form_errors.nivel_2 }}</div>
-                        {% endif %}
-                    </div>
                     
                     <div class="input-bottom">
-                        <label for="nivel_3" class="form-label">nivel_3:</label>
-                        <input type="text" class="form-control-sm" id="nivel_3" name="nivel_3" minlength="1" maxlength="1" required tabindex="1" autofocus>
-                        {% if form_errors.nivel_3 %}
-                        <div class="text-danger">{{ form_errors.nivel_3 }}</div>
-                        {% endif %}
-                    </div>
-                    
-                    <div class="input-bottom">
-                        <label for="nivel_4" class="form-label">nivel_4:</label>
-                        <input type="text" class="form-control-sm" id="nivel_4" name="nivel_4" minlength="1" maxlength="1" required tabindex="1" autofocus>
-                        {% if form_errors.nivel_4 %}
-                            <div class="text-danger">{{ form_errors.nivel_4 }}</div>
-                        {% endif %}
+                        <label for="id_parent">Categoria Pai (opcional)</label>
+                        <select name="parent" id="id_parent" class="form-control-sm">
+                            <option value="">-- Selecione --</option>
+                            {% for categoria in categorias %}
+                            <option value="{{ categoria.id }}">{{ categoria.get_nivel }} {{ categoria.nome }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
                 
                 </div>
@@ -101,14 +85,7 @@
                                 <div class="text-danger"></div>
                             {% endif %}
                     </div>
-                    <div>
-                        <div class="input-bottom">
-                            <input type="text" class="form-control-sm" id="dsc_plano_conta" name="dsc_plano_conta" required tabindex="1" autofocus>
-                            {% if form_errors.dsc_plano_conta %}
-                                <div class="text-danger">{{ form_errors.dsc_plano_conta }}</div>
-                            {% endif %}
-                        </div>
-                    </div>
+                    
                 </div>
                 
                 
