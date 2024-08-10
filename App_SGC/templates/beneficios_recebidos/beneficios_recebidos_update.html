@@ -18,7 +18,7 @@
             flex-direction: column;
         }
         .input-col .input-row {
-            margin-bottom: 80px; /* Espaçamento entre as linhas */
+            margin-bottom: 40px; /* Espaçamento entre as linhas */
         }
         .input-bottom {
             display: flex;
@@ -26,9 +26,19 @@
             align-items: center;
             margin-bottom: 20px; /* Espaçamento entre as linhas */
         }
-        input[type="text"], input[type="date"], select.form-control {
+        input[type="text"], input[type="date"], select.form-control-sm {
             width: 220px;
+            height: 30px;
             margin: auto;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            margin-bottom: 5px;
         }
         #btnsalvar {
             display: block;
@@ -60,39 +70,40 @@
         <div class="painel" style="height: 500px;">
             <form id="beneficiosRecebidosForm" method="post">
                 {% csrf_token %}
-                <div class="update-form input-center">
-                    <label for="cpf_colaborador" class="form-label">CPF do Colaborador:</label>
+                <div class="form-group">
+                    <label class="form-label" for="cpf_colaborador">CPF do Colaborador:</label>
                     <input type="text" class="form-control" id="cpf_colaborador" name="cpf_colaborador" 
                         value="{{ beneficio_recebido.cpf_colaborador.cpf_colaborador }}" readonly>
                     {% if form_errors.cpf_colaborador %}
                         <div class="text-danger">{{ form_errors.cpf_colaborador }}</div>
                     {% endif %}
-                </div>
+                </div>            
 
-                <div class="update-form input-center">
-                    <label for="beneficio_id" class="form-label">Benefício:</label>
-                    <select class="form-control" id="beneficio_id" name="beneficio_id" tabindex="1" required 
-                        value="{{ beneficio_recebido.beneficio_id.beneficio_id }}" autofocus>
+                <div class="form-group">
+                    <label class="form-label" for="beneficio_id">Benefício:</label>
+                    <select id="beneficio_id" name="beneficio_id" class="form-control-sm {% if form.n_condominio.errors %}field-error{% endif %}" tabindex="1" required autofocus>
                         <option value="">Benefício</option>
                         {% for beneficio in beneficios %}
-                            <option value="{{ beneficio.beneficio_id }}">{{ beneficio.nome_beneficio }}</option>
+                            <option value="{{ beneficio.beneficio_id }}" {% if beneficio.beneficio_id == beneficio_recebido.beneficio_id %}selected{% endif %}>{{ beneficio.nome_beneficio }}</option>
                         {% endfor %}
                     </select>
-                </div>
-
-                <div class="update-form input-center">
-                    <label for="n_condominio">Condomínio:</label><br>
-                    <select id="n_condominio" name="n_condominio" class="form-control-sm {% if form.n_condominio.errors %}field-error{% endif %}" 
-                        value="{{ beneficio_recebido.n_condominio.n_condominio }}"tabindex="2">
+                    {% if form.beneficio_id.errors %}
+                        <div class="text-danger"></div>
+                    {% endif %}
+                </div>  
+                   
+                <div class="form-group">
+                    <label class="form-label" for="n_condominio">Condomínio:</label>
+                    <select id="n_condominio" name="n_condominio" class="form-control-sm {% if form.n_condominio.errors %}field-error{% endif %}" tabindex="2" required>
                         <option value="">Condomínio</option>
                         {% for condominio in condominios %}
-                            <option value="{{ condominio.n_condominio }}">{{ condominio.n_condominio }} - {{ condominio.nome_condominio }}</option>
+                            <option value="{{ condominio.n_condominio }}" {% if condominio.n_condominio == beneficio_recebido.n_condominio_id %}selected{% endif %}>{{ condominio.n_condominio }} - {{ condominio.nome_condominio }}</option>
                         {% endfor %}
                     </select>
                     {% if form.n_condominio.errors %}
                         <div class="text-danger"></div>
                     {% endif %}
-                </div>
+                </div>               
                 <br><br>
                 
                 <button type="submit" class="btn btn-primary" id="btnsalvar" value="Update">Salvar</button>

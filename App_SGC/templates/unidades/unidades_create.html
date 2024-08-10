@@ -27,8 +27,9 @@
             align-items: center;
             margin-bottom: 20px; /* Espaçamento entre as linhas */
         }
-        input[type="text"], input[type="date"], select.form-control {
+        input[type="text"], input[type="date"], select.form-control-sm {
             width: 220px;
+            height: 30px;
             margin: auto;
         }
         #btnsalvar {
@@ -72,7 +73,7 @@
 
                 <div class="input-bottom">
                     <label for="bloco_id" class="form-label">Bloco:</label>
-                    <select class="form-control" id="bloco_id" name="bloco_id" tabindex="2" required>
+                    <select class="form-control-sm" id="bloco_id" name="bloco_id" tabindex="2" required>
                         <option value="">Bloco</option>
                         {% for bloco in blocos %}
                         <option value="{{ bloco.bloco_id }}">{{ bloco.bloco }}</option>

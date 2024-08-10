@@ -19,16 +19,17 @@
             flex-direction: column;
         }
         .input-col .input-row {
-            margin-bottom: 80px; /* Espaçamento entre as linhas */
+            margin-bottom: 40px; /* Espaçamento entre as linhas */
         }
         .form-control-sm {
             /* width: 50%;  */
         }
         input[type="text"], input[type="date"], select {
             width: 220px;
+            height: 30px;
         }   
         .input-bottom {
-            margin-bottom: 40px; /* Aumenta a distância entre as divs verticalmente */
+            margin-bottom: 20px; /* Aumenta a distância entre as divs verticalmente */
             margin-right: 20px; /* Aumenta a distância entre as divs horizontalmente */
         }    
     </style>
@@ -64,7 +65,7 @@
                 </div>
 
                 <div class="input-top input-bottom">
-                    <label for="n_condominio">Condomínio:</label><br>
+                    <label for="n_condominio" class="form-label">Condomínio:</label><br>
                     <select id="n_condominio" name="n_condominio" class="form-control-sm">
                         <option value="">Condomínio</option>
                         {% for condominio in condominios %}
@@ -74,7 +75,7 @@
                 </div>
 
                 <div class="input-bottom">
-                    <label for="bloco">Bloco:</label> <br>
+                    <label for="bloco" class="form-label">Bloco:</label> <br>
                     <input id="bloco" name="bloco" class="form-control-sm" type="text" minlength="1"
                         maxlength="2" oninput="this.value = this.value.toUpperCase()" autofocus> <br>
                 </div>               

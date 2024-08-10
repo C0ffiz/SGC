@@ -3,7 +3,8 @@ from django.http import HttpResponse
 from django.contrib.auth import authenticate, login
 from .models import CustomUser, CustomCondominio, CustomCondomino, CustomMorador, CustomBloco, CustomUnidade    
 from .models import CustomVeiculo, CustomColaborador, CustomGaragem, CustomMudanca, CustomOcorrencia, CustomBeneficio
-from .models import CustomBeneficioRecebido
+from .models import CustomBeneficioRecebido, CustomCorrespondencia, CustomEspacoAdm, CustomTipoPatrimonio
+from .models import CustomPatrimonio
 from .models import FinanceiroEstrutura, Receita
 from django.contrib import messages
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
@@ -17,7 +18,9 @@ from django.shortcuts import get_object_or_404
 from django.db import IntegrityError
 from django.http import JsonResponse
 from django.core.exceptions import ObjectDoesNotExist
-import json
+from django.utils.dateformat import DateFormat
+from django.utils.formats import get_format
+import locale
 
 
 #-----------------------Views Login.................................................................
@@ -375,8 +378,6 @@ class MoradoresCreateViews(CreateView):
         
 
 # Tela Alteração De Moradores
-
-
 class MoradoresUpdateViews(UpdateView):
     model = CustomMorador
     template_name = 'moradores/moradores_update.html'
@@ -391,13 +392,12 @@ class MoradoresUpdateViews(UpdateView):
         return context
 
     def form_valid(self, form):
+        # Get the selected condominium instance
+        condominio_instance = form.cleaned_data['n_condominio']
         return super().form_valid(form)
 
     def form_invalid(self, form):
         return super().form_invalid(form)
-
-
-
 
 
 # Tela Exclusão De Moradores
@@ -953,7 +953,7 @@ class GaragensDeleteViews(DeleteView):
     success_url = reverse_lazy("garagens_list")
 
 
-  #-----------------------Views Mudanças.................................................................
+#-----------------------Views Mudanças.................................................................
 
 # Tela Lista as Mudanças 
 class MudancasListViews(ListView):
@@ -1241,8 +1241,7 @@ class BeneficiosUpdateViews(UpdateView):
 # Tela Exclusão de Benefícios
 class BeneficiosDeleteViews(DeleteView):
     model = CustomBeneficio
-    success_url = reverse_lazy("beneficios_list")
-    
+    success_url = reverse_lazy("beneficios_list")    
     
 
 
@@ -1306,6 +1305,7 @@ class BeneficiosRecebidosUpdateViews(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['condominios'] = CustomCondominio.objects.all()
+        context['beneficios'] = CustomBeneficio.objects.all()
         return context
 
     def form_valid(self, form):
@@ -1327,6 +1327,465 @@ class BeneficiosRecebidosDeleteViews(DeleteView):
     success_url = reverse_lazy("beneficios_recebidos_list")
 
     
+
+#-----------------------Views Correspondências .................................................................
+
+# Tela Lista as Correspondencias por Bloco e Unidade
+class CorrespondenciasListViews(ListView):
+    model = CustomCorrespondencia
+    context_object_name = 'correspondencias_list'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['correspondencias'] = CustomCorrespondencia.objects.all()
+        return context    
+     
+
+# Tela Cadastra as Correspondencias por Bloco e Unidade
+class CorrespondenciasCreateViews(View):
+    template_name = 'correspondencias/correspondencias_create.html'
+    success_url = reverse_lazy("correspondencias_list")
+
+    def get_context_data(self, **kwargs):
+        context = {}
+        context['blocos'] = CustomBloco.objects.all()
+        context['unidades'] = CustomUnidade.objects.all()
+        context['condominios'] = CustomCondominio.objects.all()
+        return context
+
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data()
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        bloco_id = request.POST.get('bloco_id')
+        unidade_id = request.POST.get('unidade_id')
+        dsc_correspondencia = request.POST.get('dsc_correspondencia')
+        data_recebimento_correspondencia = request.POST.get('data_recebimento_correspondencia')
+        data_retirada_correspondencia = request.POST.get('data_retirada_correspondencia') or None
+        retirante_correspondencia = request.POST.get('retirante_correspondencia')
+        n_condominio = request.POST.get('n_condominio')
+
+        if data_retirada_correspondencia == '':
+            data_retirada_correspondencia = None
+
+        try:
+            CustomCorrespondencia.objects.create(
+                bloco_id=CustomBloco.objects.get(bloco_id=bloco_id),
+                unidade_id=CustomUnidade.objects.get(unidade_id=unidade_id),
+                dsc_correspondencia=dsc_correspondencia,
+                data_recebimento_correspondencia=data_recebimento_correspondencia,
+                data_retirada_correspondencia=data_retirada_correspondencia,
+                retirante_correspondencia=retirante_correspondencia,
+                n_condominio=CustomCondominio.objects.get(n_condominio=n_condominio)
+            )
+            return redirect(self.success_url)
+        except Exception as e:
+            context = self.get_context_data()
+            context['error'] = str(e)
+            return render(request, self.template_name, context)
+
+
+# Tela Alteração das Correspondencias por Bloco e Unidade
+class CorrespondenciasUpdateViews(UpdateView):
+    model = CustomCorrespondencia
+    template_name = 'correspondencias/correspondencias_update.html'
+    context_object_name = 'correspondencia'
+    fields = [
+        "data_recebimento_correspondencia", "dsc_correspondencia", "data_retirada_correspondencia", 
+        "retirante_correspondencia", "bloco_id", "unidade_id", "n_condominio"
+    ]
+    success_url = reverse_lazy("correspondencias_list")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['condominios'] = CustomCondominio.objects.all()
+        context['blocos'] = CustomBloco.objects.all()
+        context['unidades'] = CustomUnidade.objects.all()
+        return context
+
+    def form_valid(self, form):
+        data_recebimento = form.cleaned_data.get('data_recebimento_correspondencia')
+        data_retirada = form.cleaned_data.get('data_retirada_correspondencia')
+
+        if data_retirada and data_recebimento and data_retirada <= data_recebimento:
+            messages.error(self.request, 'Data de entrega da correspondência deve ser posterior a do recebimento')
+            return self.form_invalid(form)
+
+        condominio_instance = form.cleaned_data.get('n_condominio')
+        bloco_instance = form.cleaned_data.get('bloco_id')
+        unidade_instance = form.cleaned_data.get('unidade_id')
+
+        if not CustomCondominio.objects.filter(n_condominio=condominio_instance.n_condominio).exists():
+            messages.error(self.request, 'Número de condomínio inválido.')
+            return self.form_invalid(form)
+        
+        if not CustomBloco.objects.filter(bloco_id=bloco_instance.bloco_id).exists():
+            messages.error(self.request, 'Bloco inexistente')
+            return self.form_invalid(form)
+        
+        if not CustomUnidade.objects.filter(unidade_id=unidade_instance.unidade_id).exists():
+            messages.error(self.request, 'Unidade inexistente')
+            return self.form_invalid(form)
+
+        return super().form_valid(form)
+
+    
+
+# Tela Exclusão das Correspondencias por Bloco e Unidade
+class CorrespondenciasDeleteViews(DeleteView):
+    model = CustomCorrespondencia
+    success_url = reverse_lazy("correspondencias_list")
+
+
+
+#-----------------------Views Espaços Administrativos .................................................................
+
+# Tela Lista os Espaços adm
+class EspacosAdmListViews(ListView):
+    model = CustomEspacoAdm
+    context_object_name = 'espacosAdm_list'
+    template_name = "espacosAdm/espacosAdm_list.html"
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['espacosAdm_list'] = CustomEspacoAdm.objects.all()
+        return context
+
+
+# Tela Cadastro dos Espaços Adm
+class EspacosAdmCreateViews(View):
+    template_name = 'espacosAdm/espacosAdm_create.html'
+    success_url = reverse_lazy("espacosAdm_list")
+
+    def get_context_data(self, **kwargs):
+        context = {}
+        context['condominios'] = CustomCondominio.objects.all()
+        return context
+
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data()
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        nome_espaco_adm = request.POST.get('espacoAdm')
+        condominio_id = request.POST.get('n_condominio')
+
+        context = self.get_context_data()
+
+        try:
+            condominio_instance = CustomCondominio.objects.get(pk=condominio_id)
+        except CustomCondominio.DoesNotExist:
+            context['error'] = "Condomínio não encontrado"
+            return render(request, self.template_name, context)
+
+        CustomEspacoAdm.objects.create(
+            nome_espaco_adm=nome_espaco_adm,
+            n_condominio=condominio_instance,
+        )
+        return HttpResponseRedirect(self.success_url)
+
+
+# Tela Alteração de Espaços Adm
+class EspacosAdmUpdateViews(UpdateView):
+    model = CustomEspacoAdm
+    template_name = 'espacosAdm/espacosAdm_update.html'
+    context_object_name = 'espaco_adm'
+    fields = ["nome_espaco_adm", "n_condominio"]
+    success_url = reverse_lazy("espacosAdm_list")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['condominios'] = CustomCondominio.objects.all()
+        return context
+
+    def form_valid(self, form):
+        n_condominio_id = self.request.POST.get('n_condominio')
+        if n_condominio_id:
+            try:
+                condominio_instance = CustomCondominio.objects.get(pk=n_condominio_id)
+                form.instance.n_condominio = condominio_instance
+            except CustomCondominio.DoesNotExist:
+                messages.error(self.request, 'Número de condomínio inválido.')
+                return self.form_invalid(form)
+        return super().form_valid(form)   
+    
+
+# Tela Exclusão de Espaços Adm
+class EspacosAdmDeleteViews(DeleteView):
+    model = CustomEspacoAdm
+    success_url = reverse_lazy("espacosAdm_list")
+
+
+#-----------------------Views Tipos DE Patrimônio .................................................................
+
+# Tela Lista os Tipos Patrimônio
+class TiposPatrimonioListViews(ListView):
+    model = CustomTipoPatrimonio
+    context_object_name = 'tiposPatrimonio_list'
+    template_name = "tiposPatrimonio/tiposPatrimonio_list.html"
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['tiposPatrimonio_list'] = CustomTipoPatrimonio.objects.all()
+        return context
+
+
+# Tela Cadastro dos Tipos Patrimônio
+class TiposPatrimonioCreateViews(View):
+    template_name = 'tiposPatrimonio/tiposPatrimonio_create.html'
+    success_url = reverse_lazy("tiposPatrimonio_list")
+
+    def get_context_data(self, **kwargs):
+        context = {}
+        context['condominios'] = CustomCondominio.objects.all()
+        return context
+
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data()
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        nome_patrimonio = request.POST.get('nome_patrimonio')
+        n_patrimonio = request.POST.get('n_patrimonio')
+        cor_patrimonio = request.POST.get('cor_patrimonio')
+        descricao_patrimonio = request.POST.get('descricao_patrimonio')   
+        condominio_id = request.POST.get('n_condominio')
+
+        context = self.get_context_data()
+
+        try:
+            condominio_instance = CustomCondominio.objects.get(pk=condominio_id)
+        except CustomCondominio.DoesNotExist:
+            context['error'] = "Condomínio não encontrado"
+            return render(request, self.template_name, context)
+
+        CustomTipoPatrimonio.objects.create(
+            nome_patrimonio = nome_patrimonio,
+            n_patrimonio = n_patrimonio,
+            cor_patrimonio = cor_patrimonio,
+            descricao_patrimonio = descricao_patrimonio,
+            n_condominio=condominio_instance,
+        )
+        return HttpResponseRedirect(self.success_url)
+
+
+# Tela Alteração dos Tipos Patrimônio
+class TiposPatrimonioUpdateViews(UpdateView):
+    model = CustomTipoPatrimonio
+    template_name = 'tiposPatrimonio/tiposPatrimonio_update.html'
+    context_object_name = 'tipo_patrimonio'
+    fields = ["nome_patrimonio", "n_patrimonio", "cor_patrimonio","descricao_patrimonio", "n_condominio"]
+    success_url = reverse_lazy("tiposPatrimonio_list")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['condominios'] = CustomCondominio.objects.all()
+        return context
+
+    def form_valid(self, form):
+        n_condominio_id = self.request.POST.get('n_condominio')
+        if n_condominio_id:
+            try:
+                condominio_instance = CustomCondominio.objects.get(pk=n_condominio_id)
+                form.instance.n_condominio = condominio_instance
+            except CustomCondominio.DoesNotExist:
+                messages.error(self.request, 'Número de condomínio inválido.')
+                return self.form_invalid(form)
+        return super().form_valid(form)   
+    
+
+# Tela Exclusão dos Tipos Patrimônio
+class TiposPatrimonioDeleteViews(DeleteView):
+    model = CustomTipoPatrimonio
+    success_url = reverse_lazy("tiposPatrimonio_list")
+
+
+
+#-----------------------Views DE Patrimônio .................................................................
+
+# Tela Lista de Patrimônios
+class PatrimonioListViews(ListView):
+    model = CustomPatrimonio
+    context_object_name = 'patrimonio_list'
+    template_name = "patrimonio/patrimonio_list.html"
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['patrimonio_list'] = CustomPatrimonio.objects.all()
+        return context
+
+
+# Tela Cadastro de Patrimônio
+class PatrimonioCreateViews(View):
+    template_name = 'patrimonio/patrimonio_create.html'
+    success_url = reverse_lazy("patrimonio_list")
+
+    def get_context_data(self, **kwargs):
+        context = {}
+        context['condominios'] = CustomCondominio.objects.all()
+        context['espacos'] = CustomEspacoAdm.objects.all()
+        context['tiposPatrimonio'] = CustomTipoPatrimonio.objects.all()
+        return context
+
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data()
+        context['form_data'] = {
+            'tipo_patrimonio_id': '',
+            'espaco_adm_id': '',
+            'valor_patrimonio': '',
+            'data_disposicao_patrimonio': '',
+            'data_baixa_patrimonio': '',
+            'n_condominio': ''
+        }
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        tipo_patrimonio_id = request.POST.get('tipo_patrimonio_id')
+        espaco_adm_id = request.POST.get('espaco_adm_id')
+        valor_patrimonio = request.POST.get('valor_patrimonio')
+        data_disposicao_patrimonio = request.POST.get('data_disposicao_patrimonio')
+        data_baixa_patrimonio = request.POST.get('data_baixa_patrimonio')
+        condominio_id = request.POST.get('n_condominio')
+
+        context = self.get_context_data()
+
+        form_data = {
+            'tipo_patrimonio_id': tipo_patrimonio_id,
+            'espaco_adm_id': espaco_adm_id,
+            'valor_patrimonio': valor_patrimonio,
+            'data_disposicao_patrimonio': data_disposicao_patrimonio,
+            'data_baixa_patrimonio': data_baixa_patrimonio,
+            'n_condominio': condominio_id
+        }
+        context['form_data'] = form_data
+
+        # Verifica se os IDs selecionados existem no banco de dados
+        try:
+            condominio_instance = CustomCondominio.objects.get(pk=condominio_id)
+            tipo_patrimonio_instance = CustomTipoPatrimonio.objects.get(pk=tipo_patrimonio_id)
+            espaco_adm_instance = CustomEspacoAdm.objects.get(pk=espaco_adm_id)
+        except CustomCondominio.DoesNotExist:
+            context['error'] = "Condomínio não encontrado"
+            return render(request, self.template_name, context)
+        except CustomTipoPatrimonio.DoesNotExist:
+            context['error'] = "Tipo de patrimônio não encontrado"
+            return render(request, self.template_name, context)
+        except CustomEspacoAdm.DoesNotExist:
+            context['error'] = "Espaço administrativo não encontrado"
+            return render(request, self.template_name, context)
+        except Exception as e:
+            context['error'] = f"Erro inesperado: {str(e)}"
+            return render(request, self.template_name, context)
+
+        # Verifica se data_baixa_patrimonio está vazio e atribui None se necessário
+        if not data_baixa_patrimonio:
+            data_baixa_patrimonio = None
+
+        # Valida se data_baixa_patrimonio é maior que data_disposicao_patrimonio
+        if data_baixa_patrimonio:
+            if data_disposicao_patrimonio >= data_baixa_patrimonio:
+                context['error'] = "A data de baixa deve ser superior à data de alocação"
+                return render(request, self.template_name, context)
+
+        CustomPatrimonio.objects.create(
+            tipo_patrimonio_id=tipo_patrimonio_instance,
+            espaco_adm_id=espaco_adm_instance,
+            valor_patrimonio=valor_patrimonio,
+            data_disposicao_patrimonio=data_disposicao_patrimonio,
+            data_baixa_patrimonio=data_baixa_patrimonio,
+            n_condominio=condominio_instance,
+        )
+        return HttpResponseRedirect(self.success_url)
+
+
+# Tela Alteração de Patrimônio
+class PatrimonioUpdateViews(UpdateView):
+    model = CustomPatrimonio
+    template_name = 'patrimonio/patrimonio_update.html'
+    context_object_name = 'patrimonio'
+    fields = ["tipo_patrimonio_id", "espaco_adm_id", "valor_patrimonio", "data_disposicao_patrimonio", "data_baixa_patrimonio", "n_condominio"]
+    success_url = reverse_lazy("patrimonio_list")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['condominios'] = CustomCondominio.objects.all()
+        context['espacos'] = CustomEspacoAdm.objects.all()
+        context['tiposPatrimonio'] = CustomTipoPatrimonio.objects.all()
+
+        # Formatando as datas para o formato dd/mm/aa
+        if self.object.data_disposicao_patrimonio:
+            context['data_disposicao_patrimonio_formatada'] = DateFormat(self.object.data_disposicao_patrimonio).format(get_format('DATE_FORMAT'))
+        if self.object.data_baixa_patrimonio:
+            context['data_baixa_patrimonio_formatada'] = DateFormat(self.object.data_baixa_patrimonio).format(get_format('DATE_FORMAT'))
+
+        # Formatando o valor do patrimônio para moeda brasileira
+        locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
+        context['valor_patrimonio_formatado'] = f"{self.object.valor_patrimonio:,.2f}".replace(',', 'X').replace('.', ',').replace('X', '.')
+
+        return context
+
+    def form_valid(self, form):
+        try:
+            condominio_id = self.request.POST.get('n_condominio')
+            tipo_patrimonio_id = self.request.POST.get('tipo_patrimonio_id')
+            espaco_adm_id = self.request.POST.get('espaco_adm_id')
+
+            if condominio_id:
+                form.instance.n_condominio = CustomCondominio.objects.get(pk=condominio_id)
+            if tipo_patrimonio_id:
+                form.instance.tipo_patrimonio_id = CustomTipoPatrimonio.objects.get(pk=tipo_patrimonio_id)
+            if espaco_adm_id:
+                form.instance.espaco_adm_id = CustomEspacoAdm.objects.get(pk=espaco_adm_id)
+
+        except CustomCondominio.DoesNotExist:
+            messages.error(self.request, 'Número de condomínio inválido.')
+            return self.form_invalid(form)
+
+        except CustomEspacoAdm.DoesNotExist:
+            messages.error(self.request, 'Espaço inválido.')
+            return self.form_invalid(form)
+
+        except CustomTipoPatrimonio.DoesNotExist:
+            messages.error(self.request, 'Tipo de patrimônio inválido.')
+            return self.form_invalid(form)
+        
+        # Extrai as datas do formulário
+        data_disposicao_patrimonio = form.cleaned_data.get('data_disposicao_patrimonio')
+        data_baixa_patrimonio = form.cleaned_data.get('data_baixa_patrimonio')
+
+        # Verifica se data_baixa_patrimonio está vazio e atribui None se necessário
+        if not data_baixa_patrimonio:
+            data_baixa_patrimonio = None
+
+        # Valida se data_baixa_patrimonio é maior que data_disposicao_patrimonio
+        if data_baixa_patrimonio:
+            if data_disposicao_patrimonio >= data_baixa_patrimonio:
+                context = self.get_context_data()
+                context['error'] = "A data de baixa deve ser superior à data de alocação"
+                return self.render_to_response(context)
+
+        return super().form_valid(form)
+
+
+
+    
+
+# Tela Exclusão de Patrimônio
+class PatrimonioDeleteViews(DeleteView):
+    model = CustomPatrimonio
+    success_url = reverse_lazy("patrimonio_list")
+
+
+
+
+
+
+
+
+#----------------------- SUBSISTEMA FINANCEIRO .......................................................
+
+
 #-----------------------Views Plano de Contas.......................................................
         
 # Tela Lista a Estrutura Plano Contas 

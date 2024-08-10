@@ -15,18 +15,21 @@ from App_SGC.views import MudancasListViews,MudancasCreateViews,MudancasUpdateVi
 from App_SGC.views import OcorrenciasListViews,OcorrenciasCreateViews,OcorrenciasUpdateViews,OcorrenciasDeleteViews
 from App_SGC.views import BeneficiosListViews,BeneficiosCreateViews,BeneficiosUpdateViews,BeneficiosDeleteViews
 from App_SGC.views import BeneficiosRecebidosListViews,BeneficiosRecebidosCreateViews,BeneficiosRecebidosUpdateViews,BeneficiosRecebidosDeleteViews
-
 from App_SGC.views import FinanceiroEstruturaListViews,FinanceiroEstruturaCreateViews,FinanceiroEstruturaUpdateViews,FinanceiroEstruturaDeleteViews
 from App_SGC.views import ReceitaListViews,ReceitaCreateViews,ReceitaUpdateViews,ReceitaDeleteViews
+from App_SGC.views import CorrespondenciasListViews,CorrespondenciasCreateViews,CorrespondenciasUpdateViews,CorrespondenciasDeleteViews
+from App_SGC.views import EspacosAdmListViews,EspacosAdmCreateViews,EspacosAdmUpdateViews,EspacosAdmDeleteViews
+from App_SGC.views import TiposPatrimonioListViews,TiposPatrimonioCreateViews,TiposPatrimonioUpdateViews,TiposPatrimonioDeleteViews
+from App_SGC.views import PatrimonioListViews,PatrimonioCreateViews,PatrimonioUpdateViews,PatrimonioDeleteViews
 from django.views.generic import ListView
 from django.urls import reverse_lazy
+
 
 
 urlpatterns = [
 
 #  Caminho do Admin
     path('admin/', admin.site.urls),
-
 
 
 #  Caminhos do Login    
@@ -59,6 +62,7 @@ urlpatterns = [
     path('condominios_update/<str:pk>',CondominiosUpdateViews.as_view(template_name="condominios/condominios_update.html"), name="condominios_update"),
     path("condominios_delete/<str:pk>",CondominiosDeleteViews.as_view(template_name="condominios/condominios_confirm_delete.html"), name="condominios_delete"),
 
+
 #  Caminhos do Morador 
     path('moradores_list',MoradoresListViews.as_view(template_name="moradores/moradores_list.html"), name="moradores_list"),
     path('moradores_verify',views.verificar_cpf_condomino,name='verificar_cpf_condomino'),
@@ -67,17 +71,20 @@ urlpatterns = [
     path("moradores_delete/<str:pk>",MoradoresDeleteViews.as_view(template_name="moradores/moradores_confirm_delete.html"), name="moradores_delete"),
     path('verificar_cpf_condomino/', views.verificar_cpf_condomino, name='verificar_cpf_condomino'),
 
+
 #  Caminhos do Bloco 
     path('blocos_list',BlocosListViews.as_view(template_name="blocos/blocos_list.html"), name="blocos_list"),
     path('blocos_create',BlocosCreateViews.as_view(template_name="blocos/blocos_create.html"), name="blocos_create"),
     path('blocos_update/<str:pk>',BlocosUpdateViews.as_view(template_name="blocos/blocos_update.html"), name="blocos_update"),
     path("blocos_delete/<str:pk>",BlocosDeleteViews.as_view(template_name="blocos/blocos_confirm_delete.html"), name="blocos_delete"),
 
+
 #  Caminhos das Unidades
     path('unidades_list',UnidadesListViews.as_view(template_name="unidades/unidades_list.html"), name="unidades_list"),
     path('unidades_create',UnidadesCreateViews.as_view(template_name="unidades/unidades_create.html"), name="unidades_create"),
     path('unidades_update/<str:pk>',UnidadesUpdateViews.as_view(template_name="unidades/unidades_update.html"), name="unidades_update"),
     path("unidades_delete/<str:pk>",UnidadesDeleteViews.as_view(template_name="unidades/unidades_confirm_delete.html"), name="unidades_delete"),
+
 
 #  Caminhos de Veículos
     path('veiculos_list',VeiculosListViews.as_view(template_name="veiculos/veiculos_list.html"), name="veiculos_list"),
@@ -140,6 +147,42 @@ urlpatterns = [
     path('beneficios_recebidos_delete/<int:pk>/', BeneficiosRecebidosDeleteViews.as_view(template_name="beneficios_recebidos/beneficios_recebidos_confirm_delete.html"), name="beneficios_recebidos_delete"),
 
 
+#  Caminhos de Correspondências
+    path('correspondencias_list', CorrespondenciasListViews.as_view(template_name="correspondencias/correspondencias_list.html"), name="correspondencias_list"),
+    path('correspondencias_create', CorrespondenciasCreateViews.as_view(template_name="correspondencias/correspondencias_create.html"), name="correspondencias_create"),
+    path('correspondencias_update/<str:pk>', CorrespondenciasUpdateViews.as_view(template_name="correspondencias/correspondencias_update.html"), name="correspondencias_update"),
+    path('correspondencias_delete/<str:pk>', CorrespondenciasDeleteViews.as_view(template_name="correspondencias/correspondencias_confirm_delete.html"), name="correspondencias_delete"),
+
+
+#  Caminhos de Locais Administrativos
+    path('espacosAdm_list', EspacosAdmListViews.as_view(template_name="espacosAdm/espacosAdm_list.html"), name="espacosAdm_list"),
+    path('espacosAdm_create', EspacosAdmCreateViews.as_view(template_name="espacosAdm/espacosAdm_create.html"), name="espacosAdm_create"),
+    path('espacosAdm_update/<int:pk>/', EspacosAdmUpdateViews.as_view(template_name="espacosAdm/espacosAdm_update.html"), name="espacosAdm_update"),
+    path('espacosAdm_delete/<str:pk>', EspacosAdmDeleteViews.as_view(template_name="espacosAdm/espacosAdm_confirm_delete.html"), name="espacosAdm_delete"),
+
+
+#  Caminhos dos Tipos de Patrimônio
+    path('tiposPatrimonio_list', TiposPatrimonioListViews.as_view(template_name="tiposPatrimonio/tiposPatrimonio_list.html"), name="tiposPatrimonio_list"),
+    path('tiposPatrimonio_create', TiposPatrimonioCreateViews.as_view(template_name="tiposPatrimonio/tiposPatrimonio_create.html"), name="tiposPatrimonio_create"),
+    path('tiposPatrimonio_update/<str:pk>', TiposPatrimonioUpdateViews.as_view(template_name="tiposPatrimonio/tiposPatrimonio_update.html"), name="tiposPatrimonio_update"),
+    path('tiposPatrimonio_delete/<str:pk>', TiposPatrimonioDeleteViews.as_view(template_name="tiposPatrimonio/tiposPatrimonio_confirm_delete.html"), name="tiposPatrimonio_delete"),
+
+
+#  Caminhos do Patrimônio
+    path('patrimonio_list', PatrimonioListViews.as_view(template_name="patrimonio/patrimonio_list.html"), name="patrimonio_list"),
+    path('patrimonio_create', PatrimonioCreateViews.as_view(template_name="patrimonio/patrimonio_create.html"), name="patrimonio_create"),
+    path('patrimonio_update/<str:pk>', PatrimonioUpdateViews.as_view(template_name="patrimonio/patrimonio_update.html"), name="patrimonio_update"),
+    path('patrimonio_delete/<str:pk>', PatrimonioDeleteViews.as_view(template_name="patrimonio/patrimonio_confirm_delete.html"), name="patrimonio_delete"),
+
+
+
+
+
+
+
+
+
+#  Caminhos SUBSISTEMA FINANCEIRO
 
 
 
