@@ -355,155 +355,151 @@ class CustomBeneficioRecebido(models.Model):
 # DEFINIÇÃO DE TABELAS DO SUBSISTEMA FINANCEIRO ........................................................
 #
 
-# Definição da Tabela Plano de Contas...................................................................
-class CustomPlano_Conta(models.Model):
-    nivel_1 = models.CharField(verbose_name="Nível 1 *", max_length=1, null=False, blank=False)
-    nivel_2 = models.CharField(verbose_name="Nível 2 *", max_length=1, null=False, blank=False)
-    nivel_3 = models.CharField(verbose_name="Nível 3 *", max_length=1, null=False, blank=False)
-    nivel_4 = models.CharField(verbose_name="Nível 4 *", max_length=1, null=False, blank=False)
-    dsc_plano_conta = models.CharField(verbose_name="Dsc *", max_length=100, null=False, blank=False)
-    n_condominio = models.ForeignKey(
-        'CustomCondominio',  # Foreign key to CustomCondominio
+# Definição da Tabela Plano de Contas
+class FinanceiroEstrutura(models.Model):
+    nome = models.CharField(max_length=255, verbose_name="Nome da Categoria")
+    parent = models.ForeignKey(
+        'self',
         on_delete=models.CASCADE,
-        verbose_name="Número Condominio *",
-        null=False,
-        blank=False)
-    
+        related_name='subcategorias',
+        verbose_name="Categoria Pai",
+        blank=True,
+        null=True
+    )
+    n_condominio = models.ForeignKey(
+        CustomCondominio,
+        on_delete=models.CASCADE,
+        verbose_name="Número do Condomínio"
+    )
+
     class Meta:
-        db_table = 'plano_conta'
+        db_table = 'financeiro_estrutura'
         managed = True
-        ordering = ['nivel_1', 'nivel_2', 'nivel_3', 'nivel_4']
-        unique_together = (('nivel_1', 'nivel_2', 'nivel_3', 'nivel_4'),)  # Define a chave composta
+        verbose_name = 'Estrutura do Financeiro'
+        verbose_name_plural = 'Estruturas do Financeiro'
 
     def __str__(self):
-        return f"{self.nivel_1}.{self.nivel_2}.{self.nivel_3}.{self.nivel_4} - {self.dsc_plano_conta}"
+        if self.parent:
+            return f"{self.parent} > {self.nome}"
+        return self.nome
+
+    def get_nivel(self):
+        # Inicializar uma lista vazia para armazenar a hierarquia do nível
+        nivel = []
+        atual = self
+
+        # Percorrer a hierarquia da categoria atual até a categoria de nível superior
+        while atual:
+            if atual.parent:
+                # Obter todos os irmãos no mesmo nível sem ordenar por nome
+                irmaos = list(atual.parent.subcategorias.all())
+            else:
+                # Para categorias de nível superior, obter todas as categorias sem pai
+                irmaos = list(FinanceiroEstrutura.objects.filter(parent__isnull=True))
+
+            # Determinar a posição atual dentro dos irmãos ou categorias de nível superior
+            posicao = irmaos.index(atual) + 1
+
+            # Adicionar a posição no início da lista (para construir de baixo para cima)
+            nivel.insert(0, str(posicao))
+
+            # Subir um nível na hierarquia
+            atual = atual.parent
+
+        # Unir os elementos da lista com '.' para formar o identificador hierárquico
+        return '.'.join(nivel)
 
 
-# Definição da Tabela Contas a Receber...................................................................
-class CustomConta_Receber(models.Model):
-    data_conta_receber = models.DateField(verbose_name="Data vencimento *", null=False, blank=False)
-    data_recebimento = models.DateField(verbose_name="Data recebimento *", null=True, blank=True)
-    n_documento_conta_receber = models.CharField(verbose_name="Nº documento *", max_length=20, null=False, blank=False)  
-    tipo_documento_conta_receber_CHOICES = [
-        ('NF', 'NF'),
+
+# Definição da Tabela Contas a Receber
+class Receita(models.Model):
+    data_vencimento = models.DateField(verbose_name="Data de Vencimento")
+    numero_documento = models.CharField(max_length=20, verbose_name="Nº Documento")
+    tipo_documento_choices = [
+        ('NF', 'Nota Fiscal'),
         ('Recibo', 'Recibo'),
-        ('outros', 'Outros'),
+        ('Outros', 'Outros'),
     ]
-    tipo_documento_conta_receber = models.CharField(
-        verbose_name="Tipo do Documento",
-        max_length=6,
-        choices=tipo_documento_conta_receber_CHOICES,
-        default='NF',  # Defina o valor padrão conforme necessário
-        null=False,
-        blank=False)
-    dsc_conta_receber = models.CharField(verbose_name="Dsc *", max_length=60, null=True, blank=True)
-    valor_conta_receber = models.IntegerField(verbose_name="Valor *", null=False, blank=False)    
-    nivel_1 = models.ForeignKey(
-        'CustomPlano_Conta',  
-        on_delete=models.CASCADE,
-        verbose_name="Receber Nível 1 *",
-        null=False,
-        blank=False,
-        related_name='nivel_1_por_conta_receber')
-    nivel_2 = models.ForeignKey(
-        'CustomPlano_Conta',  
-        on_delete=models.CASCADE,
-        verbose_name="Receber Nível 2 *",
-        null=False,
-        blank=False,
-        related_name='nivel_2_por_conta_receber')
-    nivel_3 = models.ForeignKey(
-        'CustomPlano_Conta',  
-        on_delete=models.CASCADE,
-        verbose_name="Receber Nível 3 *",
-        null=False,
-        blank=False,
-        related_name='nivel_3_por_conta_receber')
-    nivel_4 = models.ForeignKey(
-        'CustomPlano_Conta',  
-        on_delete=models.CASCADE,
-        verbose_name="Receber Nível 4 *",
-        null=False,
-        blank=False,
-        related_name='nivel_4_por_conta_receber')    
+    tipo_documento = models.CharField(max_length=10, choices=tipo_documento_choices, verbose_name="Tipo de Documento")
+    descricao = models.CharField(max_length=255, verbose_name="Descrição")
+    valor = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Valor")
+    categoria = models.ForeignKey(FinanceiroEstrutura, on_delete=models.CASCADE, related_name='receitas', verbose_name="Categoria")
     n_condominio = models.ForeignKey(
-        'CustomCondominio',  # Foreign key to CustomCondominio
+        CustomCondominio,
         on_delete=models.CASCADE,
-        verbose_name="Número Condominio *",
-        null=False,
-        blank=False)
-    
+        verbose_name="Número do Condomínio"
+    )
+
     class Meta:
-        db_table = 'conta_receber'
+        db_table = 'receita'
         managed = True
-        ordering = ['data_conta_receber', 'tipo_documento_conta_receber', 'nivel_1', 'nivel_2', 'nivel_3', 'nivel_4'] 
-        unique_together = ('data_conta_receber', 'n_documento_conta_receber') # Chave composta por estas colunas 
+        ordering = ['data_vencimento']
+        verbose_name = 'Receita'
+        verbose_name_plural = 'Receitas'
 
     def __str__(self):
-        return f"{self.data_conta_receber} - {self.n_documento_conta_receber} - {self.tipo_documento_conta_receber} - {self.dsc_conta_receber}"
+        return f"{self.descricao} - {self.data_vencimento} - {self.valor}"
 
 
 # Definição da Tabela Contas a Pagar...................................................................
-class CustomConta_Pagar(models.Model):
-    data_conta_pagar = models.DateField(verbose_name="Data vencimento *", default=date.today, null=False, blank=False)
-    data_pagamento = models.DateField(verbose_name="Data pagamento *", null=True, blank=True)
-    n_documento_conta_pagar = models.CharField(verbose_name="Nº documento *", max_length=20, null=False, blank=False)  
-    tipo_documento_conta_pagar_CHOICES = [
-        ('NF', 'NF'),
-        ('Recibo', 'Recibo'),
-        ('outros', 'Outros'), 
-    ]
-    tipo_documento_conta_pagar = models.CharField(
-        verbose_name="Tipo do Documento",
-        max_length=6,
-        choices=tipo_documento_conta_pagar_CHOICES,
-        default='NF',  # Defina o valor padrão conforme necessário
-        null=False,
-        blank=False)
-    dsc_conta_pagar = models.CharField(verbose_name="Dsc *", max_length=60, null=True, blank=True)
-    valor_conta_pagar = models.IntegerField(verbose_name="Valor *", null=False, blank=False)
-    documento_contas_pagar = models.FileField(upload_to='documentos_ocorrencias/', null=False, blank=False)
-    nivel_1 = models.ForeignKey(
-        'CustomPlano_Conta',  
-        on_delete=models.CASCADE,
-        verbose_name="Pagar Nível 1 *",
-        null=False,
-        blank=False,
-        related_name='nivel_1_por_conta_pagar')
-    nivel_2 = models.ForeignKey(
-        'CustomPlano_Conta',  
-        on_delete=models.CASCADE,
-        verbose_name="Pagar Nível 2 *",
-        null=False,
-        blank=False,
-        related_name='nivel_2_por_conta_pagar')
-    nivel_3 = models.ForeignKey(
-        'CustomPlano_Conta',  
-        on_delete=models.CASCADE,
-        verbose_name="Pagar Nível 3 *",
-        null=False,
-        blank=False,
-        related_name='nivel_3_por_conta_pagar')
-    nivel_4 = models.ForeignKey(
-        'CustomPlano_Conta',  
-        on_delete=models.CASCADE,
-        verbose_name="Pagar Nível 4 *",
-        null=False,
-        blank=False,
-        related_name='nivel_4_por_conta_pagar')    
-    n_condominio = models.ForeignKey(
-        'CustomCondominio',  # Foreign key to CustomCondominio
-        on_delete=models.CASCADE,
-        verbose_name="Número Condominio *",
-        null=False,
-        blank=False)
+# class CustomConta_Pagar(models.Model):
+#     data_conta_pagar = models.DateField(verbose_name="Data vencimento *", null=False, blank=False)
+#     n_documento_conta_pagar = models.CharField(verbose_name="Nº documento *", max_length=20, null=False, blank=False)  
+#     tipo_documento_conta_pagar_CHOICES = [
+#         ('NF', 'NF'),
+#         ('Recibo', 'Recibo'),
+#         ('outros', 'Outros'), 
+#     ]
+#     tipo_documento_conta_pagar = models.CharField(
+#         verbose_name="Tipo do Documento",
+#         max_length=6,
+#         choices=tipo_documento_conta_pagar_CHOICES,
+#         default='NF',  # Defina o valor padrão conforme necessário
+#         null=False,
+#         blank=False)
+#     dsc_conta_pagar = models.CharField(verbose_name="Dsc *", max_length=60, null=False, blank=False)
+#     valor_conta_pagar = models.IntegerField(verbose_name="Valor *", null=False, blank=False)
+#     nivel_1 = models.ForeignKey(
+#         'CustomPlano_Conta',  
+#         on_delete=models.CASCADE,
+#         verbose_name="Pagar Nível 1 *",
+#         null=False,
+#         blank=False,
+#         related_name='nivel_1_por_conta_pagar')
+#     nivel_2 = models.ForeignKey(
+#         'CustomPlano_Conta',  
+#         on_delete=models.CASCADE,
+#         verbose_name="Pagar Nível 2 *",
+#         null=False,
+#         blank=False,
+#         related_name='nivel_2_por_conta_pagar')
+#     nivel_3 = models.ForeignKey(
+#         'CustomPlano_Conta',  
+#         on_delete=models.CASCADE,
+#         verbose_name="Pagar Nível 3 *",
+#         null=False,
+#         blank=False,
+#         related_name='nivel_3_por_conta_pagar')
+#     nivel_4 = models.ForeignKey(
+#         'CustomPlano_Conta',  
+#         on_delete=models.CASCADE,
+#         verbose_name="Pagar Nível 4 *",
+#         null=False,
+#         blank=False,
+#         related_name='nivel_4_por_conta_pagar')    
+#     n_condominio = models.ForeignKey(
+#         'CustomCondominio',  # Foreign key to CustomCondominio
+#         on_delete=models.CASCADE,
+#         verbose_name="Número Condominio *",
+#         null=False,
+#         blank=False)
     
-    class Meta:
-        db_table = 'conta_pagar'
-        managed = True
-        ordering = ['data_conta_pagar', 'tipo_documento_conta_pagar', 'nivel_1', 'nivel_2', 'nivel_3', 'nivel_4'] 
-        unique_together = ('data_conta_pagar', 'n_documento_conta_pagar')  
+#     class Meta:
+#         db_table = 'conta_pagar'
+#         managed = True
+#         ordering = ['data_conta_pagar', 'tipo_documento_conta_pagar', 'nivel_1', 'nivel_2', 'nivel_3', 'nivel_4'] 
+#         unique_together = ('data_conta_pagar', 'n_documento_conta_pagar')  
 
-    def __str__(self):
-        return f"{self.data_conta_pagar} - {self.n_documento_conta_pagar} - {self.tipo_documento_conta_pagar} - {self.dsc_conta_pagar}"
+#     def __str__(self):
+#         return f"{self.data_conta_pagar} - {self.n_documento_conta_pagar} - {self.tipo_documento_conta_pagar} - {self.dsc_conta_pagar}"
 
