@@ -73,7 +73,14 @@
                             <div class="text-danger">{{ form.data_vencimento.errors }}</div>
                             {% endif %}
                         </div>
-                        
+
+                        <div class="input-bottom">
+                            <label for="data_recebimento" class="form-label">Data Recebimento:</label>
+                            <input type="date" class="form-control-sm {% if form.data_recebimento.errors %}field-error{% endif %}" id="data_recebimento" name="data_recebimento" value="{% if form.data_recebimento.value %}{{ form.data_recebimento.value|date:'Y-m-d' }}{% endif %}" required autofocus>
+                            {% if form_errors.data_recebimento %}
+                            <div class="text-danger">{{ form_errors.data_recebimento }}</div>
+                            {% endif %}
+                        </div>
                         
                         <div class="input-bottom">
                             <label for="numero_documento" class="form-label">Nº Documento:</label>

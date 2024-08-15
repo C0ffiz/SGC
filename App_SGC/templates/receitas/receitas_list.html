@@ -109,7 +109,7 @@
                     <td>{{ rl.n_condominio.nome_condominio }}</td>
                     <td style="border: none; width:200px">
                         <a href="{% url 'receita_update' pk=rl.pk %}" class="btn btn-primary btn-sm">ALTERAR</a>
-                        <a href="{% url 'receita_update' pk=rl.pk %}" class="btn btn-danger btn-sm">EXCLUIR</a>
+                        <a href="{% url 'receita_delete' pk=rl.pk %}" class="btn btn-danger btn-sm">EXCLUIR</a>
                     </td>
                 </tr>
                 {% endfor %}

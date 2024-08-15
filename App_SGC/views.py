@@ -2139,7 +2139,7 @@ class ReceitaUpdateViews(UpdateView):
     model = Receita
     context_object_name = 'conta_receber'
     fields = [
-        "data_vencimento", "numero_documento", "tipo_documento",
+        "data_vencimento", "data_recebimento", "numero_documento", "tipo_documento",
         "descricao", "valor", "valor_recebido", "categoria", "n_condominio"
     ]
     success_url = reverse_lazy("receita_list")

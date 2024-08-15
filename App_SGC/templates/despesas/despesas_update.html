@@ -68,7 +68,7 @@
 
                         <div class="input-bottom">
                             <label for="data_vencimento" class="form-label">Data Vencimento:</label>
-                            <input type="date" class="form-control-sm" id="data_vencimento" name="data_vencimento" value="{% if form.data_vencimento.value %}{{ form.data_vencimento.value|date:'d/m/y' }}{% endif %}" required autofocus>
+                            <input type="date" class="form-control-sm" id="data_vencimento" name="data_vencimento" value="{% if form.data_vencimento.value %}{{ form.data_vencimento.value|date:'Y-m-d' }}{% endif %}" required autofocus>
                             {% if form.data_vencimento.errors %}
                             <div class="text-danger">{{ form.data_vencimento.errors }}</div>
                             {% endif %}
@@ -76,7 +76,7 @@
                         
                         <div class="input-bottom">
                             <label for="data_pagamento" class="form-label">Data Pagamento:</label>
-                            <input type="date" class="form-control-sm" id="data_pagamento" name="data_pagamento" value="{% if form.data_pagamento.value %}{{ form.data_pagamento.value|date:'d/m/y' }}{% endif %}" required autofocus>
+                            <input type="date" class="form-control-sm" id="data_pagamento" name="data_pagamento" value="{% if form.data_pagamento.value %}{{ form.data_pagamento.value|date:'Y-m-d' }}{% endif %}" required autofocus>
                             {% if form_errors.data_pagamento %}
                             <div class="text-danger">{{ form_errors.data_pagamento }}</div>
                             {% endif %}
