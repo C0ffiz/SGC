@@ -377,6 +377,81 @@ class CustomCorrespondencia(models.Model):
         ordering = ['bloco_id__bloco', 'unidade_id__unidade']
 
 
+#  Definição da Tabela Espaços para Reserva
+class CustomEspaco(models.Model):
+    espaco_id = models.AutoField(primary_key=True)
+    nome_espaco = models.CharField(verbose_name="Nome espaço *", max_length=60, null=False, blank=False)
+    dsc_espaco = models.CharField(verbose_name="Descrição espaço *", max_length=100, null=True, blank=True)
+    TEMPO_CHOICES = [
+        ('0', '0'),
+        ('1', '1'),
+        ('24', '24'),
+    ]
+    tempo_espaco = models.CharField(
+        verbose_name="Tempo de reserva",
+        max_length=3,
+        choices=TEMPO_CHOICES,
+        default='1', 
+        null=False,
+        blank=False
+    )
+    valor_espaco = models.DecimalField(
+        verbose_name="Valor da locação *", 
+        max_digits=15, 
+        decimal_places=2, 
+        null=False, 
+        blank=False, 
+        default=0
+    )   
+    n_condominio = models.ForeignKey(
+        CustomCondominio,  
+        on_delete=models.CASCADE,
+        verbose_name="Número condomínio *",
+        null=False,
+        blank=False,
+    )
+
+    class Meta:
+        db_table = 'espaco'
+        managed = True
+        ordering = ['nome_espaco']
+
+
+#  Definição da Tabela Reserva
+class CustomReserva(models.Model):
+    reserva_id = models.AutoField(primary_key=True)
+    cpf_morador = models.ForeignKey(
+        CustomMorador, 
+        on_delete=models.CASCADE,
+        verbose_name="CPF Morador *",
+        null=False,
+        blank=False,
+    )
+    espaco_id = models.ForeignKey(
+        CustomEspaco, 
+        on_delete=models.CASCADE,
+        verbose_name="Espaço *",
+        null=False,
+        blank=False,
+        related_name='reserva_por_espaco'
+    )
+    data_reserva = models.DateField(verbose_name="Data reserva *", default=date.today, null=False, blank=False)
+    hora_inicio_reserva = models.TimeField(verbose_name="Hora início reserva *", null=False, blank=False)
+    n_condominio = models.ForeignKey(
+        CustomCondominio,  
+        on_delete=models.CASCADE,
+        verbose_name="Número condomínio *",
+        null=False,
+        blank=False,
+    )
+
+    class Meta:
+        db_table = 'reserva'
+        managed = True
+        ordering = ['data_reserva', 'hora_inicio_reserva']
+
+
+
 
 
 
@@ -466,8 +541,9 @@ class CustomPatrimonio(models.Model):
     class Meta:
         db_table = 'patrimonio'
         managed = True
-
+        ordering = ['tipo_patrimonio_id']
         
+
 
 
 
