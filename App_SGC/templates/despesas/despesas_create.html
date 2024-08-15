@@ -29,14 +29,14 @@
 <body>
     <nav class="navbar bg-dark mb-30" data-bs-theme="dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="{% url 'receita_list' %}">CONDOMINIUM</a>
+            <a class="navbar-brand" href="{% url 'despesas_list' %}">CONDOMINIUM</a>
         </div>
     </nav>
     <main class="container">
-        <h1 id="titulo_list">CADASTRO DE CONTA A RECEBER</h1><br>
+        <h1 id="titulo_list">CADASTRO DE CONTA A PAGAR</h1><br>
         
         <div class="painel" style="">
-            <form method="POST" action="{% url 'receita_create' %}">
+            <form method="POST" action="{% url 'despesas_create' %}" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div>
                     {% if form.errors %}
@@ -74,10 +74,10 @@
                         </div>
                         
                         <div class="input-bottom">
-                            <label for="data_recebimento" class="form-label">Data Vencimento:</label>
-                            <input type="date" class="form-control-sm" id="data_recebimento" name="data_recebimento" required autofocus>
-                            {% if form_errors.data_recebimento %}
-                            <div class="text-danger">{{ form_errors.data_recebimento }}</div>
+                            <label for="data_pagamento" class="form-label">Data Pagamento:</label>
+                            <input type="date" class="form-control-sm" id="data_pagamento" name="data_pagamento" required autofocus>
+                            {% if form_errors.data_pagamento %}
+                            <div class="text-danger">{{ form_errors.data_pagamento }}</div>
                             {% endif %}
                         </div>
                         
@@ -121,10 +121,18 @@
                         </div>
                         
                         <div class="input-bottom">
-                            <label for="valor_recebido" class="form-label">Valor Recebido:</label>
-                            <input type="number" class="form-control-sm" id="valor_recebido" name="valor_recebido">
-                            {% if form_errors.valor_recebido %}
-                            <div class="text-danger">{{ form_errors.valor_recebido }}</div>
+                            <label for="valor_pago" class="form-label">Valor Recebido:</label>
+                            <input type="number" class="form-control-sm" id="valor_pago" name="valor_pago">
+                            {% if form_errors.valor_pago %}
+                            <div class="text-danger">{{ form_errors.valor_pago }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="input-bottom">
+                            <label for="documento" class="form-label">Documento:</label>
+                            <input type="file" class="form-control-sm" id="documento" name="documento" required tabindex="5">
+                            {% if form_errors.documento %}
+                                <div class="text-danger">{{ form_errors.documento }}</div>
                             {% endif %}
                         </div>
                         

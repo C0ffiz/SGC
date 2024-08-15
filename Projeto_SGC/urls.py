@@ -17,6 +17,7 @@ from App_SGC.views import BeneficiosListViews,BeneficiosCreateViews,BeneficiosUp
 from App_SGC.views import BeneficiosRecebidosListViews,BeneficiosRecebidosCreateViews,BeneficiosRecebidosUpdateViews,BeneficiosRecebidosDeleteViews
 from App_SGC.views import FinanceiroEstruturaListViews,FinanceiroEstruturaCreateViews,FinanceiroEstruturaUpdateViews,FinanceiroEstruturaDeleteViews
 from App_SGC.views import ReceitaListViews,ReceitaCreateViews,ReceitaUpdateViews,ReceitaDeleteViews
+from App_SGC.views import DespesasListViews,DespesasCreateViews,DespesasUpdateViews,DespesasDeleteViews
 from App_SGC.views import CorrespondenciasListViews,CorrespondenciasCreateViews,CorrespondenciasUpdateViews,CorrespondenciasDeleteViews
 from App_SGC.views import EspacosAdmListViews,EspacosAdmCreateViews,EspacosAdmUpdateViews,EspacosAdmDeleteViews
 from App_SGC.views import TiposPatrimonioListViews,TiposPatrimonioCreateViews,TiposPatrimonioUpdateViews,TiposPatrimonioDeleteViews
@@ -131,6 +132,12 @@ urlpatterns = [
     path('receita_create', ReceitaCreateViews.as_view(template_name="receitas/receitas_create.html"), name="receita_create"),
     path('receita_update/<int:pk>', ReceitaUpdateViews.as_view(template_name="receitas/receitas_update.html"), name="receita_update"),
     path('receita_delete/<int:pk>', ReceitaDeleteViews.as_view(template_name="receitas/receitas_confirm_delete.html"), name="receita_delete"),
+
+#  Caminhos das Despesas
+    path('despesas_list', DespesasListViews.as_view(template_name="despesas/despesas_list.html"), name="despesas_list"),
+    path('despesas_create', DespesasCreateViews.as_view(template_name="despesas/despesas_create.html"), name="despesas_create"),
+    path('despesas_update/<int:pk>', DespesasUpdateViews.as_view(template_name="despesas/despesas_update.html"), name="despesas_update"),
+    path('despesas_delete/<int:pk>', DespesasDeleteViews.as_view(template_name="despesas/despesas_confirm_delete.html"), name="despesas_delete"),
 
 
 #  Caminhos dos Benefícios

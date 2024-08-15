@@ -6,7 +6,7 @@
         <title>SGC</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
             integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-        <link rel="stylesheet" href="/static/css/plano_contas.css">
+        <link rel="stylesheet" href="/static/css/financeiro_estrutura.css">
 
     <style>
         .container-cols {
@@ -21,15 +21,7 @@
         .input-col .input-row {
             margin-bottom: 80px; /* Espaçamento entre as linhas */
         }
-        .input-bottom {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 20px; /* Espaçamento entre as linhas */
-        }
-        input[type="text"], input[type="tel"], input[type="email"], input[type="date"], select {
-            width: 220px;
-        }
+        
         #btnsalvar {
             display: block;
             margin: auto;
@@ -47,20 +39,13 @@
         </div>
     </nav>
     <main class="container">
-        <h1 id="titulo">CADASTRO DE PLANO DE CONTA</h1><br>
+        <h1 id="titulo_list">CADASTRO DE PLANO DE CONTA</h1><br>
 
         <div class="painel" style="height: 500px;">
             <form method="POST" action="{% url 'financeiro_estrutura_create' %}">
             {% csrf_token %}
                 <div class="horizontal-container">
 
-                    <div class="input-bottom">
-                        <label for="id_nome">Nome da Categoria</label>
-                        <input type="text" name="nome" id="id_nome" class="form-control-sm" required>
-                    </div>
-                    
-                    
-                    
                     <div class="input-bottom">
                         <label for="id_parent">Categoria Pai (opcional)</label>
                         <select name="parent" id="id_parent" class="form-control-sm">
@@ -70,11 +55,17 @@
                             {% endfor %}
                         </select>
                     </div>
-                
+
+                    <div class="input-bottom">
+                        <label for="id_nome">Categoria</label>
+                        <input type="text" name="nome" id="id_nome" class="form-control-sm" required>
+                    </div>
+                    
+                    
                 </div>
                 
                 <div class="horizontal-container">
-                    <div>
+                    <div class="input-bottom">
                             <select id="n_condominio" name="n_condominio" class="form-control-sm {% if form.n_condominio.errors %}field-error{% endif %}" tabindex="10">
                                 <option value="">Condomínio</option>
                                 {% for condominio in condominios %}

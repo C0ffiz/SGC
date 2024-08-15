@@ -9,7 +9,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <!-- Folhas de Estilo Locais -->
-    <link rel="stylesheet" href="/static/css/unidades.css">
+    <link rel="stylesheet" href="/static/css/receitas.css">
     <title>SGC</title>
     <style>
         .container-cols {
@@ -77,28 +77,32 @@
         </div>
 
         <!-- Tabela de Contas a Receber -->
-        <table id="contasReceberTable" class="table auto-layout">
+        <table id="ReceitasTable" class="table auto-layout">
             <thead>
                 <tr>
+                    <th scope="col" class="close-th">Categoria</th>
+                    <th scope="col" class="close-th">Valor a Receber</th>
+                    <th scope="col" class="close-th">Valor Recebido</th>
+                    <th scope="col" class="close-th">Data Recebimento</th>
                     <th scope="col" class="close-th">Data Vencimento</th>
                     <th scope="col" class="close-th">Nº Documento</th>
                     <th scope="col" class="close-th">Tipo Documento</th>
                     <th scope="col" class="close-th">Descrição</th>
-                    <th scope="col" class="close-th">Valor</th>
-                    <th scope="col" class="close-th">Categoria</th>
                     <th scope="col" class="close-th">Número Condomínio</th>
-                    <th scope="col" class="close-th"></th>
+                    
                 </tr>
             </thead>
             <tbody>
                 {% for rl in receita_list %}
                 <tr>
+                    <td>{{ rl.categoria.nome }}</td>    
+                    <td>{{ rl.valor }}</td>
+                    <td>{{ rl.valor_recebido }}</td>
+                    <td>{{ rl.data_recebimento }}</td>
                     <td>{{ rl.data_vencimento }}</td>
                     <td>{{ rl.numero_documento }}</td>
                     <td>{{ rl.tipo_documento }}</td>
                     <td>{{ rl.descricao }}</td>
-                    <td>{{ rl.valor }}</td>
-                    <td>{{ rl.categoria.nome }}</td>    
                     <td>{{ rl.n_condominio.n_condominio }} - {{ rl.n_condominio.nome_condominio }}</td>
                     <td style="border: none; width:200px">
                         <a href="{% url 'receita_update' pk=rl.pk %}" class="btn btn-primary btn-sm">ALTERAR</a>
@@ -116,12 +120,13 @@
         function handleSearch() {
             document.getElementById('txtBusca').addEventListener('input', function () {
                 var searchText = this.value.toLowerCase();
-                var rows = document.querySelectorAll('#contasReceberTable tbody tr');
+                var rows = document.querySelectorAll('#ReceitasTable tbody tr');
 
                 rows.forEach(function (row) {
-                    var unidade = row.querySelector('td').textContent.toLowerCase();
-                    // Check if bloco contains the search text
-                    if (unidade.includes(searchText)) {
+                    // Seleciona o segundo <td> dentro da linha
+                    var nome = row.querySelectorAll('td')[0].textContent.toLowerCase();
+                    // Verifica se o nome contém o texto da busca
+                    if (nome.includes(searchText)) {
                         row.style.display = '';
                     } else {
                         row.style.display = 'none';
