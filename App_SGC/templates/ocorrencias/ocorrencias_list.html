@@ -38,7 +38,7 @@
         </div>
 
         <!-- Tabela de Unidades -->
-        <table id="veiculoTable" class="table auto-layout">
+        <table id="ocorrenciaTable" class="table auto-layout">
             <thead>
                 <tr>
                     <th scope="col" class="close-th">CPF CONDÔMINO</th>
@@ -53,8 +53,8 @@
                 {% for ocor in ocorrencias_list %}
                     <tr>
                         <td class="cpf-condomino">{{ ocor.cpf_condomino.cpf_condomino }}</td>
-                        <td>{{ ocor.data_ocorrencia }}</td>
-                        <td>{{ ocor.hora_ocorrencia }}</td>
+                        <td>{{ ocor.data_ocorrencia|date:"d/m/y"  }}</td>
+                        <td>{{ ocor.hora_ocorrencia|date:"H:i" }}</td>
                         <td>{{ ocor.dsc_ocorrencia }}</td>
                         <td>{{ ocor.documento_ocorrencia }}</td>
                         <td>{{ ocor.n_condominio.n_condominio }}</td>
@@ -70,7 +70,6 @@
 
     <!-- Scripts JavaScript -->
     <script>
-        // Função para manipular a pesquisa/filtragem
         function handleSearch() {
             document.getElementById('txtBusca').addEventListener('input', function () {
                 var searchText = this.value.toLowerCase();
@@ -86,6 +85,7 @@
                 });
             });
         }
+
 
         // Função para formatar o CPF
         function formatCPF(cpf) {

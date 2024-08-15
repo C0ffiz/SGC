@@ -50,7 +50,7 @@ a:hover{
 }
 
 .container {
-    /* text-align: center; */
+    text-align: center;
     padding-top: 60px;
     color: #fbf5f5;
     align-items: center;
@@ -79,7 +79,7 @@ td {
 }
 
 .btn-primary {
-    font-weight: bold;   
+    font-weight: bold;
 }
 
 .btn-danger {
@@ -164,7 +164,6 @@ td {
     font-weight: bold;
     background: #0d6efd;
     color: #fbf5f5;
-    
 }
 
 .sort-header {
@@ -222,5 +221,9 @@ td {
     padding: 0;
 }
 
-
+.input-bottom {
+    /* flex: 1;
+    min-width: 10px; */
+    
+}
 

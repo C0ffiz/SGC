@@ -21,6 +21,8 @@ from App_SGC.views import CorrespondenciasListViews,CorrespondenciasCreateViews,
 from App_SGC.views import EspacosAdmListViews,EspacosAdmCreateViews,EspacosAdmUpdateViews,EspacosAdmDeleteViews
 from App_SGC.views import TiposPatrimonioListViews,TiposPatrimonioCreateViews,TiposPatrimonioUpdateViews,TiposPatrimonioDeleteViews
 from App_SGC.views import PatrimonioListViews,PatrimonioCreateViews,PatrimonioUpdateViews,PatrimonioDeleteViews
+from App_SGC.views import EspacosListViews,EspacosCreateViews,EspacosUpdateViews,EspacosDeleteViews
+from App_SGC.views import ReservasListViews,ReservasCreateViews,ReservasUpdateViews,ReservasDeleteViews
 from django.views.generic import ListView
 from django.urls import reverse_lazy
 
@@ -120,18 +122,6 @@ urlpatterns = [
     path('ocorrencias_update/<int:pk>', OcorrenciasUpdateViews.as_view(template_name="ocorrencias/ocorrencias_update.html"), name="ocorrencias_update"),
     path('ocorrencias_delete/<int:pk>', OcorrenciasDeleteViews.as_view(template_name="ocorrencias/ocorrencias_confirm_delete.html"), name="ocorrencias_delete"),
 
-#  Caminhos do Plano de contas
-    path('financeiro_estrutura_list', FinanceiroEstruturaListViews.as_view(template_name="estrutura-financeiro/financeiro_list.html"), name="financeiro_estrutura_list"),
-    path('financeiro_estrutura_create', FinanceiroEstruturaCreateViews.as_view(template_name="estrutura-financeiro/financeiro_create.html"), name="financeiro_estrutura_create"),
-    path('financeiro_estrutura_update/<int:pk>', FinanceiroEstruturaUpdateViews.as_view(template_name="estrutura-financeiro/financeiro_update.html"), name="financeiro_estrutura_update"),
-    path('financeiro_estrutura_delete/<int:pk>', FinanceiroEstruturaDeleteViews.as_view(template_name="estrutura-financeiro/financeiro_confirm_delete.html"), name="financeiro_estrutura_delete"),
-
-#  Caminhos das Receitas
-    path('receita_list', ReceitaListViews.as_view(template_name="receitas/receitas_list.html"), name="receita_list"),
-    path('receita_create', ReceitaCreateViews.as_view(template_name="receitas/receitas_create.html"), name="receita_create"),
-    path('receita_update/<int:pk>', ReceitaUpdateViews.as_view(template_name="receitas/receitas_update.html"), name="receita_update"),
-    path('receita_delete/<int:pk>', ReceitaDeleteViews.as_view(template_name="receitas/receitas_confirm_delete.html"), name="receita_delete"),
-
 
 #  Caminhos dos Benefícios
     path('beneficios_list', BeneficiosListViews.as_view(template_name="beneficios/beneficios_list.html"), name="beneficios_list"),
@@ -175,6 +165,20 @@ urlpatterns = [
     path('patrimonio_delete/<str:pk>', PatrimonioDeleteViews.as_view(template_name="patrimonio/patrimonio_confirm_delete.html"), name="patrimonio_delete"),
 
 
+#  Caminhos de Espaços
+    path('espacos_list', EspacosListViews.as_view(template_name="espacos/espacos_list.html"), name="espacos_list"),
+    path('espacos_create', EspacosCreateViews.as_view(template_name="espacos/espacos_create.html"), name="espacos_create"),
+    path('espacos_update/<str:pk>', EspacosUpdateViews.as_view(template_name="espacos/espacos_update.html"), name="espacos_update"),
+    path('espacos_delete/<str:pk>', EspacosDeleteViews.as_view(template_name="espacos/espacos_confirm_delete.html"), name="espacos_delete"),
+
+
+#  Caminhos da Reserva
+    path('reservas_list', ReservasListViews.as_view(template_name="reservas/reservas_list.html"), name="reservas_list"),
+    path('reservas_create', ReservasCreateViews.as_view(template_name="reservas/reservas_create.html"), name="reservas_create"),
+    path('reservas_update/<str:pk>', ReservasUpdateViews.as_view(template_name="reservas/reservas_update.html"), name="reservas_update"),
+    path('reservas_delete/<str:pk>', ReservasDeleteViews.as_view(template_name="reservas/reservas_confirm_delete.html"), name="reservas_delete"),
+
+
 
 
 
@@ -184,6 +188,17 @@ urlpatterns = [
 
 #  Caminhos SUBSISTEMA FINANCEIRO
 
+#  Caminhos do Plano de contas
+    path('financeiro_estrutura_list', FinanceiroEstruturaListViews.as_view(template_name="estrutura-financeiro/financeiro_list.html"), name="financeiro_estrutura_list"),
+    path('financeiro_estrutura_create', FinanceiroEstruturaCreateViews.as_view(template_name="estrutura-financeiro/financeiro_create.html"), name="financeiro_estrutura_create"),
+    path('financeiro_estrutura_update/<int:pk>', FinanceiroEstruturaUpdateViews.as_view(template_name="estrutura-financeiro/financeiro_update.html"), name="financeiro_estrutura_update"),
+    path('financeiro_estrutura_delete/<int:pk>', FinanceiroEstruturaDeleteViews.as_view(template_name="estrutura-financeiro/financeiro_confirm_delete.html"), name="financeiro_estrutura_delete"),
+
+#  Caminhos das Receitas
+    path('receita_list', ReceitaListViews.as_view(template_name="receitas/receitas_list.html"), name="receita_list"),
+    path('receita_create', ReceitaCreateViews.as_view(template_name="receitas/receitas_create.html"), name="receita_create"),
+    path('receita_update/<int:pk>', ReceitaUpdateViews.as_view(template_name="receitas/receitas_update.html"), name="receita_update"),
+    path('receita_delete/<int:pk>', ReceitaDeleteViews.as_view(template_name="receitas/receitas_confirm_delete.html"), name="receita_delete"),
 
 
 ]

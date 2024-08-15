@@ -28,7 +28,7 @@
             </div>
 
             <div class="box" id="divBusca">
-                <input type="text" id="txtBusca" placeholder="Patrimônio" />
+                <input type="text" id="txtBusca" placeholder="Espaço Administrativo" />
                 <button id="btnBusca">BUSCAR</button>
             </div>
         </div>
@@ -36,17 +36,11 @@
         <table id="patrimonioTable" class="table auto-layout">
             <thead>
                 <tr>
-                    <th scope="col" class="close-th">PATRIMÔNIO</th>                        
+                    <th scope="col" class="close-th">PATRIMÔNIO</th>                     
                     <th scope="col" class="close-th">LOCAL ALOCADO</th>  
                     <th scope="col" class="close-th">VALOR (R$)</th>                      
                     <th scope="col" class="close-th">DATA DA ALOCAÇÃO</th>
-                    <th scope="col">
-                        <a href="#" class="sort-header link-arrow down" data-sort="data_baixa_patrimonio">
-                            DATA BAIXA
-                            <span class="sort-icon"></span>
-                            <span class="sorting-label"></span>
-                        </a>
-                    </th>
+                    <th scope="col" class="close-th">DATA BAIXA</th>                   
                     <th scope="col" class="close-th">CONDOMÍNIO</th>
                 </tr>
             </thead>
@@ -70,6 +64,37 @@
     </main>
 
     <script>
+
+        // Função para manipular a ordenação das colunas
+        function handleSort() {
+            var headers = document.querySelectorAll('.sort-header');
+            headers.forEach(function (header) {
+                header.addEventListener('click', function (event) {
+                    event.preventDefault(); // Evita comportamento padrão do link
+                    var column = this.getAttribute('data-sort');
+                    var isAscending = this.classList.contains('asc');
+                    toggleSortIcon(this, isAscending);
+                    sortTable(column, isAscending);
+                });
+            });
+        } 
+        // Função para manipular a pesquisa/filtragem
+        function handleSearch() {
+            document.getElementById('txtBusca').addEventListener('input', function () {
+                var searchText = this.value.toLowerCase();
+                var rows = document.querySelectorAll('#patrimonioTable tbody tr');
+
+                rows.forEach(function (row) {
+                    var espacoAdmNome = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+                    if (espacoAdmNome.includes(searchText)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+        }
+
         document.addEventListener('DOMContentLoaded', function () {                
             handleSearch();
             handleSort();

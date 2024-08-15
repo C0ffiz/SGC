@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SGC</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="/static/css/espacos.css">
+    <style>
+        .container-cols {
+            display: flex;
+            gap: 20px; /* Espaçamento entre as colunas */
+        }
+        .input-col {
+            flex: 1; /* Cada coluna ocupa o mesmo espaço */
+            display: flex;
+            flex-direction: column;
+        }
+        .input-col .input-row {
+            margin-bottom: 40px; /* Espaçamento entre as linhas */
+        }
+        .form-control-sm {
+            /* width: 50%;  */
+        }
+        input[type="text"], input[type="date"], select {
+            width: 220px;
+            height: 30px;
+        }   
+        .input-bottom {
+            margin-bottom: 20px; /* Aumenta a distância entre as divs verticalmente */
+            margin-right: 20px; /* Aumenta a distância entre as divs horizontalmente */
+        }    
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar bg-dark mb-30" data-bs-theme="dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'espacos_list' %}">CONDOMINIUM</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <h1 id="titulo">ALTERAÇÃO DE ESPAÇOS PARA LOCAÇÃO</h1><br>
+
+        <div class="painel" style="height: 500px;">
+
+            <form method="POST">
+                {% csrf_token %}
+
+                <div>
+                    {% if form.errors %}
+                    <div class="alert alert-danger error-duplicate" role="alert">
+                        <ul>
+                            {% for field, errors in form.errors.items %}
+                            {% for error in errors %}
+                            <li><strong>{{ field }}:</strong> {{ error }}</li>
+                            {% endfor %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="input-bottom">
+                    <label for="nome_espaco" class="form-label">Espaço para locação:</label> <br>
+                    <input id="nome_espaco" name="nome_espaco" class="form-control-sm" type="text" 
+                        value="{{ form.nome_espaco.value }}" maxlength="60" tabindex="1" required autofocus> <br>
+                    {% if form.espaco.errors %}
+                        <div class="text-danger"></div>
+                    {% endif %}
+                </div>  
+
+                <div class="input-bottom">
+                    <label for="dsc" class="form-label">Dsc:</label> <br>
+                    <input id="dsc" name="dsc" class="form-control-sm" type="text" 
+                        value="{{ form.dsc.value }}" maxlength="100" tabindex="2"><br>
+                    {% if form.dsc.errors %}
+                        <div class="text-danger"></div>
+                    {% endif %}
+                </div>                 
+                
+                <div class="update-form">
+                    <label for="n_condominio" class="form-label">Condomínio:</label><br>
+                    <select id="n_condominio" name="n_condominio" class="form-control-sm" tabindex="3" >
+                        <option value="">Condomínio</option>
+                        {% for condominio in condominios %}
+                        <option value="{{ condominio.n_condominio }}" {% if condominio.n_condominio == form.n_condominio.value %}selected{% endif %}>
+                            {{ condominio.n_condominio }} - {{ condominio.nome_condominio }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div> 
+                <br><br>
+
+                <button id="btnsalvar" value="Update" type="submit">SALVAR</button>
+            </form>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous">
+    </script>
+</body>
+</html>
