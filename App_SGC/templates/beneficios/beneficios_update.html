@@ -73,7 +73,7 @@
                         <option value="">Condomínio</option>
                         {% for condominio in condominios %}
                         <option value="{{ condominio.pk }}" {% if condominio.pk == beneficio.n_condominio.pk %}selected{% endif %}>
-                            {{ condominio.n_condominio }} - {{ condominio.nome_condominio }}
+                            {{ condominio.nome_condominio }}
                         </option>
                         {% endfor %}
                     </select>

@@ -107,7 +107,7 @@
 
                         <div class="input-bottom">
                             <label for="valor" class="form-label">Valor a Receber:</label>
-                            <input type="number" class="form-control-sm {% if form.valor.errors %}field-error{% endif %}" id="valor" name="valor" value="{{ form.valor.value }}" required>
+                            <input type="text" class="form-control-sm {% if form.valor.errors %}field-error{% endif %}" id="valor" name="valor" value="{{ form.valor.value|stringformat:"0.2f" }}" required>
                             {% if form.valor.errors %}
                                 <div class="text-danger">{{ form.valor.errors }}</div>
                             {% endif %}
@@ -115,18 +115,18 @@
 
                         <div class="input-bottom">
                             <label for="valor_recebido" class="form-label">Valor Recebido:</label>
-                            <input type="number" class="form-control-sm {% if form.valor_recebido.errors %}field-error{% endif %}" id="valor_recebido" name="valor_recebido" value="{{ form.valor_recebido.value }}">
+                            <input type="text" class="form-control-sm {% if form.valor_recebido.errors %}field-error{% endif %}" id="valor_recebido" name="valor_recebido" value="{{ form.valor_recebido.value|stringformat:"0.2f" }}">
                             {% if form.valor_recebido.errors %}
                                 <div class="text-danger">{{ form.valor_recebido.errors }}</div>
                             {% endif %}
                         </div>
 
                         <div class="input-bottom">
-                            <label for="n_condominio" class="form-label">Número Condomínio:</label>
+                            <label for="n_condominio" class="form-label">Condomínio:</label>
                             <select class="form-control-sm {% if form.n_condominio.errors %}field-error{% endif %}" id="n_condominio" name="n_condominio" required>
                                 <option value="">Condomínio</option>
                                 {% for condominio in condominios %}
-                                <option value="{{ condominio.n_condominio }}" {% if form.n_condominio.value == condominio.n_condominio %}selected{% endif %}>{{ condominio.n_condominio }} - {{ condominio.nome_condominio }}</option>
+                                <option value="{{ condominio.n_condominio }}" {% if form.n_condominio.value == condominio.n_condominio %}selected{% endif %}>{{ condominio.nome_condominio }}</option>
                                 {% endfor %}
                             </select>
                             {% if form.n_condominio.errors %}
@@ -145,5 +145,19 @@
         </form>
     </div>
 </main>
+<script>
+    $(document).ready(function(){
+        // Aplicar a máscara de moeda ao carregar a página
+        $('#valor, #valor_recebido').mask('000.000.000.000.000,00', {reverse: true});
+        
+        // Remover a máscara antes de enviar o formulário
+        $('form').submit(function() {
+            $('#valor, #valor_recebido').each(function(){
+                var valor = $(this).val().replace(/\./g, '').replace(',', '.');
+                $(this).val(valor);
+            });
+        });
+    });
+</script>
 </body>
 </html>

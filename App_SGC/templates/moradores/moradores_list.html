@@ -70,7 +70,7 @@
                     <td class="parentesco_condomino">{{ mora.parentesco_condomino }}</td>
                     <td class="celular_morador">{{ mora.celular_morador }}</td>
                     <td class="email_morador">{{ mora.email_morador }}</td>
-                    <td class="email_morador">{{ mora.n_condominio.n_condominio }}</td>
+                    <td class="email_morador">{{ mora.n_condominio.nome_condominio }}</td>
                     <td style="border: none; width:200px">
                         <!-- <a href="{% url 'moradores_update' pk=mora.pk %}?cpf_condomino={{ mora.cpf_condomino }}&cpf_morador={{ mora.cpf_morador }}" class="btn btn-primary btn-sm">ALTERAR</a> -->
                         <a href="{% url 'moradores_update' pk=mora.pk %}" class="btn btn-primary btn-sm">ALTERAR</a>

@@ -57,7 +57,7 @@
                         <td>{{ ocor.hora_ocorrencia }}</td>
                         <td>{{ ocor.dsc_ocorrencia }}</td>
                         <td>{{ ocor.documento_ocorrencia }}</td>
-                        <td>{{ ocor.n_condominio.n_condominio }}</td>
+                        <td>{{ ocor.n_condominio.nome_condominio }}</td>
                         <td style="border: none; width:200px">
                             <a href="{% url 'ocorrencias_update' pk=ocor.pk %}" class="btn btn-primary btn-sm">ALTERAR</a>
                             <a href="{% url 'ocorrencias_delete' pk=ocor.pk %}" class="btn btn-danger btn-sm">EXCLUIR</a>

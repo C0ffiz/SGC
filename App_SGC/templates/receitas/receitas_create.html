@@ -114,7 +114,7 @@
                         
                         <div class="input-bottom">
                             <label for="valor" class="form-label">Valor a Receber:</label>
-                            <input type="number" class="form-control-sm" id="valor" name="valor" required>
+                            <input type="text" class="form-control-sm" id="valor" name="valor" required>
                             {% if form_errors.valor %}
                             <div class="text-danger">{{ form_errors.valor }}</div>
                             {% endif %}
@@ -122,18 +122,18 @@
                         
                         <div class="input-bottom">
                             <label for="valor_recebido" class="form-label">Valor Recebido:</label>
-                            <input type="number" class="form-control-sm" id="valor_recebido" name="valor_recebido">
+                            <input type="text" class="form-control-sm" id="valor_recebido" name="valor_recebido">
                             {% if form_errors.valor_recebido %}
                             <div class="text-danger">{{ form_errors.valor_recebido }}</div>
                             {% endif %}
                         </div>
                         
                         <div class="input-bottom">
-                            <label for="n_condominio" class="form-label">Número Condomínio:</label>
+                            <label for="n_condominio" class="form-label">Condomínio:</label>
                             <select class="form-control-sm" id="n_condominio" name="n_condominio" required>
                                 <option value="">Condomínio</option>
                                 {% for condominio in condominios %}
-                                <option value="{{ condominio.n_condominio }}">{{ condominio.n_condominio }} - {{ condominio.nome_condominio }}</option>
+                                <option value="{{ condominio.n_condominio }}">{{ condominio.nome_condominio }}</option>
                                 {% endfor %}
                             </select>
                             {% if form_errors.n_condominio %}
@@ -154,8 +154,18 @@
     </main>
     
     <script>
-  
-
+        $(document).ready(function(){
+            // Aplicar a máscara de moeda ao carregar a página
+            $('#valor, #valor_recebido').mask('000.000.000.000.000,00', {reverse: true});
+            
+            // Remover a máscara antes de enviar o formulário
+            $('form').submit(function() {
+                $('#valor, #valor_recebido').each(function(){
+                    var valor = $(this).val().replace(/\./g, '').replace(',', '.');
+                    $(this).val(valor);
+                });
+            });
+        });
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz4fnFO9gybBogGzF9RAp6F3E6pbb7zJpPHT6f6Ffhh0GgiVNU7BRSK7jl" crossorigin="anonymous"></script>

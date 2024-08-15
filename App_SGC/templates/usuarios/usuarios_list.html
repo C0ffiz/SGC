@@ -61,7 +61,7 @@
                         <td class="username">{{ usua.username }}</td>
                         <td>{{ usua.password }}</td>
                         <td id="cpf_cell_{{ forloop.counter }}">{{ usua.cpf_usuario }}</td>
-                        <td>{{ usua.n_condominio.n_condominio }}</td>
+                        <td>{{ usua.n_condominio.nome_condominio }}</td>
                         <td style="border: none; width:200px">
                             <a href="{% url 'usuarios_update' pk=usua.pk %}" class="btn btn-primary btn-sm">ALTERAR</a>
                             <a href="{% url 'usuarios_delete' pk=usua.pk %}" class="btn btn-danger btn-sm">EXCLUIR</a>

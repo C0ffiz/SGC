@@ -74,7 +74,7 @@
                         <td class="celular">{{ cond.celular_condomino }}</td>
                         <td>{{ cond.email_condomino }}</td>
                         <td>{{ cond.data_aquisicao_imovel|date:'d/m/Y' }}</td>
-                        <td>{{ cond.n_condominio.n_condominio }}</td>
+                        <td>{{ cond.n_condominio.nome_condominio }}</td>
                         <td>
                             <div class="btn-group">
                                 <a href="{% url 'condominos_update' pk=cond.pk %}" class="btn btn-primary btn-sm">ALTERAR</a>

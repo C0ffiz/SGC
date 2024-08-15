@@ -140,7 +140,7 @@
                                 <option value="">Condomínio</option>
                                 {% for condominio in condominios %}
                                     <option value="{{ condominio.n_condominio }}" {% if ocorrencia.n_condominio.n_condominio == condominio.n_condominio %}selected{% endif %}>
-                                        {{ condominio.n_condominio }} - {{ condominio.nome_condominio }}
+                                        {{ condominio.nome_condominio }}
                                     </option>
                                 {% endfor %}
                             </select>

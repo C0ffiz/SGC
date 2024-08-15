@@ -33,7 +33,7 @@
         </div>
     </nav>
     <main class="container">
-        <h1 id="titulo_list">CADASTRO DE CONTA A PAGAR</h1><br>
+        <h1 id="titulo_list">CADASTRO DE CONTAS A PAGAR</h1><br>
         
         <div class="painel" style="">
             <form method="POST" action="{% url 'despesas_create' %}" enctype="multipart/form-data">
@@ -67,7 +67,7 @@
 
                         <div class="input-bottom">
                             <label for="data_vencimento" class="form-label">Data Vencimento:</label>
-                            <input type="date" class="form-control-sm" id="data_vencimento" name="data_vencimento" required autofocus>
+                            <input type="date" class="form-control-sm" id="data_vencimento" name="data_vencimento" required autofocus lang="pt-BR">
                             {% if form_errors.data_vencimento %}
                             <div class="text-danger">{{ form_errors.data_vencimento }}</div>
                             {% endif %}
@@ -75,19 +75,12 @@
                         
                         <div class="input-bottom">
                             <label for="data_pagamento" class="form-label">Data Pagamento:</label>
-                            <input type="date" class="form-control-sm" id="data_pagamento" name="data_pagamento" required autofocus>
+                            <input type="date" class="form-control-sm" id="data_pagamento" name="data_pagamento" required autofocus lang="pt-BR">
                             {% if form_errors.data_pagamento %}
                             <div class="text-danger">{{ form_errors.data_pagamento }}</div>
                             {% endif %}
                         </div>
                         
-                        <div class="input-bottom">
-                            <label for="numero_documento" class="form-label">Nº Documento:</label>
-                            <input type="text" class="form-control-sm" id="numero_documento" name="numero_documento" required>
-                            {% if form_errors.numero_documento %}
-                            <div class="text-danger">{{ form_errors.numero_documento }}</div>
-                            {% endif %}
-                        </div>
                         
                         <div class="input-bottom">
                             <label for="tipo_documento" class="form-label">Tipo Documento:</label>
@@ -100,34 +93,7 @@
                             <div class="text-danger">{{ form_errors.tipo_documento }}</div>
                             {% endif %}
                         </div>
-                    </div>
-
-                
-                    <div class="coluna">
-                        <div class="input-bottom">
-                            <label for="descricao" class="form-label">Descrição:</label>
-                            <input type="text" class="form-control-sm" id="descricao" name="descricao" required>
-                            {% if form_errors.descricao %}
-                            <div class="text-danger">{{ form_errors.descricao }}</div>
-                            {% endif %}
-                        </div>
                         
-                        <div class="input-bottom">
-                            <label for="valor" class="form-label">Valor a Receber:</label>
-                            <input type="number" class="form-control-sm" id="valor" name="valor" required>
-                            {% if form_errors.valor %}
-                            <div class="text-danger">{{ form_errors.valor }}</div>
-                            {% endif %}
-                        </div>
-                        
-                        <div class="input-bottom">
-                            <label for="valor_pago" class="form-label">Valor Recebido:</label>
-                            <input type="number" class="form-control-sm" id="valor_pago" name="valor_pago">
-                            {% if form_errors.valor_pago %}
-                            <div class="text-danger">{{ form_errors.valor_pago }}</div>
-                            {% endif %}
-                        </div>
-
                         <div class="input-bottom">
                             <label for="documento" class="form-label">Documento:</label>
                             <input type="file" class="form-control-sm" id="documento" name="documento" required tabindex="5">
@@ -135,13 +101,48 @@
                                 <div class="text-danger">{{ form_errors.documento }}</div>
                             {% endif %}
                         </div>
+                    </div>
+
+                
+                    <div class="coluna">
+                        <div class="input-bottom">
+                            <label for="descricao" class="form-label">Descrição:</label>
+                            <input type="text" class="form-control-sm" id="descricao" name="descricao">
+                            {% if form_errors.descricao %}
+                            <div class="text-danger">{{ form_errors.descricao }}</div>
+                            {% endif %}
+                        </div>
                         
                         <div class="input-bottom">
-                            <label for="n_condominio" class="form-label">Número Condomínio:</label>
+                            <label for="valor" class="form-label">Valor a Receber:</label>
+                            <input type="text" class="form-control-sm" id="valor" name="valor" required>
+                            {% if form_errors.valor %}
+                            <div class="text-danger">{{ form_errors.valor }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="input-bottom">
+                            <label for="valor_pago" class="form-label">Valor Recebido:</label>
+                            <input type="text" class="form-control-sm" id="valor_pago" name="valor_pago">
+                            {% if form_errors.valor_pago %}
+                            <div class="text-danger">{{ form_errors.valor_pago }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="input-bottom">
+                            <label for="numero_documento" class="form-label">Nº Documento:</label>
+                            <input type="text" class="form-control-sm" id="numero_documento" name="numero_documento" required>
+                            {% if form_errors.numero_documento %}
+                            <div class="text-danger">{{ form_errors.numero_documento }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="input-bottom">
+                            <label for="n_condominio" class="form-label">Condomínio:</label>
                             <select class="form-control-sm" id="n_condominio" name="n_condominio" required>
                                 <option value="">Condomínio</option>
                                 {% for condominio in condominios %}
-                                <option value="{{ condominio.n_condominio }}">{{ condominio.n_condominio }} - {{ condominio.nome_condominio }}</option>
+                                <option value="{{ condominio.n_condominio }}">{{ condominio.nome_condominio }}</option>
                                 {% endfor %}
                             </select>
                             {% if form_errors.n_condominio %}
@@ -162,8 +163,41 @@
     </main>
     
     <script>
-  
+        $(document).ready(function(){
+            // Aplicar a máscara de moeda ao carregar a página
+            $('#valor, #valor_pago').mask('000.000.000.000.000,00', {reverse: true});
+            
+            // Remover a máscara antes de enviar o formulário
+            $('form').submit(function() {
+                $('#valor, #valor_pago').each(function(){
+                    var valor = $(this).val().replace(/\./g, '').replace(',', '.');
+                    $(this).val(valor);
+                });
+            });
+        });
 
+        // document.addEventListener('DOMContentLoaded', function () {
+        //     function formatDate(date) {
+        //         return date.split('-').reverse().join('/');
+        //     }
+
+        //     function revertDate(date) {
+        //         return date.split('/').reverse().join('-');
+        //     }
+
+        //     ['data_vencimento', 'data_pagamento'].forEach(id => {
+        //         const input = document.getElementById(id);
+        //         if (input.value) input.value = formatDate(input.value);
+        //         input.addEventListener('blur', () => input.value = formatDate(revertDate(input.value)));
+        //     });
+
+        //     document.querySelector('form').addEventListener('submit', function () {
+        //         ['data_vencimento', 'data_pagamento'].forEach(id => {
+        //             const input = document.getElementById(id);
+        //             input.value = revertDate(input.value);
+        //         });
+        //     });
+        // });
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz4fnFO9gybBogGzF9RAp6F3E6pbb7zJpPHT6f6Ffhh0GgiVNU7BRSK7jl" crossorigin="anonymous"></script>

@@ -77,7 +77,7 @@
                         <option value="">Condomínio</option>
                         {% for condominio in condominios %}
                         <option value="{{ condominio.n_condominio }}" {% if condominio.n_condominio == form.n_condominio.value %}selected{% endif %}>
-                            {{ condominio.n_condominio }} - {{ condominio.nome_condominio }}
+                            {{ condominio.nome_condominio }}
                         </option>
                         {% endfor %}
                     </select>

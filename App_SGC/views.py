@@ -1963,6 +1963,7 @@ class DespesasCreateViews(CreateView):
     ]
     success_url = reverse_lazy("despesas_list")
 
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['condominios'] = CustomCondominio.objects.all()
@@ -1988,10 +1989,11 @@ class DespesasUpdateViews(UpdateView):
     model = Despesas
     context_object_name = 'conta_receber'
     fields = [
-        "data_vencimento", "numero_documento", "tipo_documento",
+        "data_vencimento", "data_pagamento",  "numero_documento", "tipo_documento",
         "descricao", "valor", "valor_pago", "categoria", "documento", "n_condominio"
     ]
     success_url = reverse_lazy("despesas_list")
+
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

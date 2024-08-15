@@ -118,9 +118,10 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'pt-br'  # Define o idioma padrão como português do Brasil
+USE_L10N = True          # Ativa a formatação local automática
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Sao_Paulo'
 
 USE_I18N = True
 
@@ -141,7 +142,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'App_SGC.CustomUser'
 
 # settings.py
-DATE_FORMAT = 'DD/MM/YYYY'  # Customize the date format as needed
+# Formato padrão de datas exibido nos templates
+DATE_FORMAT = 'd/m/Y'
+
+# Formato padrão de datas exibido nos formulários
+DATE_INPUT_FORMATS = ['%d/%m/%Y', '%Y-%m-%d']  # Aceitar ambos formatos, mas preferir DD/MM/YYYY
 
 # Iniciar site na url /login
 LOGIN_URL = 'exibirLogin'

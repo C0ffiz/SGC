@@ -1,7 +1,8 @@
 <!doctype html>
 <html lang="pt-br">
-
-<head>
+    {% load custom_filters %}
+    
+    <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Folhas de Estilo Externas -->
@@ -80,15 +81,16 @@
         <table id="ReceitasTable" class="table auto-layout">
             <thead>
                 <tr>
-                    <th scope="col" class="close-th">Categoria</th>
-                    <th scope="col" class="close-th">Valor a Receber</th>
-                    <th scope="col" class="close-th">Valor Recebido</th>
-                    <th scope="col" class="close-th">Data Recebimento</th>
-                    <th scope="col" class="close-th">Data Vencimento</th>
-                    <th scope="col" class="close-th">Nº Documento</th>
-                    <th scope="col" class="close-th">Tipo Documento</th>
-                    <th scope="col" class="close-th">Descrição</th>
-                    <th scope="col" class="close-th">Número Condomínio</th>
+                    <th scope="col" class="close-th">CONTA</th>
+                    <th scope="col" class="close-th">VALOR A RECEBER</th>
+                    <th scope="col" class="close-th">VALOR REDEBIDO</th>
+                    <th scope="col" class="close-th">DATA RECEBIMENTO</th>
+                    <th scope="col" class="close-th">DATA VENCIMENTO</th>
+                    <th scope="col" class="close-th">Nº DOCUMENTO</th>
+                    <th scope="col" class="close-th">TIPO DOCUMENTO</th>
+                    <th scope="col" class="close-th">DESCRIÇÃO</th>
+                    <th scope="col" class="close-th">NÚMERO CONDOMÍNIO</th>
+
                     
                 </tr>
             </thead>
@@ -97,13 +99,13 @@
                 <tr>
                     <td>{{ rl.categoria.nome }}</td>    
                     <td>{{ rl.valor }}</td>
-                    <td>{{ rl.valor_recebido }}</td>
+                    <td>{{ rl.valor_recebido|currency_brl }}</td>
                     <td>{{ rl.data_recebimento }}</td>
                     <td>{{ rl.data_vencimento }}</td>
                     <td>{{ rl.numero_documento }}</td>
                     <td>{{ rl.tipo_documento }}</td>
                     <td>{{ rl.descricao }}</td>
-                    <td>{{ rl.n_condominio.n_condominio }} - {{ rl.n_condominio.nome_condominio }}</td>
+                    <td>{{ rl.n_condominio.nome_condominio }}</td>
                     <td style="border: none; width:200px">
                         <a href="{% url 'receita_update' pk=rl.pk %}" class="btn btn-primary btn-sm">ALTERAR</a>
                         <a href="{% url 'receita_update' pk=rl.pk %}" class="btn btn-danger btn-sm">EXCLUIR</a>

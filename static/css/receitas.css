@@ -165,7 +165,7 @@ td {
     margin-bottom: 20px; /* Espaçamento entre as linhas */
 }
 
-input[type="text"], input[type="number"], input[type="tel"], input[type="email"], input[type="date"], select {
+input[type="text"], input[type="file"], input[type="number"], input[type="tel"], input[type="email"], input[type="date"], select {
     width: 220px;
     height: 33px;
     border-width: 1px;

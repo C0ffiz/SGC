@@ -549,7 +549,7 @@ class Receita(models.Model):
     tipo_documento = models.CharField(max_length=10, choices=tipo_documento_choices, verbose_name="Tipo de Documento")
     descricao = models.CharField(max_length=255, verbose_name="Descrição")
     valor = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Valor")
-    valor_recebido = models.IntegerField(verbose_name="Valor recebido *", null=True, blank=True)
+    valor_recebido = models.DecimalField(max_digits=10, verbose_name="Valor recebido *", decimal_places=2, null=True, blank=True)
     categoria = models.ForeignKey(FinanceiroEstrutura, on_delete=models.CASCADE, related_name='receitas', verbose_name="Categoria")
     n_condominio = models.ForeignKey(
         CustomCondominio,
@@ -579,8 +579,8 @@ class Despesas(models.Model):
         null=False,
         blank=False
     )
-    valor = models.IntegerField(verbose_name="Valor *", null=False, blank=False)
-    valor_pago = models.IntegerField(verbose_name="Valor recebido *", null=True, blank=True)  
+    valor = models.DecimalField(max_digits=10, verbose_name="Valor *", decimal_places=2, null=False, blank=False)
+    valor_pago = models.DecimalField(max_digits=10, verbose_name="Valor recebido *", decimal_places=2, null=True, blank=True)  
     data_pagamento = models.DateField(verbose_name="Data pagamento *", null=True, blank=True)
     data_vencimento = models.DateField(verbose_name="Data vencimento *", default=date.today, null=False, blank=False)
     numero_documento = models.CharField(verbose_name="Nº documento *", max_length=20, null=False, blank=False)  

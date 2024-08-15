@@ -107,7 +107,7 @@
                             <select id="n_condominio" name="n_condominio" class="form-control-sm {% if form.n_condominio.errors %}field-error{% endif %}" tabindex="10"> 
                                 <option value="">Condomínio</option>
                                 {% for condominio in condominios %}
-                                <option value="{{ condominio.n_condominio }}" {% if condominio.n_condominio == colaborador.n_condominio.n_condominio %}selected{% endif %}>{{ condominio.n_condominio }} - {{ condominio.nome_condominio }}</option>
+                                <option value="{{ condominio.n_condominio }}" {% if condominio.n_condominio == colaborador.n_condominio.n_condominio %}selected{% endif %}>{{ condominio.nome_condominio }}</option>
                                 {% endfor %}
                             </select>
                             {% if form.n_condominio.errors %}

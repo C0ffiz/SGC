@@ -68,28 +68,20 @@
 
                         <div class="input-bottom">
                             <label for="data_vencimento" class="form-label">Data Vencimento:</label>
-                            <input type="date" class="form-control-sm {% if form.data_vencimento.errors %}field-error{% endif %}" id="data_vencimento" name="data_vencimento" value="{% if form.data_vencimento.value %}{{ form.data_vencimento.value|date:'Y-m-d' }}{% endif %}" required autofocus>
+                            <input type="date" class="form-control-sm" id="data_vencimento" name="data_vencimento" value="{% if form.data_vencimento.value %}{{ form.data_vencimento.value|date:'d/m/y' }}{% endif %}" required autofocus>
                             {% if form.data_vencimento.errors %}
                             <div class="text-danger">{{ form.data_vencimento.errors }}</div>
                             {% endif %}
                         </div>
-
+                        
                         <div class="input-bottom">
                             <label for="data_pagamento" class="form-label">Data Pagamento:</label>
-                            <input type="date" class="form-control-sm" id="data_pagamento" name="data_pagamento" value="{% if form.data_pagamento.value %}{{ form.data_pagamento.value|date:'Y-m-d' }}{% endif %}" required autofocus>
+                            <input type="date" class="form-control-sm" id="data_pagamento" name="data_pagamento" value="{% if form.data_pagamento.value %}{{ form.data_pagamento.value|date:'d/m/y' }}{% endif %}" required autofocus>
                             {% if form_errors.data_pagamento %}
                             <div class="text-danger">{{ form_errors.data_pagamento }}</div>
                             {% endif %}
                         </div>
                         
-                        
-                        <div class="input-bottom">
-                            <label for="numero_documento" class="form-label">Nº Documento:</label>
-                            <input type="text" class="form-control-sm {% if form.numero_documento.errors %}field-error{% endif %}" id="numero_documento" name="numero_documento" value="{{ form.numero_documento.value }}" required>
-                            {% if form.numero_documento.errors %}
-                            <div class="text-danger">{{ form.numero_documento.errors }}</div>
-                            {% endif %}
-                        </div>
                         
                         <div class="input-bottom">
                             <label for="tipo_documento" class="form-label">Tipo Documento:</label>
@@ -100,6 +92,16 @@
                             </select>
                             {% if form.tipo_documento.errors %}
                             <div class="text-danger">{{ form.tipo_documento.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        
+                        
+                        <div class="input-bottom">
+                            <label for="documento" class="form-label">Documento:</label>
+                            <input type="file" class="form-control-sm" id="documento" name="documento" value="" required tabindex="5">
+                            {% if form_errors.documento %}
+                                <div class="text-danger">{{ form_errors.documento }}</div>
                             {% endif %}
                         </div>
                     </div>
@@ -115,7 +117,7 @@
 
                         <div class="input-bottom">
                             <label for="valor" class="form-label">Valor a Receber:</label>
-                            <input type="number" class="form-control-sm {% if form.valor.errors %}field-error{% endif %}" id="valor" name="valor" value="{{ form.valor.value }}" required>
+                            <input type="text" class="form-control-sm {% if form.valor.errors %}field-error{% endif %}" id="valor" name="valor" value="{{ form.valor.value|stringformat:"0.2f" }}" required>
                             {% if form.valor.errors %}
                                 <div class="text-danger">{{ form.valor.errors }}</div>
                             {% endif %}
@@ -123,26 +125,27 @@
 
                         <div class="input-bottom">
                             <label for="valor_pago" class="form-label">Valor Recebido:</label>
-                            <input type="number" class="form-control-sm {% if form.valor_pago.errors %}field-error{% endif %}" id="valor_pago" name="valor_pago" value="{{ form.valor_pago.value }}">
+                            <input type="text" class="form-control-sm {% if form.valor_pago.errors %}field-error{% endif %}" id="valor_pago" name="valor_pago" value="{{ form.valor_pago.value|stringformat:"0.2f" }}">
                             {% if form.valor_pago.errors %}
                                 <div class="text-danger">{{ form.valor_pago.errors }}</div>
                             {% endif %}
                         </div>
 
                         <div class="input-bottom">
-                            <label for="documento" class="form-label">Documento:</label>
-                            <input type="file" class="form-control-sm" id="documento" name="documento" value="" required tabindex="5">
-                            {% if form_errors.documento %}
-                                <div class="text-danger">{{ form_errors.documento }}</div>
+                            <label for="numero_documento" class="form-label">Nº Documento:</label>
+                            <input type="text" class="form-control-sm {% if form.numero_documento.errors %}field-error{% endif %}" id="numero_documento" name="numero_documento" value="{{ form.numero_documento.value }}" required>
+                            {% if form.numero_documento.errors %}
+                            <div class="text-danger">{{ form.numero_documento.errors }}</div>
                             {% endif %}
                         </div>
+                        
 
                         <div class="input-bottom">
-                            <label for="n_condominio" class="form-label">Número Condomínio:</label>
+                            <label for="n_condominio" class="form-label">Condomínio:</label>
                             <select class="form-control-sm {% if form.n_condominio.errors %}field-error{% endif %}" id="n_condominio" name="n_condominio" required>
                                 <option value="">Condomínio</option>
                                 {% for condominio in condominios %}
-                                <option value="{{ condominio.n_condominio }}" {% if form.n_condominio.value == condominio.n_condominio %}selected{% endif %}>{{ condominio.n_condominio }} - {{ condominio.nome_condominio }}</option>
+                                <option value="{{ condominio.n_condominio }}" {% if form.n_condominio.value == condominio.n_condominio %}selected{% endif %}>{{ condominio.nome_condominio }}</option>
                                 {% endfor %}
                             </select>
                             {% if form.n_condominio.errors %}
@@ -162,11 +165,20 @@
 
         </div>
     </main>
-    <!-- <script>
-        $('#review-image').change(function(e) {
-            let fileName = (e.target.files.length > 0) ? e.target.files[0].name : 'choose_file_not';
-            $('#review-image-label').text(fileName);
+    <script>
+        $(document).ready(function(){
+            // Aplicar a máscara de moeda ao carregar a página
+            $('#valor, #valor_pago').mask('000.000.000.000.000,00', {reverse: true});
+            
+            // Remover a máscara antes de enviar o formulário
+            $('form').submit(function() {
+                $('#valor, #valor_pago').each(function(){
+                    var valor = $(this).val().replace(/\./g, '').replace(',', '.');
+                    $(this).val(valor);
+                });
+            });
         });
-    </script> -->
+
+    </script>
 </body>
 </html>
