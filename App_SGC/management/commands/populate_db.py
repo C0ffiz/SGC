@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from App_SGC.models import CustomCondominio, CustomCondomino, CustomBloco
+from App_SGC.models import CustomCondominio, CustomCondomino, CustomBloco, FinanceiroEstrutura
 
 class Command(BaseCommand):
     help = 'Populate the database with initial data'
@@ -65,5 +65,62 @@ class Command(BaseCommand):
         )
         if created6:
             self.stdout.write(self.style.SUCCESS('Successfully created CustomBloco: C'))
+
+        # Create FinanceiroEstrutura instances
+        root, created7 = FinanceiroEstrutura.objects.get_or_create(
+            nome='Receitas',
+            n_condominio=condominio1
+        )
+        if created7:
+            self.stdout.write(self.style.SUCCESS('Successfully created FinanceiroEstrutura: Receitas'))
+
+        receitas_or = FinanceiroEstrutura.objects.get_or_create(
+            nome='Receitas Ordinarias',
+            parent=root,
+            n_condominio=condominio1
+        )[0]
+        self.stdout.write(self.style.SUCCESS('Successfully created FinanceiroEstrutura: Receitas Ordinarias'))
+
+        taxa_agua = FinanceiroEstrutura.objects.get_or_create(
+            nome='Taxa Agua',
+            parent=receitas_or,
+            n_condominio=condominio1
+        )[0]
+        self.stdout.write(self.style.SUCCESS('Successfully created FinanceiroEstrutura: Taxa Agua'))
+
+        adicional = FinanceiroEstrutura.objects.get_or_create(
+            nome='Adicional',
+            parent=taxa_agua,
+            n_condominio=condominio1
+        )[0]
+        self.stdout.write(self.style.SUCCESS('Successfully created FinanceiroEstrutura: Adicional'))
+
+        teste1 = FinanceiroEstrutura.objects.get_or_create(
+            nome='Teste1',
+            parent=adicional,
+            n_condominio=condominio1
+        )[0]
+        self.stdout.write(self.style.SUCCESS('Successfully created FinanceiroEstrutura: Teste1'))
+
+        taxas_or = FinanceiroEstrutura.objects.get_or_create(
+            nome='Taxas Ordinárias',
+            parent=receitas_or,
+            n_condominio=condominio1
+        )[0]
+        self.stdout.write(self.style.SUCCESS('Successfully created FinanceiroEstrutura: Taxas Ordinárias'))
+
+        reserva_espaco = FinanceiroEstrutura.objects.get_or_create(
+            nome='Reserva de Espaço',
+            parent=receitas_or,
+            n_condominio=condominio1
+        )[0]
+        self.stdout.write(self.style.SUCCESS('Successfully created FinanceiroEstrutura: Reserva de Espaço'))
+
+        fundo_garantia = FinanceiroEstrutura.objects.get_or_create(
+            nome='Fundo Garantia',
+            parent=root,
+            n_condominio=condominio1
+        )[0]
+        self.stdout.write(self.style.SUCCESS('Successfully created FinanceiroEstrutura: Fundo Garantia'))
 
         self.stdout.write(self.style.SUCCESS('Successfully populated the database'))

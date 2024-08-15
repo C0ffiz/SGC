@@ -5,7 +5,7 @@ from .models import CustomUser, CustomCondominio, CustomCondomino, CustomMorador
 from .models import CustomVeiculo, CustomColaborador, CustomGaragem, CustomMudanca, CustomOcorrencia, CustomBeneficio
 from .models import CustomBeneficioRecebido, CustomCorrespondencia, CustomEspaco, CustomReserva
 from .models import CustomPatrimonio, CustomEspacoAdm, CustomTipoPatrimonio
-from .models import FinanceiroEstrutura, Receita
+from .models import FinanceiroEstrutura, Receita, Despesas
 from django.contrib import messages
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy, reverse
@@ -1099,11 +1099,12 @@ class OcorrenciasCreateViews(View):
 
         context = self.get_context_data()
         
-        # Testar se o CPF do condômino existe na tabela 'CustomCondomino'
+        
+        # Obter a instância do condômino associada ao ID do condômino
         try:
             condomino_instance = CustomCondomino.objects.get(cpf_condomino=cpf_condomino)
         except CustomCondomino.DoesNotExist:
-            context['form_errors'] = {'Condômino inexistente'}
+            context['form_errors'] = {'cpf_condomino': 'test não cadastrado'}
             return render(request, self.template_name, context)
 
         # Testar se o condomínio existe na tabela 'CustomCondominio'
@@ -2072,7 +2073,7 @@ class FinanceiroEstruturaCreateViews(CreateView):
 class FinanceiroEstruturaUpdateViews(UpdateView):
     model = FinanceiroEstrutura
     context_object_name = 'financeiro_estrutura'
-    fields = ['nome', 'parent']  # Não inclui 'n_condominio' nos campos editáveis
+    fields = ['nome']  # Não inclui 'n_condominio' nos campos editáveis
     success_url = reverse_lazy('financeiro_estrutura_list')
 
     def get_form(self, form_class=None):
@@ -2107,15 +2108,16 @@ class ReceitaListViews(ListView):
 class ReceitaCreateViews(CreateView):
     model = Receita
     fields = [
-        "data_vencimento", "numero_documento", "tipo_documento",
-        "descricao", "valor", "categoria", "n_condominio"
+        "data_vencimento", "data_recebimento", "numero_documento", "tipo_documento",
+        "descricao", "valor", "valor_recebido", "categoria", "n_condominio"
     ]
     success_url = reverse_lazy("receita_list")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['condominios'] = CustomCondominio.objects.all()
-        context['categorias'] = FinanceiroEstrutura.objects.all()  # Show all categories
+        # Filter categories that are at least at the 3rd level of hierarchy
+        context['categorias'] = [categoria for categoria in FinanceiroEstrutura.objects.all() if len(categoria.get_nivel().split('.')) >= 3]
         return context
 
     def form_valid(self, form):
@@ -2138,14 +2140,14 @@ class ReceitaUpdateViews(UpdateView):
     context_object_name = 'conta_receber'
     fields = [
         "data_vencimento", "numero_documento", "tipo_documento",
-        "descricao", "valor", "categoria", "n_condominio"
+        "descricao", "valor", "valor_recebido", "categoria", "n_condominio"
     ]
     success_url = reverse_lazy("receita_list")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['condominios'] = CustomCondominio.objects.all()
-        context['categorias'] = FinanceiroEstrutura.objects.all()
+        context['categorias'] = [categoria for categoria in FinanceiroEstrutura.objects.all() if len(categoria.get_nivel().split('.')) >= 3]
         return context
 
     def form_valid(self, form):
@@ -2156,3 +2158,68 @@ class ReceitaUpdateViews(UpdateView):
 class ReceitaDeleteViews(DeleteView):
     model = Receita
     success_url = reverse_lazy("receita_list")
+
+
+
+# Tela Lista as Contas a Receber
+class DespesasListViews(ListView):
+    model = Despesas
+    context_object_name = 'despesas_list'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['despesas_list'] = Despesas.objects.all()
+        return context    
+    
+    
+class DespesasCreateViews(CreateView):
+    model = Despesas
+    fields = [
+        "data_vencimento", "data_pagamento", "numero_documento", "tipo_documento",
+        "descricao", "valor", "valor_pago", "categoria", "documento", "n_condominio"
+    ]
+    success_url = reverse_lazy("despesas_list")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['condominios'] = CustomCondominio.objects.all()
+        context['categorias'] = [categoria for categoria in FinanceiroEstrutura.objects.all() if len(categoria.get_nivel().split('.')) >= 3]
+        return context
+
+    def form_valid(self, form):
+        # Optionally print form details for debugging
+        print("Form is valid!")
+        print("Form cleaned data:", form.cleaned_data)
+        print("n_condominio value:", form.cleaned_data.get('n_condominio'))
+        
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        print("Form is invalid!")
+        print(form.errors)
+        return super().form_invalid(form)
+
+
+# Tela Alteração de Contas a Receber
+class DespesasUpdateViews(UpdateView):
+    model = Despesas
+    context_object_name = 'conta_receber'
+    fields = [
+        "data_vencimento", "numero_documento", "tipo_documento",
+        "descricao", "valor", "valor_pago", "categoria", "documento", "n_condominio"
+    ]
+    success_url = reverse_lazy("despesas_list")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['condominios'] = CustomCondominio.objects.all()
+        context['categorias'] = [categoria for categoria in FinanceiroEstrutura.objects.all() if len(categoria.get_nivel().split('.')) >= 3]
+        return context
+
+    def form_valid(self, form):
+        return super().form_valid(form)
+
+# Tela Exclusão de Contas a Receber
+class DespesasDeleteViews(DeleteView):
+    model = Despesas
+    success_url = reverse_lazy("despesas_list")

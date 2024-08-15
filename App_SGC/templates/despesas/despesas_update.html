@@ -16,7 +16,7 @@
             align-items: center;
             margin-bottom: 20px; /* Espaçamento entre as linhas */
         }
-        input[type="text"], input[type="number"], input[type="tel"], input[type="email"], input[type="date"], select {
+        input[type="text"], input[type="file"], input[type="number"], input[type="tel"], input[type="email"], input[type="date"], select {
             width: 220px;
             height: 31px;
         }
@@ -40,14 +40,14 @@
 <body>
     <nav class="navbar bg-dark mb-30" data-bs-theme="dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="{% url 'receita_list' %}">CONDOMINIUM</a>
+            <a class="navbar-brand" href="{% url 'despesas_list' %}">CONDOMINIUM</a>
         </div>
     </nav>
     <main class="container">
-        <h1 id="titulo_list">{% if form.instance.pk %}ALTERAÇÃO DE CONTA A RECEBER{% else %}CADASTRO DE CONTA A RECEBER{% endif %}</h1><br>
+        <h1 id="titulo_list">{% if form.instance.pk %}ALTERAÇÃO DE CONTA A PAGAR{% else %}CADASTRO DE CONTA A RECEBER{% endif %}</h1><br>
         
         <div class="painel" style="">
-            <form method="POST" action="{% url 'receita_update' form.instance.pk %}">
+            <form method="POST" action="{% url 'despesas_update' form.instance.pk %}" enctype="multipart/form-data">
                 {% csrf_token %}
             
                 <div class="colunas">
@@ -71,6 +71,14 @@
                             <input type="date" class="form-control-sm {% if form.data_vencimento.errors %}field-error{% endif %}" id="data_vencimento" name="data_vencimento" value="{% if form.data_vencimento.value %}{{ form.data_vencimento.value|date:'Y-m-d' }}{% endif %}" required autofocus>
                             {% if form.data_vencimento.errors %}
                             <div class="text-danger">{{ form.data_vencimento.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="input-bottom">
+                            <label for="data_pagamento" class="form-label">Data Pagamento:</label>
+                            <input type="date" class="form-control-sm" id="data_pagamento" name="data_pagamento" value="{% if form.data_pagamento.value %}{{ form.data_pagamento.value|date:'Y-m-d' }}{% endif %}" required autofocus>
+                            {% if form_errors.data_pagamento %}
+                            <div class="text-danger">{{ form_errors.data_pagamento }}</div>
                             {% endif %}
                         </div>
                         
@@ -114,10 +122,18 @@
                         </div>
 
                         <div class="input-bottom">
-                            <label for="valor_recebido" class="form-label">Valor Recebido:</label>
-                            <input type="number" class="form-control-sm {% if form.valor_recebido.errors %}field-error{% endif %}" id="valor_recebido" name="valor_recebido" value="{{ form.valor_recebido.value }}">
-                            {% if form.valor_recebido.errors %}
-                                <div class="text-danger">{{ form.valor_recebido.errors }}</div>
+                            <label for="valor_pago" class="form-label">Valor Recebido:</label>
+                            <input type="number" class="form-control-sm {% if form.valor_pago.errors %}field-error{% endif %}" id="valor_pago" name="valor_pago" value="{{ form.valor_pago.value }}">
+                            {% if form.valor_pago.errors %}
+                                <div class="text-danger">{{ form.valor_pago.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="input-bottom">
+                            <label for="documento" class="form-label">Documento:</label>
+                            <input type="file" class="form-control-sm" id="documento" name="documento" value="" required tabindex="5">
+                            {% if form_errors.documento %}
+                                <div class="text-danger">{{ form_errors.documento }}</div>
                             {% endif %}
                         </div>
 
@@ -137,13 +153,20 @@
                 </div>
             
             
-            <div>
-                <button type="submit" class="btn btn-primary" id="btnsalvar">Salvar</button>
-            </div>
+                <div>
+                    <button type="submit" class="btn btn-primary" id="btnsalvar">Salvar</button>
+                </div>
             
             
-        </form>
-    </div>
-</main>
+            </form>
+
+        </div>
+    </main>
+    <!-- <script>
+        $('#review-image').change(function(e) {
+            let fileName = (e.target.files.length > 0) ? e.target.files[0].name : 'choose_file_not';
+            $('#review-image-label').text(fileName);
+        });
+    </script> -->
 </body>
 </html>

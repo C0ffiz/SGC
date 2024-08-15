@@ -50,7 +50,7 @@ a:hover{
 }
 
 .container {
-    /* text-align: center; */
+    text-align: center;
     padding-top: 60px;
     color: #fbf5f5;
     align-items: center;
@@ -127,9 +127,7 @@ td {
     color: #fbf5f5;
 }
 
-.alert-custom {
-    height: 40px;
-}
+
 
 .message {
     width: 100%;

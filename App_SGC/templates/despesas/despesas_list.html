@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="pt-br">
-{% load custom_filters %}
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -62,12 +62,12 @@
 
     <!-- Corpo da Página -->
     <main class="container">
-        <h1 id="titulo_list">CONTAS A RECEBER</h1>
+        <h1 id="titulo_list">CONTAS A PAGAR</h1>
 
         <!-- Opções de Pesquisa e Cadastro -->
         <div class="container_1">
             <div class="box">
-                <a href="{% url 'receita_create' %}" class="btn btn-primary" id="cadastrar">CADASTRAR CONTA</a>
+                <a href="{% url 'despesas_create' %}" class="btn btn-primary" id="cadastrar">CADASTRAR CONTA</a>
             </div>
 
             <div class="box" id="divBusca">
@@ -81,9 +81,9 @@
             <thead>
                 <tr>
                     <th scope="col" class="close-th">Categoria</th>
-                    <th scope="col" class="close-th">Valor a Receber</th>
-                    <th scope="col" class="close-th">Valor Recebido</th>
-                    <th scope="col" class="close-th">Data Recebimento</th>
+                    <th scope="col" class="close-th">Valor a Pagar</th>
+                    <th scope="col" class="close-th">Valor Pago</th>
+                    <th scope="col" class="close-th">Data Pagamento</th>
                     <th scope="col" class="close-th">Data Vencimento</th>
                     <th scope="col" class="close-th">Nº Documento</th>
                     <th scope="col" class="close-th">Tipo Documento</th>
@@ -92,22 +92,21 @@
                     
                 </tr>
             </thead>
-
             <tbody>
-                {% for rl in receita_list %}
+                {% for rl in despesas_list %}
                 <tr>
                     <td>{{ rl.categoria.nome }}</td>    
                     <td>{{ rl.valor }}</td>
-                    <td>{{ rl.valor_recebido }}</td>
-                    <td>{{ rl.data_recebimento }}</td>
+                    <td>{{ rl.valor_pago }}</td>
+                    <td>{{ rl.data_pagamento }}</td>
                     <td>{{ rl.data_vencimento }}</td>
                     <td>{{ rl.numero_documento }}</td>
                     <td>{{ rl.tipo_documento }}</td>
                     <td>{{ rl.descricao }}</td>
                     <td>{{ rl.n_condominio.n_condominio }} - {{ rl.n_condominio.nome_condominio }}</td>
                     <td style="border: none; width:200px">
-                        <a href="{% url 'receita_update' pk=rl.pk %}" class="btn btn-primary btn-sm">ALTERAR</a>
-                        <a href="{% url 'receita_update' pk=rl.pk %}" class="btn btn-danger btn-sm">EXCLUIR</a>
+                        <a href="{% url 'despesas_update' pk=rl.pk %}" class="btn btn-primary btn-sm">ALTERAR</a>
+                        <a href="{% url 'despesas_update' pk=rl.pk %}" class="btn btn-danger btn-sm">EXCLUIR</a>
                     </td>
                 </tr>
                 {% endfor %}

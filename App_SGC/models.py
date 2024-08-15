@@ -615,6 +615,7 @@ class FinanceiroEstrutura(models.Model):
 # Definição da Tabela Contas a Receber
 class Receita(models.Model):
     data_vencimento = models.DateField(verbose_name="Data de Vencimento")
+    data_recebimento = models.DateField(verbose_name="Data de Recebimento")
     numero_documento = models.CharField(max_length=20, verbose_name="Nº Documento")
     tipo_documento_choices = [
         ('NF', 'Nota Fiscal'),
@@ -624,6 +625,7 @@ class Receita(models.Model):
     tipo_documento = models.CharField(max_length=10, choices=tipo_documento_choices, verbose_name="Tipo de Documento")
     descricao = models.CharField(max_length=255, verbose_name="Descrição")
     valor = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Valor")
+    valor_recebido = models.IntegerField(verbose_name="Valor recebido *", null=True, blank=True)
     categoria = models.ForeignKey(FinanceiroEstrutura, on_delete=models.CASCADE, related_name='receitas', verbose_name="Categoria")
     n_condominio = models.ForeignKey(
         CustomCondominio,
@@ -642,68 +644,49 @@ class Receita(models.Model):
         return f"{self.descricao} - {self.data_vencimento} - {self.valor}"
 
 
-# Definição da Tabela Contas a Pagar...................................................................
-# class CustomConta_Pagar(models.Model):
-#     data_conta_pagar = models.DateField(verbose_name="Data vencimento *", default=date.today, null=False, blank=False)
-#     data_pagamento = models.DateField(verbose_name="Data pagamento *", null=True, blank=True)
-#     n_documento_conta_pagar = models.CharField(verbose_name="Nº documento *", max_length=20, null=False, blank=False)  
-#     tipo_documento_conta_pagar_CHOICES = [
-#         ('NF', 'NF'),
-#         ('Recibo', 'Recibo'),
-#         ('outros', 'Outros'), 
-#     ]
-#     tipo_documento_conta_pagar = models.CharField(
-#         verbose_name="Tipo do Documento",
-#         max_length=6,
-#         choices=tipo_documento_conta_pagar_CHOICES,
-#         default='NF',  # Defina o valor padrão conforme necessário
-#         null=False,
-#         blank=False)
-#     dsc_conta_pagar = models.CharField(verbose_name="Dsc *", max_length=60, null=True, blank=True)
-#     valor_conta_pagar = models.IntegerField(verbose_name="Valor *", null=False, blank=False)
-#     valor_conta_paga = models.IntegerField(verbose_name="Valor recebido *", null=True, blank=True)  
-#     documento_contas_pagar = models.FileField(upload_to='documentos_ocorrencias/', null=False, blank=False)
-#     nivel_1 = models.ForeignKey(
-#         'CustomPlano_Conta',  
-#         on_delete=models.CASCADE,
-#         verbose_name="Pagar Nível 1 *",
-#         null=False,
-#         blank=False,
-#         related_name='nivel_1_por_conta_pagar')
-#     nivel_2 = models.ForeignKey(
-#         'CustomPlano_Conta',  
-#         on_delete=models.CASCADE,
-#         verbose_name="Pagar Nível 2 *",
-#         null=False,
-#         blank=False,
-#         related_name='nivel_2_por_conta_pagar')
-#     nivel_3 = models.ForeignKey(
-#         'CustomPlano_Conta',  
-#         on_delete=models.CASCADE,
-#         verbose_name="Pagar Nível 3 *",
-#         null=False,
-#         blank=False,
-#         related_name='nivel_3_por_conta_pagar')
-#     nivel_4 = models.ForeignKey(
-#         'CustomPlano_Conta',  
-#         on_delete=models.CASCADE,
-#         verbose_name="Pagar Nível 4 *",
-#         null=False,
-#         blank=False,
-#         related_name='nivel_4_por_conta_pagar')    
-#     n_condominio = models.ForeignKey(
-#         'CustomCondominio',  # Foreign key to CustomCondominio
-#         on_delete=models.CASCADE,
-#         verbose_name="Número Condominio *",
-#         null=False,
-#         blank=False)
-    
-#     class Meta:
-#         db_table = 'conta_pagar'
-#         managed = True
-#         ordering = ['data_conta_pagar', 'tipo_documento_conta_pagar', 'nivel_1', 'nivel_2', 'nivel_3', 'nivel_4'] 
-#         unique_together = ('data_conta_pagar', 'n_documento_conta_pagar')  
 
-#     def __str__(self):
-#         return f"{self.data_conta_pagar} - {self.n_documento_conta_pagar} - {self.tipo_documento_conta_pagar} - {self.dsc_conta_pagar}"
+# Definição da Tabela Contas a Pagar...................................................................
+class Despesas(models.Model):
+    categoria = models.ForeignKey(
+        FinanceiroEstrutura,
+        on_delete=models.CASCADE,
+        related_name='contas_pagar',
+        verbose_name="Categoria",
+        null=False,
+        blank=False
+    )
+    valor = models.IntegerField(verbose_name="Valor *", null=False, blank=False)
+    valor_pago = models.IntegerField(verbose_name="Valor recebido *", null=True, blank=True)  
+    data_pagamento = models.DateField(verbose_name="Data pagamento *", null=True, blank=True)
+    data_vencimento = models.DateField(verbose_name="Data vencimento *", default=date.today, null=False, blank=False)
+    numero_documento = models.CharField(verbose_name="Nº documento *", max_length=20, null=False, blank=False)  
+    tipo_documento_choices = [
+        ('NF', 'NF'),
+        ('Recibo', 'Recibo'),
+        ('outros', 'Outros'), 
+    ]
+    tipo_documento = models.CharField(
+        verbose_name="Tipo do Documento",
+        max_length=6,
+        choices=tipo_documento_choices,
+        default='NF',  # Defina o valor padrão conforme necessário
+        null=False,
+        blank=False)
+    descricao = models.CharField(verbose_name="Dsc *", max_length=60, null=True, blank=True)
+    documento = models.FileField(upload_to='documentos_ocorrencias/', null=False, blank=False)
+    n_condominio = models.ForeignKey(
+        'CustomCondominio',  # Foreign key to CustomCondominio
+        on_delete=models.CASCADE,
+        verbose_name="Número Condominio *",
+        null=False,
+        blank=False)
+    
+    class Meta:
+        db_table = 'conta_pagar'
+        managed = True
+        ordering = ['data_vencimento', 'tipo_documento', 'categoria'] 
+        unique_together = ('data_pagamento', 'numero_documento')  
+
+    def __str__(self):
+        return f"{self.data_pagamento} - {self.numero_documento} - {self.tipo_documento} - {self.descricao}"
 
