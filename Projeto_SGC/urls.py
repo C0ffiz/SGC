@@ -16,7 +16,7 @@ from App_SGC.views import OcorrenciasListViews,OcorrenciasCreateViews,Ocorrencia
 from App_SGC.views import BeneficiosListViews,BeneficiosCreateViews,BeneficiosUpdateViews,BeneficiosDeleteViews
 from App_SGC.views import BeneficiosRecebidosListViews,BeneficiosRecebidosCreateViews,BeneficiosRecebidosUpdateViews,BeneficiosRecebidosDeleteViews
 from App_SGC.views import FinanceiroEstruturaListViews,FinanceiroEstruturaCreateViews,FinanceiroEstruturaUpdateViews,FinanceiroEstruturaDeleteViews
-from App_SGC.views import ReceitaListViews,ReceitaCreateViews,ReceitaUpdateViews,ReceitaDeleteViews
+from App_SGC.views import ReceitasListViews,ReceitasCreateViews,ReceitasUpdateViews,ReceitasDeleteViews
 from App_SGC.views import DespesasListViews,DespesasCreateViews,DespesasUpdateViews,DespesasDeleteViews
 from App_SGC.views import BancoListViews,BancoCreateViews,BancoUpdateViews,BancoDeleteViews
 from App_SGC.views import CorrespondenciasListViews,CorrespondenciasCreateViews,CorrespondenciasUpdateViews,CorrespondenciasDeleteViews
@@ -130,19 +130,6 @@ urlpatterns = [
     path('financeiro_estrutura_update/<int:pk>', FinanceiroEstruturaUpdateViews.as_view(template_name="estrutura-financeiro/financeiro_update.html"), name="financeiro_estrutura_update"),
     path('financeiro_estrutura_delete/<int:pk>', FinanceiroEstruturaDeleteViews.as_view(template_name="estrutura-financeiro/financeiro_confirm_delete.html"), name="financeiro_estrutura_delete"),
 
-#  Caminhos das Receitas
-    path('receita_list', ReceitaListViews.as_view(template_name="receitas/receitas_list.html"), name="receita_list"),
-    path('receita_create', ReceitaCreateViews.as_view(template_name="receitas/receitas_create.html"), name="receita_create"),
-    path('receita_update/<int:pk>', ReceitaUpdateViews.as_view(template_name="receitas/receitas_update.html"), name="receita_update"),
-    path('receita_delete/<int:pk>', ReceitaDeleteViews.as_view(template_name="receitas/receitas_confirm_delete.html"), name="receita_delete"),
-
-#  Caminhos das Despesas
-    path('despesas_list', DespesasListViews.as_view(template_name="despesas/despesas_list.html"), name="despesas_list"),
-    path('despesas_create', DespesasCreateViews.as_view(template_name="despesas/despesas_create.html"), name="despesas_create"),
-    path('despesas_update/<int:pk>', DespesasUpdateViews.as_view(template_name="despesas/despesas_update.html"), name="despesas_update"),
-    path('despesas_delete/<int:pk>', DespesasDeleteViews.as_view(template_name="despesas/despesas_confirm_delete.html"), name="despesas_delete"),
-
-
 #  Caminhos dos Benefícios
     path('beneficios_list', BeneficiosListViews.as_view(template_name="beneficios/beneficios_list.html"), name="beneficios_list"),
     path('beneficios_create', BeneficiosCreateViews.as_view(template_name="beneficios/beneficios_create.html"), name="beneficios_create"),
@@ -163,6 +150,25 @@ urlpatterns = [
     path('correspondencias_update/<str:pk>', CorrespondenciasUpdateViews.as_view(template_name="correspondencias/correspondencias_update.html"), name="correspondencias_update"),
     path('correspondencias_delete/<str:pk>', CorrespondenciasDeleteViews.as_view(template_name="correspondencias/correspondencias_confirm_delete.html"), name="correspondencias_delete"),
 
+
+#  Caminhos de Espaços
+    path('espacos_list', EspacosListViews.as_view(template_name="espacos/espacos_list.html"), name="espacos_list"),
+    path('espacos_create', EspacosCreateViews.as_view(template_name="espacos/espacos_create.html"), name="espacos_create"),
+    path('espacos_update/<str:pk>', EspacosUpdateViews.as_view(template_name="espacos/espacos_update.html"), name="espacos_update"),
+    path('espacos_delete/<str:pk>', EspacosDeleteViews.as_view(template_name="espacos/espacos_confirm_delete.html"), name="espacos_delete"),
+
+
+#  Caminhos da Reserva
+    path('reservas_list', ReservasListViews.as_view(template_name="reservas/reservas_list.html"), name="reservas_list"),
+    path('reservas_create', ReservasCreateViews.as_view(template_name="reservas/reservas_create.html"), name="reservas_create"),
+    path('reservas_update/<str:pk>', ReservasUpdateViews.as_view(template_name="reservas/reservas_update.html"), name="reservas_update"),
+    path('reservas_delete/<str:pk>', ReservasDeleteViews.as_view(template_name="reservas/reservas_confirm_delete.html"), name="reservas_delete"),
+
+
+
+
+
+#  Caminhos SUBSISTEMA PATRIMÔNIO....................................................................
 
 #  Caminhos de Locais Administrativos
     path('espacosAdm_list', EspacosAdmListViews.as_view(template_name="espacosAdm/espacosAdm_list.html"), name="espacosAdm_list"),
@@ -185,37 +191,32 @@ urlpatterns = [
     path('patrimonio_delete/<str:pk>', PatrimonioDeleteViews.as_view(template_name="patrimonio/patrimonio_confirm_delete.html"), name="patrimonio_delete"),
 
 
-#  Caminhos de Espaços
-    path('espacos_list', EspacosListViews.as_view(template_name="espacos/espacos_list.html"), name="espacos_list"),
-    path('espacos_create', EspacosCreateViews.as_view(template_name="espacos/espacos_create.html"), name="espacos_create"),
-    path('espacos_update/<str:pk>', EspacosUpdateViews.as_view(template_name="espacos/espacos_update.html"), name="espacos_update"),
-    path('espacos_delete/<str:pk>', EspacosDeleteViews.as_view(template_name="espacos/espacos_confirm_delete.html"), name="espacos_delete"),
-
-
-#  Caminhos da Reserva
-    path('reservas_list', ReservasListViews.as_view(template_name="reservas/reservas_list.html"), name="reservas_list"),
-    path('reservas_create', ReservasCreateViews.as_view(template_name="reservas/reservas_create.html"), name="reservas_create"),
-    path('reservas_update/<str:pk>', ReservasUpdateViews.as_view(template_name="reservas/reservas_update.html"), name="reservas_update"),
-    path('reservas_delete/<str:pk>', ReservasDeleteViews.as_view(template_name="reservas/reservas_confirm_delete.html"), name="reservas_delete"),
 
 
 
+#  Caminhos SUBSISTEMA FINANCEIRO ....................................................................
 
 
-
-
-
-
-#  Caminhos SUBSISTEMA FINANCEIRO
-
-
+<<<<<<< Updated upstream
 
 #  Caminhos dos Bancos
     path('bancos_list', BancoListViews.as_view(template_name="bancos/bancos_list.html"), name="bancos_list"),
     path('bancos_create', BancoCreateViews.as_view(template_name="bancos/bancos_create.html"), name="bancos_create"),
     path('bancos_update/<int:pk>', BancoUpdateViews.as_view(template_name="bancos/bancos_update.html"), name="bancos_update"),
     path('bancos_delete/<int:pk>', BancoDeleteViews.as_view(template_name="bancos/bancos_confirm_delete.html"), name="bancos_delete"),
+=======
+#  Caminhos das Receitas
+    path('receitas_list', ReceitasListViews.as_view(template_name="receitas/receitas_list.html"), name="receitas_list"),
+    path('receitas_create', ReceitasCreateViews.as_view(template_name="receitas/receitas_create.html"), name="receitas_create"),
+    path('receitas_update/<int:pk>', ReceitasUpdateViews.as_view(template_name="receitas/receitas_update.html"), name="receitas_update"),
+    path('receitas_delete/<int:pk>', ReceitasDeleteViews.as_view(template_name="receitas/receitas_confirm_delete.html"), name="receitas_delete"),
+>>>>>>> Stashed changes
 
+#  Caminhos das Despesas
+    path('despesas_list', DespesasListViews.as_view(template_name="despesas/despesas_list.html"), name="despesas_list"),
+    path('despesas_create', DespesasCreateViews.as_view(template_name="despesas/despesas_create.html"), name="despesas_create"),
+    path('despesas_update/<int:pk>', DespesasUpdateViews.as_view(template_name="despesas/despesas_update.html"), name="despesas_update"),
+    path('despesas_delete/<int:pk>', DespesasDeleteViews.as_view(template_name="despesas/despesas_confirm_delete.html"), name="despesas_delete"),
 
 ]
 

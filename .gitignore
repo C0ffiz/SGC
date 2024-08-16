@@ -276,3 +276,5 @@ App_SGC/migrations/__pycache__/0006_alter_customcondomino_cpf_condomino_and_more
 App_SGC/migrations/__pycache__/0007_alter_customuser_password.cpython-312.pyc
 Projeto_SGC/__pycache__/settings.cpython-312.pyc
 Projeto_SGC/__pycache__/urls.cpython-312.pyc
+/documentos_ocorrencias
+/App_SGC/migrations

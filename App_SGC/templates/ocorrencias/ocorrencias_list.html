@@ -56,8 +56,14 @@
                         <td>{{ ocor.data_ocorrencia|date:"d/m/y"  }}</td>
                         <td>{{ ocor.hora_ocorrencia|date:"H:i" }}</td>
                         <td>{{ ocor.dsc_ocorrencia }}</td>
+<<<<<<< Updated upstream
                         <td>{{ ocor.documento_ocorrencia }}</td>
                         <td>{{ ocor.n_condominio.nome_condominio }}</td>
+=======
+                        <!-- class="documento-ocorrencia" p determinar tamanho máximo do campo no list -->
+                        <td class="documento-ocorrencia" data-documento="{{ ocor.documento_ocorrencia }}"></td>
+                        <td>{{ ocor.n_condominio.n_condominio }}</td>
+>>>>>>> Stashed changes
                         <td style="border: none; width:200px">
                             <a href="{% url 'ocorrencias_update' pk=ocor.pk %}" class="btn btn-primary btn-sm">ALTERAR</a>
                             <a href="{% url 'ocorrencias_delete' pk=ocor.pk %}" class="btn btn-danger btn-sm">EXCLUIR</a>
@@ -106,10 +112,30 @@
             });
         }
 
+        // Função para truncar o tamanho da descrição do arquivo
+        function truncateDocumentoOcorrencia() {
+        var documentoCells = document.querySelectorAll('.documento-ocorrencia');
+        
+        documentoCells.forEach(function(cell) {
+            var fullText = cell.getAttribute('data-documento');
+            var maxLength = 20; // Número máximo de caracteres visíveis
+
+            if (fullText.length > maxLength) {
+                var truncatedText = fullText.substring(0, maxLength) + '...';
+                cell.textContent = truncatedText;
+                cell.title = fullText; // Exibe o texto completo no tooltip ao passar o mouse
+            } else {
+                cell.textContent = fullText;
+            }
+        });
+        }
+        
+
         // Ouvinte de evento para DOMContentLoaded para chamar as funções necessárias
         document.addEventListener('DOMContentLoaded', function () {
             handleSearch();
             formatAllCPFs();  // Chama a função para formatar os CPFs quando o DOM é carregado
+            truncateDocumentoOcorrencia(); // Chama a função ao carregar a página
         });
     </script>
 

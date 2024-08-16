@@ -29,7 +29,7 @@
             margin-bottom: 5px; 
         }
         /* Define o tamanho dos campos input */
-        input[type="text"], input[type="date"], input[type="time"], select.form-control {
+        input[type="text"], input[type="date"], input[type="time"], select.form-control-sm {
             width: 220px;
             height: 30px;
             margin: auto;
@@ -100,8 +100,8 @@
                     <div id="coluna2" class="input-col-md-2">
 
                         <div class="input-bottom">
-                            <label for="bloco_id" class="form-label">Bloco:</label>
-                            <select class="form-control" id="bloco_id" name="bloco_id" tabindex="2" required>
+                            <label for="bloco_id" class="form-label-sm">Bloco:</label><br>
+                            <select class="form-control-sm" id="bloco_id" name="bloco_id" tabindex="2" required>
                                 <option value="">Bloco</option>
                                 {% for bloco in blocos %}
                                     <option value="{{ bloco.bloco_id }}">{{ bloco.bloco }}</option>
@@ -118,8 +118,8 @@
                         </div>
 
                         <div class="input-bottom">
-                            <label for="n_condominio">Condomínio:</label>
-                            <select id="n_condominio" name="n_condominio" class="form-control" tabindex="8">
+                            <label for="n_condominio" class="form-label">Condomínio:</label><br>
+                            <select id="n_condominio" name="n_condominio" class="form-control-sm" tabindex="8">
                                 <option value="">Condomínio</option>
                                 {% for condominio in condominios %}
                                     <option value="{{ condominio.n_condominio }}">{{ condominio.nome_condominio }}</option>
@@ -132,8 +132,8 @@
                     <div id="coluna3" class="input-col-md-2">
 
                         <div class="input-bottom">
-                            <label for="unidade" class="form-label">Unidade:</label>
-                            <select class="form-control" id="unidade_id" name="unidade_id" tabindex="3" required>
+                            <label for="unidade" class="form-label">Unidade:</label><br>
+                            <select class="form-control-sm" id="unidade_id" name="unidade_id" tabindex="3" required>
                                 <option value="">Unidade</option>
                                 {% for unidade in unidades %}
                                     <option value="{{ unidade.unidade_id }}">{{ unidade.unidade }}</option>

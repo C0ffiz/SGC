@@ -1,158 +1,156 @@
 <!doctype html>
 <html lang="pt-br">
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>SGC</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link rel="stylesheet" href="/static/css/espacos.css">
-    <style>
-        .container-cols {
-            display: flex;
-            gap: 20px; /* Espaçamento entre as colunas */
-        }
-        .input-col {
-            flex: 1; /* Cada coluna ocupa o mesmo espaço */
-            display: flex;
-            flex-direction: column;
-        }
-        .input-col .input-row {
-            margin-bottom: 40px; /* Espaçamento entre as linhas */
-        }
-        .form-control-sm {
-            /* width: 50%;  */
-        }
-        input[type="text"], input[type="date"], select {
-            width: 220px;
-            height: 30px;
-        }   
-        .input-bottom {
-            margin-bottom: 20px; /* Aumenta a distância entre as divs verticalmente */
-            margin-right: 20px; /* Aumenta a distância entre as divs horizontalmente */
-        }    
-    </style>
-</head>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>SGC</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+            integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+        <link rel="stylesheet" href="/static/css/espacos.css">
+        <style>
+            .container-cols {
+                display: flex;
+                gap: 20px; /* Espaçamento entre as colunas */
+            }
+            .input-col {
+                flex: 1; /* Cada coluna ocupa o mesmo espaço */
+                display: flex;
+                flex-direction: column;
+            }
+            .input-col .input-row {
+                margin-bottom: 40px; /* Espaçamento entre as linhas */
+            }
+            .form-control-sm {
+                /* width: 50%;  */
+            }
+            input[type="text"], input[type="date"], select {
+                width: 220px;
+                height: 30px;
+            }   
+            .input-bottom {
+                margin-bottom: 20px; /* Aumenta a distância entre as divs verticalmente */
+                margin-right: 20px; /* Aumenta a distância entre as divs horizontalmente */
+            }    
+        </style>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>   
+    </head>
 
-<body>
+    <body>
 
-    <nav class="navbar bg-dark mb-30" data-bs-theme="dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="{% url 'espacos_list' %}">CONDOMINIUM</a>
-        </div>
-    </nav>
+        <nav class="navbar bg-dark mb-30" data-bs-theme="dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="{% url 'espacos_list' %}">CONDOMINIUM</a>
+            </div>
+        </nav>
 
-    <main class="container">
-        <h1 id="titulo">CADASTRO DE ESPAÇOS PARA LOCAÇÃO</h1><br>
+        <main class="container">
+            <h1 id="titulo">CADASTRO DE ESPAÇOS PARA LOCAÇÃO</h1><br>
 
-        <div class="painel" style="height: 500px;">
+            <div class="painel" style="height: 500px;">
 
-            <form method="POST">
-                {% csrf_token %}
-
-                <div>
-                    {% if form.errors %}
-                    <div class="alert alert-danger error-duplicate" role="alert">
-                        <ul>
-                            {% for field, errors in form.errors.items %}
-                            {% for error in errors %}
-                            <li><strong>{{ field }}:</strong> {{ error }}</li>
-                            {% endfor %}
-                            {% endfor %}
-                        </ul>
-                    </div>
-                    {% endif %}
-                </div>
-
-                <div class="container-cols d-flex justify-content-center">
-                
-                    <!-- Coluna 1 -->
-                    <div id="coluna1" class="input-col-md-2">
-
-
-                        <div class="input-bottom">
-                            <label for="nome_espaco" class="form-label">Espaço para locação:</label> <br>
-                            <input id="nome_espaco" name="nome_espaco" class="form-control-sm" type="text" 
-                                maxlength="60" tabindex="1" required autofocus> <br>
-                            {% if form.espaco.errors %}
-                                <div class="text-danger"></div>
-                            {% endif %}
-                        </div> 
-
-                        <div class="input-bottom">
-                            <label for="tempo_espaco" class="form-label">Tempo de locação/h:</label> <br>
-                            <select id="tempo_espaco" name="tempo_espaco" class="form-control-sm {% if form.tempo_espaco.errors %}field-error{% endif %}" tabindex="3">
-                                <!-- <option value="0">0 h</option> -->
-                                <option value="1">1 h</option>
-                                <option value="24">24 h</option>
-                            </select>
-                            {% if form.tempo_espaco.errors %}
-                                <div class="text-danger"></div>
-                            {% endif %}
-                        </div> 
-
-                        <div class="input-top input-bottom">
-                            <label for="n_condominio" class="form-label">Condomínio:</label><br>
-                            <select id="n_condominio" name="n_condominio" class="form-control-sm" tabindex="5" required >
-                                <option value="">Condomínio</option>
-                                {% for condominio in condominios %}
-                                <option value="{{ condominio.n_condominio }}">{{ condominio.nome_condominio }}</option>
-                                {% endfor %}
-                            </select>
-                            {% if form.n_condominio.errors %}
-                                <div class="text-danger"></div>
-                            {% endif %}
-                        </div>   
-                    </div>  
-                
-                
-                    <!-- Coluna 2 -->
-                    <div id="coluna2" class="input-col-md-2">
-
-                        <div class="input-bottom">
-                            <label for="dsc_espaco" class="form-label">Dsc:</label> <br>
-                            <input id="dsc_espaco" name="dsc_espaco" class="form-control-sm" type="text" maxlength="100" tabindex="2"><br>
-                            {% if form.dsc_espaco.errors %}
-                                <div class="text-danger"></div>
-                            {% endif %}
-                        </div>  
-                        
-                        <div class="input-bottom">
-                            <label for="valor_espaco" class="form-label">Valor reserva (R$):</label><br>
-                            <input id="valor_espaco" name="valor_espaco" class="form-control-sm" type="text" required tabindex="4">
-                            {% if form.valor_espaco.errors %}
-                                <div class="text-danger"></div>
-                            {% endif %}
-                        </div> 
-
-                    </div>
+                <!-- O id serve para tirar a mascara do valor_espaco -->
+                <form method="POST" id="form-espaco">
+                    {% csrf_token %}
                     
-                </div>  
-                <br><br>
+                    <div>
+                        {% if form.errors %}
+                        <div class="alert alert-danger error-duplicate" role="alert">
+                            <ul>
+                                {% for field, errors in form.errors.items %}
+                                {% for error in errors %}
+                                <li><strong>{{ field }}:</strong> {{ error }}</li>
+                                {% endfor %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+                    </div>
 
-                <button id="btnsalvar" type="submit">SALVAR</button>
-            </form>
-        </div>
-    </main>
+                    <div class="container-cols d-flex justify-content-center">
+                    
+                        <!-- Coluna 1 -->
+                        <div id="coluna1" class="input-col-md-2">
 
-    <script>
-        $(document).ready(function(){
-            // Aplicando a máscara de moeda no campo ao carregar a página
-            $('#valor_espaco').mask('000.000.000.000.000,00', {reverse: true});
-            
-            // Remover a máscara antes de enviar o formulário
-            $('#form-espaco').submit(function() {
-                var valorEspaco = $('#valor_espaco').val().replace(/[^\d,-]/g, '');
-                valorEspaco = valorEspaco.replace(',', '.'); // Substituir a vírgula por ponto para usar como decimal
-                $('#valor_espaco').val(valorEspaco);
+
+                            <div class="input-bottom">
+                                <label for="nome_espaco" class="form-label">Espaço para locação:</label> <br>
+                                <input id="nome_espaco" name="nome_espaco" class="form-control-sm" type="text" 
+                                    maxlength="60" tabindex="1" required autofocus> <br>
+                                {% if form.espaco.errors %}
+                                    <div class="text-danger"></div>
+                                {% endif %}
+                            </div> 
+
+                            <div class="input-bottom">
+                                <label for="tempo_espaco" class="form-label">Tempo de locação/h:</label> <br>
+                                <select id="tempo_espaco" name="tempo_espaco" class="form-control-sm {% if form.tempo_espaco.errors %}field-error{% endif %}" tabindex="3">
+                                    <option value="">Tempo de locação</option>
+                                    <option value="1">1 h</option>
+                                    <option value="24">24 h</option>
+                                </select>
+                                {% if form.tempo_espaco.errors %}
+                                    <div class="text-danger"></div>
+                                {% endif %}
+                            </div> 
+
+                            <div class="input-top input-bottom">
+                                <label for="n_condominio" class="form-label">Condomínio:</label><br>
+                                <select id="n_condominio" name="n_condominio" class="form-control-sm" tabindex="5" required >
+                                    <option value="">Condomínio</option>
+                                    {% for condominio in condominios %}
+                                    <option value="{{ condominio.n_condominio }}">{{ condominio.nome_condominio }}</option>
+                                    {% endfor %}
+                                </select>
+                                {% if form.n_condominio.errors %}
+                                    <div class="text-danger"></div>
+                                {% endif %}
+                            </div>   
+                        </div>  
+                    
+                    
+                        <!-- Coluna 2 -->
+                        <div id="coluna2" class="input-col-md-2">
+
+                            <div class="input-bottom">
+                                <label for="dsc_espaco" class="form-label">Dsc:</label> <br>
+                                <input id="dsc_espaco" name="dsc_espaco" class="form-control-sm" type="text" maxlength="100" tabindex="2"><br>
+                                {% if form.dsc_espaco.errors %}
+                                    <div class="text-danger"></div>
+                                {% endif %}
+                            </div>  
+                            
+                            <div class="input-bottom">
+                                <label for="valor_espaco" class="form-label">Valor reserva (R$):</label><br>
+                                <input id="valor_espaco" name="valor_espaco" class="form-control-sm" type="text" value="0,00"  required tabindex="4">
+                                {% if form.valor_espaco.errors %}
+                                    <div class="text-danger"></div>
+                                {% endif %}
+                            </div>                     
+
+                        </div>
+                        
+                    </div>  
+                    <br><br>
+
+                    <button id="btnsalvar" type="submit">SALVAR</button>
+                </form>
+            </div>
+        </main>
+
+        <script>
+            $(document).ready(function(){
+                // Aplicando a máscara de moeda no campo ao carregar a página
+                $('#valor_espaco').mask('000.000.000.000.000,00', {reverse: true});
+                
+                // Remover a máscara antes de enviar o formulário
+                $('#form-espaco').submit(function() {
+                    var valorEspaco = $('#valor_espaco').val().replace(/\./g, '').replace(',', '.'); // Remove pontos e substitui a vírgula por ponto
+                    $('#valor_espaco').val(valorEspaco); // Atualiza o campo com o valor correto
+                });
             });
-        });
-    </script>
+        </script>
 
-    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-        crossorigin="anonymous"> -->
-    <!-- </script> -->
-</body>
+    </body>
 </html>

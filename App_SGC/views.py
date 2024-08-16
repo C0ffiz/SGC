@@ -954,6 +954,7 @@ class GaragensDeleteViews(DeleteView):
     success_url = reverse_lazy("garagens_list")
 
 
+
 #-----------------------Views Mudanças.................................................................
 
 # Tela Lista as Mudanças 
@@ -1063,6 +1064,7 @@ class MudancasDeleteViews(DeleteView):
     success_url = reverse_lazy("mudancas_list")
 
 
+
 #-----------------------Views Ocorrências.................................................................
 
 # Tela Lista as Ocorrências 
@@ -1127,7 +1129,6 @@ class OcorrenciasCreateViews(View):
         return HttpResponseRedirect(self.success_url)
 
 
-
 # Tela Alteração das Ocorrências
 class OcorrenciasUpdateViews(UpdateView):
     model = CustomOcorrencia
@@ -1169,11 +1170,10 @@ class OcorrenciasUpdateViews(UpdateView):
         return super().form_valid(form)
 
 
-
 # Tela Exclusão das Ocorrências
 class OcorrenciasDeleteViews(DeleteView):
     model = CustomOcorrencia
-    success_url = reverse_lazy("mudancas_list")
+    success_url = reverse_lazy("ocorrencias_list")
 
 
 #-----------------------Views Benefícios.................................................................
@@ -1470,6 +1470,16 @@ class EspacosAdmCreateViews(View):
         condominio_id = request.POST.get('n_condominio')
 
         context = self.get_context_data()
+
+        form_data = {
+            'tipo_patrimonio_id': tipo_patrimonio_id,
+            'espaco_adm_id': espaco_adm_id,
+            'valor_patrimonio': valor_patrimonio,
+            'data_disposicao_patrimonio': data_disposicao_patrimonio,
+            'data_baixa_patrimonio': data_baixa_patrimonio,
+            'n_condominio': condominio_id
+        }
+        context['form_data'] = form_data
 
         try:
             condominio_instance = CustomCondominio.objects.get(pk=condominio_id)
@@ -1827,21 +1837,17 @@ class EspacosCreateViews(View):
         return HttpResponseRedirect(self.success_url)
 
 
-        
-
-
 # Tela Alteração de Espaços
 class EspacosUpdateViews(UpdateView):
     model = CustomEspaco
     template_name = 'espacos/espacos_update.html'
     context_object_name = 'espaco'
-    fields = ["espaco_id", "nome_espaco", "dsc_espaco", "n_condominio"]
+    fields = ["espaco_id", "nome_espaco", "dsc_espaco", "tempo_espaco", "valor_espaco", "n_condominio", ]  # Adicionei 'tempo_espaco' aqui
     success_url = reverse_lazy("espacos_list")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['condominios'] = CustomCondominio.objects.all()
-       
         return context
 
     def form_valid(self, form):
@@ -1853,12 +1859,8 @@ class EspacosUpdateViews(UpdateView):
         except CustomCondominio.DoesNotExist:
             messages.error(self.request, 'Número de condomínio inválido.')
             return self.form_invalid(form)
-        
-        # Extrai as datas do formulário
-        nome_espaco = form.cleaned_data.get('nome_espaco')
-        dsc = form.cleaned_data.get('dsc')
 
-        return super().form_valid(form)    
+        return super().form_valid(form)   
     
 
 # Tela Exclusão de Espaços
@@ -1889,31 +1891,42 @@ class ReservasCreateViews(View):
     def get_context_data(self, **kwargs):
         context = {}
         context['condominios'] = CustomCondominio.objects.all()
+        context['espacos'] = CustomEspaco.objects.all()
         return context
 
-    # def get(self, request, *args, **kwargs):
-    #     context = self.get_context_data()
-    #     return render(request, self.template_name, context)
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data()
+        return render(request, self.template_name, context)
 
-    # def post(self, request, *args, **kwargs):
-    #     nome_espaco = request.POST.get('nome_espaco')
-    #     dsc = request.POST.get('dsc')
-    #     condominio_id = request.POST.get('n_condominio')
+    def post(self, request, *args, **kwargs):
+        cpf_morador = request.POST.get('cpf_morador')
+        espaco_id = request.POST.get('espaco_id')
+        data_reserva = request.POST.get('data_reserva')
+        hora_inicio_reserva = request.POST.get('hora_inicio_reserva')
+        condominio_id = request.POST.get('n_condominio')
 
-    #     context = self.get_context_data()
+        context = self.get_context_data()
 
-    #     try:
-    #         condominio_instance = CustomCondominio.objects.get(pk=condominio_id)
-    #     except CustomCondominio.DoesNotExist:
-    #         context['error'] = "Condomínio não encontrado"
-    #         return render(request, self.template_name, context)
+        try:
+            espaco_instance = CustomEspaco.objects.get(pk=espaco_id)
+            condominio_instance = CustomCondominio.objects.get(pk=condominio_id)
 
-    #     CustomEspaco.objects.create(
-    #         nome_espaco=nome_espaco,
-    #         dsc=dsc,
-    #         n_condominio=condominio_instance,
-    #     )
-    #     return HttpResponseRedirect(self.success_url)
+        except CustomEspaco.DoesNotExist:
+            context['error'] = "Espaço para reserva inexistente"
+            return render(request, self.template_name, context)
+        
+        except CustomCondominio.DoesNotExist:
+            context['error'] = "Condomínio inexistente"
+            return render(request, self.template_name, context)   
+
+        CustomEspaco.objects.create(
+            cpf_morador=cpf_morador,
+            espaco_id=espaco_instance,
+            data_reserva=data_reserva,
+            hora_inicio_reserva=hora_inicio_reserva,
+            n_condominio=condominio_instance,
+        )
+        return HttpResponseRedirect(self.success_url)
 
 
 # Tela Alteração de Reservas
@@ -2024,6 +2037,7 @@ class FinanceiroEstruturaListViews(ListView):
         return context   
 
 
+
 # Tela Cadastro de Plano de contas
 class FinanceiroEstruturaCreateViews(CreateView):
     model = FinanceiroEstrutura
@@ -2096,7 +2110,7 @@ class FinanceiroEstruturaDeleteViews(DeleteView):
     
     
 # Tela Lista as Contas a Receber
-class ReceitaListViews(ListView):
+class ReceitasListViews(ListView):
     model = Receita
     context_object_name = 'receita_list'
     
@@ -2106,7 +2120,7 @@ class ReceitaListViews(ListView):
         return context    
     
     
-class ReceitaCreateViews(CreateView):
+class ReceitasCreateViews(CreateView):
     model = Receita
     fields = [
         "data_vencimento", "data_recebimento", "numero_documento", "tipo_documento",
@@ -2136,7 +2150,7 @@ class ReceitaCreateViews(CreateView):
 
 
 # Tela Alteração de Contas a Receber
-class ReceitaUpdateViews(UpdateView):
+class ReceitasUpdateViews(UpdateView):
     model = Receita
     context_object_name = 'conta_receber'
     fields = [
@@ -2156,7 +2170,7 @@ class ReceitaUpdateViews(UpdateView):
 
 
 # Tela Exclusão de Contas a Receber
-class ReceitaDeleteViews(DeleteView):
+class ReceitasDeleteViews(DeleteView):
     model = Receita
     success_url = reverse_lazy("receita_list")
 
