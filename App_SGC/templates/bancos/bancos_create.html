@@ -76,6 +76,19 @@
                             <div class="text-danger">{{ form_errors.historico_banco }}</div>
                             {% endif %}
                         </div>
+
+                        <div class="input-bottom">
+                            <label for="n_condominio" class="form-label">Condomínio:</label>
+                            <select class="form-control-sm" id="n_condominio" name="n_condominio" required>
+                                <option value="">Condomínio</option>
+                                {% for condominio in condominios %}
+                                <option value="{{ condominio.n_condominio }}">{{ condominio.nome_condominio }}</option>
+                                {% endfor %}
+                            </select>
+                            {% if form_errors.n_condominio %}
+                            <div class="text-danger">{{ form_errors.n_condominio }}</div>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
             

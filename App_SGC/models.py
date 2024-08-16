@@ -695,7 +695,12 @@ class Banco(models.Model):
     data_banco = models.DateField(null=False, blank=False, verbose_name="Data do Banco")  # Campo de data
     historico_banco = models.CharField(max_length=40, null=False, blank=False, verbose_name="Histórico do Banco")  # Campo de texto com comprimento máximo de 40 caracteres
     valor_banco = models.DecimalField(max_digits=10, decimal_places=2, null=False, blank=False, verbose_name="Valor do Banco")  # Campo decimal
-
+    n_condominio = models.ForeignKey(
+        'CustomCondominio',  # Foreign key to CustomCondominio
+        on_delete=models.CASCADE,
+        verbose_name="Número Condominio *",
+        null=False,
+        blank=False)
 
     class Meta:
         db_table = 'banco'

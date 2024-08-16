@@ -95,6 +95,7 @@
                         <th scope="col" class="close-th">CRÉDITO</th>
                         <th scope="col" class="close-th">DÉBITO</th>
                         <th scope="col" class="close-th">SALDO</th>
+                        <th scope="col" class="close-th">NÚMERO CONDOMÍNIO</th>
                     </tr>
                 </thead>
                 <tbody id="table-body">
@@ -105,6 +106,7 @@
                         <td class="credito">{% if bc.valor_banco > 0 %}{{ bc.valor_banco|floatformat:2 }}{% endif %}</td>
                         <td class="debito">{% if bc.valor_banco < 0 %}{{ bc.valor_banco|floatformat:2 }}{% endif %}</td>
                         <td class="saldo"></td>
+                        <td>{{ bc.n_condominio.nome_condominio }}</td>
                         <td style="border: none; width:200px">
                             <a href="{% url 'bancos_update' pk=bc.pk %}" class="btn btn-primary btn-sm">ALTERAR</a>
                             <a href="{% url 'bancos_delete' pk=bc.pk %}" class="btn btn-danger btn-sm">EXCLUIR</a>

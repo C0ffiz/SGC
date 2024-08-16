@@ -35,7 +35,7 @@
         <h1 id="titulo_list">CONTROLE BANCÁRIO</h1><br>
         
         <div class="painel">
-            <form method="POST" action="{% url 'bancos_create' %}">
+            <form method="POST" action="{% url 'bancos_update' form.instance.pk %}">
                 {% csrf_token %}
                 <div>
                     {% if form.errors %}
@@ -76,6 +76,8 @@
                             <div class="text-danger">{{ form_errors.historico_banco }}</div>
                             {% endif %}
                         </div>
+
+                        
                     </div>
                 </div>
             
@@ -91,16 +93,17 @@
             $('form').submit(function() {
                 var valorBanco = $('#valor_banco').val();
                 
-                // Preservar o sinal negativo, se presente
+                // Remove all non-numeric characters except for negative sign and decimal point
                 var valorBancoFormatted = valorBanco
-                    .replace(/[^0-9-]/g, '') // Remove caracteres não numéricos, exceto sinal negativo
-                    .replace(/(?!^)-/g, '') // Remove sinais negativos adicionais
-                    .replace(/,/g, '.'); // Substituir a vírgula por ponto decimal
-    
-                // Atualizar o valor do campo antes do envio
+                    .replace(/[^0-9,-]/g, '') // Allow only numbers, commas, and minus sign
+                    .replace(/(?!^)-/g, '') // Keep only the first negative sign if present
+                    .replace(/,/g, '.'); // Replace comma with decimal point for correct number format
+
+                // Update the value of the input field with the formatted number
                 $('#valor_banco').val(valorBancoFormatted);
             });
         });
+
     </script>
     
 

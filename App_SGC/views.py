@@ -2241,13 +2241,14 @@ class BancoListViews(ListView):
 class BancoCreateViews(CreateView):
     model = Banco
     fields = [
-        "data_banco", "historico_banco", "valor_banco"  # Adjust fields based on your model
+        "data_banco", "historico_banco", "valor_banco", "n_condominio"  # Adjust fields based on your model
     ]
     success_url = reverse_lazy("bancos_list")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['bancos_list'] = Banco.objects.all()
+        context['condominios'] = CustomCondominio.objects.all()
         return context
 
     def form_valid(self, form):
@@ -2276,9 +2277,12 @@ class BancoUpdateViews(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['bancos_list'] = Banco.objects.all()
+        # context['condominios'] = CustomCondominio.objects.all()
         return context
 
     def form_valid(self, form):
+        print("Form is valid!")
+        print("Form cleaned data:", form.cleaned_data)
         return super().form_valid(form)
 
 
