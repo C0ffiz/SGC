@@ -690,3 +690,16 @@ class Despesas(models.Model):
     def __str__(self):
         return f"{self.data_pagamento} - {self.numero_documento} - {self.tipo_documento} - {self.descricao}"
 
+class Banco(models.Model):
+    banco_id = models.AutoField(primary_key=True, verbose_name="ID do Banco")  # Campo ID automático
+    data_banco = models.DateField(null=False, blank=False, verbose_name="Data do Banco")  # Campo de data
+    historico_banco = models.CharField(max_length=40, null=False, blank=False, verbose_name="Histórico do Banco")  # Campo de texto com comprimento máximo de 40 caracteres
+    valor_banco = models.DecimalField(max_digits=10, decimal_places=2, null=False, blank=False, verbose_name="Valor do Banco")  # Campo decimal
+
+
+    class Meta:
+        db_table = 'banco'
+        managed = True
+        
+    def __str__(self):
+        return f"Banco {self.banco_id} - {self.historico_banco} ({self.valor_banco})"

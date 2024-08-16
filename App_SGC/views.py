@@ -6,6 +6,7 @@ from .models import CustomVeiculo, CustomColaborador, CustomGaragem, CustomMudan
 from .models import CustomBeneficioRecebido, CustomCorrespondencia, CustomEspaco, CustomReserva
 from .models import CustomPatrimonio, CustomEspacoAdm, CustomTipoPatrimonio
 from .models import FinanceiroEstrutura, Receita, Despesas
+from .models import Banco
 from django.contrib import messages
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy, reverse
@@ -2225,3 +2226,63 @@ class DespesasUpdateViews(UpdateView):
 class DespesasDeleteViews(DeleteView):
     model = Despesas
     success_url = reverse_lazy("despesas_list")
+
+
+class BancoListViews(ListView):
+    model = Banco
+    context_object_name = 'bancos_list'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        bancos_list = Banco.objects.all()
+        return context
+    
+    
+class BancoCreateViews(CreateView):
+    model = Banco
+    fields = [
+        "data_banco", "historico_banco", "valor_banco"  # Adjust fields based on your model
+    ]
+    success_url = reverse_lazy("bancos_list")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['bancos_list'] = Banco.objects.all()
+        return context
+
+    def form_valid(self, form):
+        # Optionally print form details for debugging
+        print("Form is valid!")
+        print("Form cleaned data:", form.cleaned_data)
+        print("n_condominio value:", form.cleaned_data.get('n_condominio'))
+        
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        print("Form is invalid!")
+        print(form.errors)
+        return super().form_invalid(form)
+
+
+# Tela Alteração de Contas a Receber
+class BancoUpdateViews(UpdateView):
+    model = Banco
+    context_object_name = 'banco'
+    fields = [
+        "data_banco", "historico_banco", "valor_banco"  # Adjust fields based on your model
+    ]
+    success_url = reverse_lazy("bancos_list")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['bancos_list'] = Banco.objects.all()
+        return context
+
+    def form_valid(self, form):
+        return super().form_valid(form)
+
+
+# Tela Exclusão de Contas a Receber
+class BancoDeleteViews(DeleteView):
+    model = Banco
+    success_url = reverse_lazy("bancos_list")

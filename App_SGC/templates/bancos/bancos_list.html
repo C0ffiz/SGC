@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="pt-br">
+    {% load custom_filters %}
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- Folhas de Estilo Externas -->
+        <link rel="stylesheet" href="/static/node_modules/@fortawesome/fontawesome-free/css/all.css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+            integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <!-- Folhas de Estilo Locais -->
+        <link rel="stylesheet" href="/static/css/receitas.css">
+        <title>SGC</title>
+        <style>
+            .container-cols {
+                display: flex;
+                gap: 0px; /* Espaçamento entre as colunas */
+            }
+            .input-col {
+                flex: 1; /* Cada coluna ocupa o mesmo espaço */
+                display: flex;
+                flex-direction: column;
+            }
+            .input-col .input-row {
+                margin-bottom: 20px; /* Espaçamento entre as linhas */
+            }
+            .form-control-sm {
+                /* width: 50%;  */
+            }
+            input[type="text"], input[type="date"], select {
+                width: 220px;
+            }
+            .close-th {
+                padding-right: 10px; /* Ajuste o valor conforme necessário */
+            }
+            /* altera ambiente do cabeçalho e linha q fica abaixo */
+            .auto-layout {
+                table-layout: auto; /* Ajusta o layout da tabela conforme o conteúdo */
+                margin-left: auto;
+                margin-right: auto;
+                /* border-collapse: separate; */
+                border-spacing: 0px; /* Aumenta a distância entre as colunas */
+            }
+            /* altera ambiente do botão cadastrar e buscar */
+            .box {
+                width: 350px;
+                height: 32px;
+                display: inline-block;
+                margin-right: 20px; /* Adiciona margem à direita para separar as divs horizontalmente */
+                margin-bottom: 20px; /* Adiciona margem inferior para separar as divs verticalmente */
+            }
+
+            #saldo{
+                font-size: larger;
+            }
+        </style>
+    </head>
+
+    <body>
+        <!-- Barra de Navegação -->
+        <nav class="navbar bg-dark mb-30" data-bs-theme="dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="home">CONDOMINIUM</a>
+            </div>
+        </nav>
+
+        <!-- Corpo da Página -->
+        <main class="container">
+            <h1 id="titulo_list">CONTROLE BANCÁRIO</h1>
+
+            <!-- Opções de Pesquisa e Cadastro -->
+            <div class="container_1">
+                <div class="box">
+                    <a href="{% url 'bancos_create' %}" class="btn btn-primary" id="cadastrar">CADASTRAR BANCO</a>
+                </div>
+
+                <div class="box" id="divBusca">
+                    <input type="text" id="txtBusca" placeholder="Documento" />
+                    <button id="btnBusca">BUSCAR</button>
+                </div>
+
+                <div class="box" id="saldo">
+                    <strong>SALDO TOTAL:</strong>
+                    <span id="saldo-total">0,00R$</span>
+                </div>
+                
+            </div>
+
+            <!-- Tabela de Contas a Receber -->
+            <table id="ReceitasTable" class="table auto-layout">
+                <thead>
+                    <tr>
+                        <th scope="col" class="close-th">DATA</th>
+                        <th scope="col" class="close-th">HISTÓRICO</th>
+                        <th scope="col" class="close-th">CRÉDITO</th>
+                        <th scope="col" class="close-th">DÉBITO</th>
+                        <th scope="col" class="close-th">SALDO</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body">
+                    {% for bc in bancos_list %}
+                    <tr>
+                        <td>{{ bc.data_banco }}</td>    
+                        <td>{{ bc.historico_banco }}</td>
+                        <td class="credito">{% if bc.valor_banco > 0 %}{{ bc.valor_banco|floatformat:2 }}{% endif %}</td>
+                        <td class="debito">{% if bc.valor_banco < 0 %}{{ bc.valor_banco|floatformat:2 }}{% endif %}</td>
+                        <td class="saldo"></td>
+                        <td style="border: none; width:200px">
+                            <a href="{% url 'bancos_update' pk=bc.pk %}" class="btn btn-primary btn-sm">ALTERAR</a>
+                            <a href="{% url 'bancos_delete' pk=bc.pk %}" class="btn btn-danger btn-sm">EXCLUIR</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        
+                    </tr>
+                </tfoot>
+            </table>
+        </main>
+
+        <!-- Scripts JavaScript -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                function updateSaldos() {
+                    let saldoAcumulado = 0;
+                    const rows = document.querySelectorAll('#table-body tr');
+
+                    rows.forEach(row => {
+                        const credito = parseFloat(row.querySelector('.credito').textContent.replace(',', '.')) || 0;
+                        const debito = parseFloat(row.querySelector('.debito').textContent.replace(',', '.')) || 0;
+                        
+                        saldoAcumulado += credito; // Adiciona crédito ao saldo acumulado
+                        saldoAcumulado += debito;  // Adiciona débito (negativo) ao saldo acumulado
+
+                        // Atualiza o saldo da linha atual
+                        row.querySelector('.saldo').textContent = saldoAcumulado.toFixed(2).replace('.', ',');
+                    });
+
+                    // Atualiza o saldo total na parte inferior da tabela
+                    document.getElementById('saldo-total').textContent = "R$" + saldoAcumulado.toFixed(2).replace('.', ',');
+                }
+
+                updateSaldos();
+            });
+        </script>
+
+        <!-- Bootstrap JavaScript -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+</html>
