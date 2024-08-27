@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="pt-br">
-
+    {% load custom_filters %}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -11,6 +11,13 @@
     <!-- Folhas de Estilo Locais -->
     <link rel="stylesheet" href="/static/css/condominos.css">
     <title>SGC</title>
+    <style>
+        /* Faz com que o CPF fique somente em uma linha, em conjunto com o comando no 'td' */
+        .cpf {
+            white-space: nowrap;
+            width: 100px; /* Ajuste conforme necessário */
+        }
+    </style> 
 </head>
 
 <body>
@@ -53,33 +60,23 @@
                     <th scope="col">TELEFONE</th>
                     <th scope="col">CELULAR</th>
                     <th scope="col">EMAIL</th>
-                    <th scope="col">
-                        <a href="#" class="sort-header link-arrow down" data-sort="data_aquisicao_imovel">
-                            PROPRIETÁRIO DESDE
-                            <span class="sort-icon"></span>
-                            <span class="sorting-label"></span>
-                        </a>
-                    </th>
-                    <th scope="col">CONDOMÍNIO</th>
+                    <th scope="col">PROPRIETÁRIO DESDE</th>
                 </tr>
             </thead>
             
             <tbody>
                 {% for cond in condominos_list %}
                     <tr>
-                        <td>{{ cond.cpf_condomino }}</td>
+                        <td class="cpf no-wrap">{{ cond.cpf_condomino|format_cpf }}</td>
                         <td>{{ cond.nome_condomino }}</td>
-                        <td>{{ cond.data_nascimento_condomino|date:'d/m/Y' }}</td>
+                        <td>{{ cond.data_nascimento_condomino|format_date }}</td>
                         <td class="telefone">{{ cond.telefone_condomino }}</td>
-                        <td class="celular">{{ cond.celular_condomino }}</td>
+                        <td class="celular">{{ cond.celular_condomino|format_celular }}</td>
                         <td>{{ cond.email_condomino }}</td>
-                        <td>{{ cond.data_aquisicao_imovel|date:'d/m/Y' }}</td>
-                        <td>{{ cond.n_condominio.nome_condominio }}</td>
-                        <td>
-                            <div class="btn-group">
-                                <a href="{% url 'condominos_update' pk=cond.pk %}" class="btn btn-primary btn-sm">ALTERAR</a>
-                                <a href="{% url 'condominos_delete' pk=cond.pk %}" class="btn btn-danger btn-sm">EXCLUIR</a>
-                            </div>
+                        <td>{{ cond.data_aquisicao_imovel|format_date }}</td>
+                        <td style="border: none; width:200px">
+                            <a href="{% url 'condominos_update' pk=cond.pk %}" class="btn btn-primary btn-sm">ALTERAR</a>
+                            <a href="{% url 'condominos_delete' pk=cond.pk %}" class="btn btn-danger btn-sm">EXCLUIR</a>
                         </td>
                     </tr>
                 {% endfor %}
@@ -88,50 +85,7 @@
     </main>
 
     <script>
-        // Função para formatar CPF no modelo xxx.xxx.xxx-xx
-        function formatCPF() {
-            var cpfs = document.querySelectorAll('#condominosTable tbody td:first-child');
-            cpfs.forEach(function (element) {
-                var cpf = element.textContent.trim();
-
-                if (cpf.length === 11) {
-                    cpf = cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
-                } else if (cpf.length === 10) {
-                    cpf = cpf.replace(/(\d{2})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
-                }
-
-                element.textContent = cpf;
-            });
-        }
-
-        // Função para formatar número de telefone no modelo (xx) xxxx-xxxx
-        function formatarTelefone() {
-            var telefones = document.querySelectorAll('#condominosTable tbody .telefone');
-            telefones.forEach(function (element) {
-                var telefone = element.textContent.trim().replace(/\D/g, '');
-
-                if (telefone.length === 10) {
-                    telefone = telefone.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3');
-                }
-
-                element.textContent = telefone;
-            });
-        }
-
-        // Função para formatar número de celular no modelo (xx) xxxxx-xxxx
-        function formatarCelular() {
-            var celulares = document.querySelectorAll('#condominosTable tbody .celular');
-            celulares.forEach(function (element) {
-                var celular = element.textContent.trim().replace(/\D/g, '');
-
-                if (celular.length === 11) {
-                    celular = celular.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
-                }
-
-                element.textContent = celular;
-            });
-        }
-
+       
         // Função para manipular a ordenação das colunas
         function handleSort() {
             var headers = document.querySelectorAll('.sort-header');
@@ -195,9 +149,6 @@
         window.addEventListener('load', function () {
             handleSort();
             handleSearch();
-            formatCPF();
-            formatarTelefone(); // Chama a função para formatar telefone
-            formatarCelular(); // Chama a função para formatar celular
         });
     </script>
 

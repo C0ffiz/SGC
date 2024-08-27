@@ -38,8 +38,10 @@
                 <tr>
                     <th scope="col" class="close-th">PATRIMÔNIO</th>                     
                     <th scope="col" class="close-th">LOCAL ALOCADO</th>  
-                    <th scope="col" class="close-th">VALOR (R$)</th>                      
-                    <th scope="col" class="close-th">DATA DA ALOCAÇÃO</th>
+                    <th scope="col" class="close-th">VALOR</th> 
+                    <th scope="col" class="close-th">QTD</th> 
+                    <!-- <th scope="col" class="close-th">TOTAL</th>  -->
+                    <th scope="col" class="close-th">DATA ALOCAÇÃO</th>
                     <th scope="col" class="close-th">DATA BAIXA</th>                   
                     <th scope="col" class="close-th">CONDOMÍNIO</th>
                 </tr>
@@ -50,8 +52,10 @@
                         <td>{{ patr.tipo_patrimonio_id.nome_patrimonio }}</td>
                         <td>{{ patr.espaco_adm_id.nome_espaco_adm }}</td>
                         <td>{{ patr.valor_patrimonio|currency_brl |default_if_none:'' }}</td> 
-                        <td>{{ patr.data_disposicao_patrimonio|date:"d/m/y" }}</td>
-                        <td>{{ patr.data_baixa_patrimonio|date:"d/m/y"|default_if_none:'' }}</td>                        
+                        <td>{{ patr.Qtd_patrimonio}}</td>
+                        <!-- <td>{{ patr.valor_patrimonio|multiply:patr.Qtd_patrimonio|currency_brl|default_if_none:'' }}</td> -->
+                        <td>{{ patr.data_disposicao_patrimonio|format_date }}</td>
+                        <td>{{ patr.data_baixa_patrimonio|format_date|default_if_none:'' }}</td>                        
                         <td>{{ patr.n_condominio.nome_condominio }}</td>
                         <td style="border: none; width:200px">
                             <a href="{% url 'patrimonio_update' pk=patr.pk %}" class="btn btn-primary btn-sm">ALTERAR</a>

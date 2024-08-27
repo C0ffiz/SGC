@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="pt-br">
-
+    {% load custom_filters %}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -11,45 +11,6 @@
     <!-- Folhas de Estilo Locais -->
     <link rel="stylesheet" href="/static/css/unidades.css">
     <title>SGC</title>
-    <style>
-        .container-cols {
-            display: flex;
-            gap: 0px; /* Espaçamento entre as colunas */
-        }
-        .input-col {
-            flex: 1; /* Cada coluna ocupa o mesmo espaço */
-            display: flex;
-            flex-direction: column;
-        }
-        .input-col .input-row {
-            margin-bottom: 20px; /* Espaçamento entre as linhas */
-        }
-        .form-control-sm {
-            /* width: 50%;  */
-        }
-        input[type="text"], input[type="date"], select {
-            width: 220px;
-        }
-        .close-th {
-            padding-right: 10px; /* Ajuste o valor conforme necessário */
-        }
-        /* altera ambiente do cabeçalho e linha q fica abaixo */
-        .auto-layout {
-            table-layout: auto; /* Ajusta o layout da tabela conforme o conteúdo */
-            margin-left: auto;
-            margin-right: auto;
-            /* border-collapse: separate; */
-            border-spacing: 0px; /* Aumenta a distância entre as colunas */
-        }
-        /* altera ambiente do botão cadastrar e buscar */
-        .box {
-            width: 350px;
-            height: 32px;
-            display: inline-block;
-            margin-right: 20px; /* Adiciona margem à direita para separar as divs horizontalmente */
-            margin-bottom: 20px; /* Adiciona margem inferior para separar as divs verticalmente */
-        }
-    </style>
 </head>
 
 <body>
@@ -71,7 +32,7 @@
             </div>
 
             <div class="box" id="divBusca">
-                <input type="text" id="txtBusca" placeholder="Unidade" />
+                <input type="text" id="txtBusca" placeholder="Bloco" />
                 <button id="btnBusca">BUSCAR</button>
             </div>
         </div>
@@ -89,7 +50,7 @@
             <tbody>
                 {% for unid in unidades_list %}
                 <tr>
-                    <td>{{ unid.cpf_condomino.cpf_condomino }}</td>
+                    <td>{{ unid.cpf_condomino.cpf_condomino|format_cpf }}</td>
                     <td>{{ unid.cpf_condomino.nome_condomino }}</td>
                     <td>{{ unid.bloco_id.bloco }}</td>
                     <td>{{ unid.unidade }}</td>
@@ -112,9 +73,10 @@
                 var rows = document.querySelectorAll('#unidadesTable tbody tr');
 
                 rows.forEach(function (row) {
-                    var unidade = row.querySelector('td').textContent.toLowerCase();
-                    // Check if bloco contains the search text
-                    if (unidade.includes(searchText)) {
+                    // Busca o valor da terceira coluna (Bloco)
+                    var bloco = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
+                    // Verifica se o valor da coluna Bloco contém o texto de busca
+                    if (bloco.includes(searchText)) {
                         row.style.display = '';
                     } else {
                         row.style.display = 'none';

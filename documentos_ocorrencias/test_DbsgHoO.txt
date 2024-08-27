@@ -1,8 +1,0 @@
-id	nivel_1	nivel_2	nivel_3	nivel_4	dsc_plano_conta	n_condominio_id
-3	1	3	1	NULL	Tax Churras	1
-4	1	1	2	NULL	Taxa Agua	1
-5	1	4	1	NULL	RENDIMENTO DE APLICACAO	1
-6	1	0	0	0	Receitas	1
-7	1	1	0	0	RECEITAS ORDINARIAS	1
-8	1	3	0	0	RECEITAS ESPACO COMUM	1
-9	1	4	0	0	RECEITAS FINANCEIRAS	1

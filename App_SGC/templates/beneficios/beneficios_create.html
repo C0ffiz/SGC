@@ -69,16 +69,6 @@
                     <input id="nome_beneficio" name="nome_beneficio" class="form-control-sm" type="text" minlength="1"
                         maxlength="50" autofocus> <br>
                 </div>  
-
-                <div class="input-top input-bottom">
-                    <label for="n_condominio">Condomínio:</label><br>
-                    <select id="n_condominio" name="n_condominio" class="form-control-sm">
-                        <option value="">Condomínio</option>
-                        {% for condominio in condominios %}
-                        <option value="{{ condominio.n_condominio }}">{{ condominio.nome_condominio }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
                             
                 <br><br>
                 <button id="btnsalvar" type="submit">SALVAR</button>

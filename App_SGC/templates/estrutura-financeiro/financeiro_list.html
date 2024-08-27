@@ -71,7 +71,7 @@
             </div>
 
             <div class="box" id="divBusca">
-                <input type="text" id="txtBusca" placeholder="Plano de conta" />
+                <input type="text" id="txtBusca" placeholder="Conta" />
                 <button id="btnBusca">BUSCAR</button>
             </div>
         </div>
@@ -81,7 +81,7 @@
             <thead>
                 <tr>
                     <th scope="col" class="close-th">Nível</th>
-                    <th scope="col" class="close-th">Nome</th>
+                    <th scope="col" class="close-th">Conta</th>
                     <th scope="col" class="close-th">Condomínio</th>
                 </tr>
             </thead>
@@ -91,6 +91,7 @@
                     <td style="padding-left: {{ fel.padding_left }}px;">
                         {{ fel.get_nivel }}
                     </td>
+                    
                     <td>{{ fel.nome }}</td>
                     <td>{{ fel.n_condominio.nome_condominio }}</td>
                     <td style="border: none; width:200px">

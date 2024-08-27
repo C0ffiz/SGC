@@ -56,7 +56,7 @@
             </div>
         </nav>
         <main class="container">
-            <h1 id="titulo">CADASTRO DE BENEFÍCIOS</h1><br>
+            <h1 id="titulo">CADASTRO DE BENEFÍCIOS PELO COLABORADOR</h1><br>
 
             <div class="painel" style="height: 500px;">
                 <form id="beneficiosRecebidosForm" method="post">
@@ -78,16 +78,6 @@
                             {% endfor %}
                         </select>
                     </div>
-
-                    <div class="input-bottom">
-                        <label class="form-label" for="n_condominio">Condomínio:</label>
-                        <select id="n_condominio" name="n_condominio" class="form-control-sm {% if form.n_condominio.errors %}field-error{% endif %}" tabindex="8">
-                            <option value="">Condomínio</option>
-                            {% for condominio in condominios %}
-                                <option value="{{ condominio.n_condominio }}">{{ condominio.nome_condominio }}</option>
-                            {% endfor %}
-                        </select>
-                    </div> 
                     <br><br>
                     
                     <button id="btnsalvar" type="submit">SALVAR</button>

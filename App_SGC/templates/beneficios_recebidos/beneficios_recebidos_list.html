@@ -81,8 +81,7 @@
             <thead>
                 <tr>
                     <th scope="col" class="close-th">Colaborador</th>
-                    <th scope="col" class="close-th">Benefício</th>   
-                    <th scope="col" class="close-th">Condomínio</th>   
+                    <th scope="col" class="close-th">Benefício</th>    
                 </tr>
             </thead>
             <tbody>
@@ -90,7 +89,6 @@
                 <tr>
                     <td>{{ bene.cpf_colaborador.nome_colaborador }}</td>
                     <td>{{ bene.beneficio_id.nome_beneficio }}</td>
-                    <td>{{ bene.n_condominio.nome_condominio }}</td>
                     <td style="border: none; width:200px">
                         <a href="{% url 'beneficios_recebidos_update' pk=bene.pk %}" class="btn btn-primary btn-sm">ALTERAR</a>
                         <a href="{% url 'beneficios_recebidos_delete' pk=bene.pk %}" class="btn btn-danger btn-sm">EXCLUIR</a>

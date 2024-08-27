@@ -249,3 +249,15 @@ td {
     word-break: break-all; /* Força a quebra de palavras longas */
 }
 
+
+/* 2/2 Utilizado para que o link do arquivo do list fique azul e sublinhado */
+.link-personalizado {
+    color: #ceceed; /* Azul escuro */
+    text-decoration: underline; /* Sublinhado */
+}
+
+.link-personalizado:hover {
+    color: #ceceed; /* Mantém o azul escuro ao passar o mouse */
+    text-decoration: underline;
+}
+

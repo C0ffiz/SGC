@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="pt-br">
+{% load cpf_filters %}
 
 <head>
     <meta charset="UTF-8">
@@ -15,22 +16,22 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
     <script>
         $(document).ready(function(){
-            $('#cpf_condomino').mask('000.000.000-00');
-            $('#btnsalvar').click(function(event) {
-                var cpf = $('#cpf_condomino').val().replace(/\D/g, '');
-                $('#cpf_condomino').val(cpf);
-            });
+            // $('#cpf_reserva').mask('000.000.000-00');
+            // $('#btnsalvar').click(function(event) {
+            //     var cpf = $('#cpf_reserva').val().replace(/\D/g, '');
+            //     $('#cpf_reserva').val(cpf);
+            // });
 
             // Formata os CPFs na tabela ao carregar a página
-            $('.cpf-condomino').each(function(){
-                var cpf = $(this).text().replace(/\D/g, '');
-                if(cpf.length === 11){
-                    cpf = cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
-                } else if(cpf.length === 10){
-                    cpf = cpf.replace(/(\d{2})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
-                }
-                $(this).text(cpf);
-            });
+            // $('.cpf_reserva').each(function(){
+            //     var cpf = $(this).text().replace(/\D/g, '');
+            //     if(cpf.length === 11){
+            //         cpf = cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+            //     } else if(cpf.length === 10){
+            //         cpf = cpf.replace(/(\d{2})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+            //     }
+            //     $(this).text(cpf);
+            // });
 
             // Função para manipular a pesquisa/filtragem
             $('#txtBusca').on('input', function() {
@@ -109,11 +110,11 @@
             <tbody>
                 {% for rese in reservas_list %}
                     <tr>
-                        <td class="cpf-morador">{{ rese.cpf_morador.cpf_morador }}</td>
+                        <td class="cpf-morador">{{ rese.cpf_reserva|format_cpf }}</td>
                         <td>{{ rese.espaco_id.nome_espaco }}</td>
                         <td>{{ rese.data_reserva|date:'d/m/Y' }}</td>
-                        <td {{ rese.hora_inicio_reserva }}</td>
-                        <td {{ hora_final_reserva }}</td>
+                        <td class="hora-inicio-reserva">{{ rese.hora_inicio_reserva }}</td>
+                        <td class="hora-final-reserva">{{ hora_final_reserva }}</td>
                         <td>{{ rese.n_condominio.n_condominio }}</td>
                         <td style="border: none; width:200px">
                             <a href="{% url 'reservas_update' pk=rese.pk %}" class="btn btn-primary btn-sm">ALTERAR</a>

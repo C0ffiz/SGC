@@ -29,6 +29,15 @@
             width: 220px;
             height: 30px;
         }
+         /* Tamanho da fonte, cor e negrito para a MENSAGEM de erro */
+        .text-danger {
+            font-size: 20px; /* Aumenta o tamanho da letra da mensagem de erro */
+            height: 30px; /* Espaço reservado para a mensagem de erro */
+            line-height: 30px; /* Centraliza verticalmente o texto da mensagem */
+            margin-bottom: 10px; /* Margem inferior */
+            color: rgb(246, 244, 244) !important; /* Cor branca */
+            font-weight: bold; /* Negrito */
+        }
     </style>
 </head>
 <body>
@@ -40,75 +49,78 @@
 
     <main class="container">
         <h1 id="titulo_list">CADASTRO DE CONDÔMINOS</h1> <br>
-        <form method="POST">
-            {% csrf_token %}
-            <div class="container-cols d-flex justify-content-center">
-                
-                <!-- Coluna 1 -->
-                <div id="coluna1" class="input-col-md-2">
-                    <div class="input-row">
-                        <div class="input-bottom">
-                            <label for="cpf_condomino">CPF:</label><br>
-                            <input id="cpf_condomino" name="cpf_condomino" class="form-control-sm" type="text" minlength="11" maxlength="11" tabindex="1" autofocus>
-                        </div>
+        <div class="painel" style="height: 500px;">
+            <form method="POST" action="{% url 'condominos_create' %}">
+                {% csrf_token %}
+
+                <!-- Exibir mensagem de erro com espaço fixo -->
+                <div class="text-danger">
+                    {% if form_errors %}
+                        <div>{{ form_errors }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="container-cols d-flex justify-content-center">
+                    
+                    <!-- Coluna 1 -->
+                    <div id="coluna1" class="input-col-md-2">
+                        <div class="input-row">
+                            <div class="input-bottom">
+                                <label for="cpf_condomino">*CPF:</label><br>
+                                <input id="cpf_condomino" name="cpf_condomino" class="form-control-sm" type="text" minlength="11" maxlength="11" tabindex="1" required autofocus>
+                            </div>
+                            
+                            <div class="input-bottom">
+                                <label for="data_nascimento_condomino">*Nascimento:</label><br>
+                                <input id="data_nascimento_condomino" name="data_nascimento_condomino" class="form-control-sm" type="date" minlength="10" maxlength="10" tabindex="3" required>
+                            </div>
+
+                            <div class="input-top input-bottom">
+                                <label for="celular_condomino">*Celular:</label><br>
+                                <input id="celular_condomino" name="celular_condomino" class="form-control-sm" type="text" minlength="11" maxlength="11" tabindex="5" required>
+                            </div>
+
+                            <div class="input-top input-bottom">
+                                <label for="data_aquisicao_imovel">*Aquisição imóvel:</label><br>
+                                <input id="data_aquisicao_imovel" name="data_aquisicao_imovel" class="form-control-sm" type="date" minlength="10" maxlength="10" tabindex="7" required>
+                            </div>
                         
-                        <div class="input-top input-bottom">
-                            <label for="telefone_condomino">Telefone:</label><br>
-                            <input id="telefone_condomino" name="telefone_condomino" class="form-control-sm" type="text" minlength="10" maxlength="10" tabindex="4">
-                        </div>
-
-                        <div class="input-top input-bottom">
-                            <label for="data_aquisicao_imovel">Aquisição imóvel:</label><br>
-                            <input id="data_aquisicao_imovel" name="data_aquisicao_imovel" class="form-control-sm" type="date" minlength="10" maxlength="10" tabindex="7">
-                        </div>
-                     
-                    </div>
-                </div>
-
-                <!-- Coluna 2 -->
-                <div id="coluna2" class="input-col-md-2">
-                    <div class="input-row">
-                        <div class="input-top input-bottom">
-                            <label for="nome_condomino">Nome:</label><br>
-                            <input id="nome_condomino" name="nome_condomino" class="form-control-sm" type="text" maxlength="40" tabindex="2">
-                        </div>
-                       
-                        <div class="input-top input-bottom">
-                            <label for="celular_condomino">Celular:</label><br>
-                            <input id="celular_condomino" name="celular_condomino" class="form-control-sm" type="text" minlength="11" maxlength="11" tabindex="5">
-                        </div>
-
-                        <div class="input-top input-bottom">
-                            <label for="n_condominio">Condomínio:</label><br>
-                            <select id="n_condominio" name="n_condominio" class="form-control-sm" tabindex="8">
-                                <option value="">Condomínio</option>
-                                {% for condominio in condominios %}
-                                <option value="{{ condominio.n_condominio }}">{{ condominio.nome_condominio }}</option>
-                                {% endfor %}
-                            </select>
                         </div>
                     </div>
-                </div>
 
-                <!-- Coluna 3 -->
-                <div id="coluna3" class="input-col-md-2">
-                    <div class="input-row">
-                        <div class="input-bottom">
-                            <label for="data_nascimento_condomino">Nascimento:</label><br>
-                            <input id="data_nascimento_condomino" name="data_nascimento_condomino" class="form-control-sm" type="date" minlength="10" maxlength="10" tabindex="3">
-                        </div>
+                    <!-- Coluna 2 -->
+                    <div id="coluna2" class="input-col-md-2">
+                        <div class="input-row">
+                            <div class="input-top input-bottom">
+                                <label for="nome_condomino">*Nome:</label><br>
+                                <input id="nome_condomino" name="nome_condomino" class="form-control-sm" type="text" maxlength="40" tabindex="2" required>
+                            </div>
                         
-                        <div class="input-top input-bottom">
-                            <label for="email_condomino">E-mail:</label><br>
-                            <input id="email_condomino" name="email_condomino" class="form-control-sm" type="text" minlength="4" maxlength="40" tabindex="6">
-                        </div>                       
+                            <div class="input-top input-bottom">
+                                <label for="telefone_condomino">Telefone:</label><br>
+                                <input id="telefone_condomino" name="telefone_condomino" class="form-control-sm" type="text" minlength="10" maxlength="10" tabindex="4">
+                            </div>
+
+                            <div class="input-top input-bottom">
+                                <label for="email_condomino">*E-mail:</label><br>
+                                <input id="email_condomino" name="email_condomino" class="form-control-sm" type="text" minlength="4" maxlength="40" tabindex="6" required>
+                            </div>  
+                        </div>
                     </div>
+                    
                 </div>
-            </div>
-            <br><br>
-            <button id="btnsalvar" type="submit">SALVAR</button>
-        </form>
+                <br><br>
+                <button id="btnsalvar" type="submit">SALVAR</button>
+
+            </form>
+        </div> 
     </main>
+    <script>
+        $(document).ready(function() {
+            $('#celular_condomino').mask('(00) 00000-0000');
+        });
+    </script>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

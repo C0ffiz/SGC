@@ -114,15 +114,6 @@
                             {% endif %}
                         </div>
 
-                        <div class="input-bottom">
-                            <label for="n_condominio" class="form-label">Condomínio:</label>
-                            <select id="n_condominio" name="n_condominio" class="form-control-sm" tabindex="6">
-                                <option value="">Condomínio</option>
-                                {% for condominio in condominios %}
-                                    <option value="{{ condominio.n_condominio }}">{{ condominio.nome_condominio }}</option>
-                                {% endfor %}
-                            </select>
-                        </div> 
                     </div>                   
                 </div><br><br><br>                
                 <button type="submit" class="btn btn-primary" id="btnsalvar">Salvar</button>

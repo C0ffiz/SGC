@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="pt-br">
-
+    {% load custom_filters %}
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -62,8 +62,8 @@
                         <td>{{ corr.bloco_id.bloco }}</td>
                         <td>{{ corr.unidade_id.unidade }}</td>
                         <td>{{ corr.dsc_correspondencia }}</td>
-                        <td class="date">{{ corr.data_recebimento_correspondencia }}</td>
-                        <td class="date">{{ corr.data_retirada_correspondencia }}</td>
+                        <td class="date">{{ corr.data_recebimento_correspondencia|format_date }}</td>
+                        <td class="date">{{ corr.data_retirada_correspondencia|format_date }}</td>
                         <td>{{ corr.retirante_correspondencia }}</td>
                         <td>{{ corr.n_condominio.nome_condominio }}</td>
                         <td style="border: none; width:200px">
@@ -78,31 +78,6 @@
 
         <!-- Scripts JavaScript -->
         <script>
-            // Função para formatar datas no formato dd/mm/yyyy
-            function formatDate(dateString) {
-                var date = new Date(dateString);
-                // Verifica se a data é válida
-                if (isNaN(date.getTime())) {
-                    return ''; // Retorna uma string vazia se a data for inválida
-                }
-                var day = ("0" + date.getDate()).slice(-2);
-                var month = ("0" + (date.getMonth() + 1)).slice(-2);
-                var year = date.getFullYear();
-                return `${day}/${month}/${year}`;
-            }
-
-            // Função para aplicar a formatação às datas na tabela
-            function formatTableDates() {
-                var dateCells = document.querySelectorAll('#correspondenciasTable .date');
-                dateCells.forEach(function(cell) {
-                    var originalDate = cell.textContent.trim();
-                    if (originalDate) {
-                        cell.textContent = formatDate(originalDate);
-                    } else {
-                        cell.textContent = ''; // Se não houver data, mantém o campo vazio
-                    }
-                });
-            }
 
             // Função para manipular a pesquisa/filtragem
             function handleSearch() {
@@ -166,7 +141,6 @@
 
             // Ouvinte de evento para DOMContentLoaded para chamar as funções necessárias
             document.addEventListener('DOMContentLoaded', function () {
-                formatTableDates();
                 handleSearch();
                 handleSort();
             });

@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="pt-br">
+    {% load custom_filters %}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -100,7 +101,7 @@
             <tbody>
                 {% for gara in garagens_list %}
                 <tr>
-                    <td>{{ gara.cpf_condomino.cpf_condomino }}</td>
+                    <td>{{ gara.cpf_condomino.cpf_condomino|format_cpf }}</td>
                     <td>{{ gara.bloco_id.bloco }}</td>
                     <td>{{ gara.n_garagem }}</td>
                     <td>{{ gara.n_condominio.nome_condominio }}</td>

@@ -1,12 +1,17 @@
+# Models Sistema SGC
+from .models import CustomUser, CustomCondominio, CustomCondomino, CustomMorador, CustomBloco, CustomUnidade    
+from .models import CustomVeiculo, CustomColaborador, CustomGaragem, CustomMudanca, CustomOcorrencia, CustomBeneficio
+from .models import CustomBeneficioRecebido, CustomCorrespondencia, CustomEspaco, CustomReserva, CustomPets
+
+# Models Subsistema Patrimônio
+from .models import CustomPatrimonio, CustomEspacoAdm, CustomTipoPatrimonio
+
+# Models Subsistema Financeiro
+from .models import FinanceiroEstrutura, Receita, Despesas, Banco
+
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login
-from .models import CustomUser, CustomCondominio, CustomCondomino, CustomMorador, CustomBloco, CustomUnidade    
-from .models import CustomVeiculo, CustomColaborador, CustomGaragem, CustomMudanca, CustomOcorrencia, CustomBeneficio
-from .models import CustomBeneficioRecebido, CustomCorrespondencia, CustomEspaco, CustomReserva
-from .models import CustomPatrimonio, CustomEspacoAdm, CustomTipoPatrimonio
-from .models import FinanceiroEstrutura, Receita, Despesas
-from .models import Banco
 from django.contrib import messages
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy, reverse
@@ -23,6 +28,16 @@ from django.utils.dateformat import DateFormat
 from django.utils.formats import get_format
 import locale
 from django.db.utils import ProgrammingError
+from datetime import date
+from django.contrib.auth.mixins import LoginRequiredMixin
+
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+
+
+
+
+
 
 #-----------------------Views Login.................................................................
 
@@ -159,51 +174,57 @@ class UsuariosDeleteViews(DeleteView):
 #-----------------------Views Condômino.................................................................
 
 # Tela Lista Condominos
-class CondominosListViews(ListView):
+class CondominosListViews(LoginRequiredMixin, ListView):
     model = CustomCondomino
     context_object_name = 'condominos_list'
+    
+    def get_context_data(self, **kwargs):
+        # Obter o contexto base da ListView
+        context = super().get_context_data(**kwargs)
+        
+        # Filtrar os condôminos pelo condomínio do usuário logado
+        user_condominio = self.request.user.n_condominio
+        context['condominos_list'] = CustomCondomino.objects.filter(n_condominio=user_condominio)
+        
+        return context
 
 
 # Tela Cadastro de Condôminos
+@method_decorator(login_required, name='dispatch')
 class CondominosCreateViews(CreateView):
     model = CustomCondomino
-    fields = ["cpf_condomino", "nome_condomino", "telefone_condomino", "celular_condomino", "email_condomino", "data_aquisicao_imovel", "data_nascimento_condomino", "n_condominio"]
+    fields = ["cpf_condomino", "nome_condomino", "telefone_condomino", "celular_condomino", "email_condomino", "data_aquisicao_imovel", "data_nascimento_condomino"]
     success_url = reverse_lazy("condominos_list")
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['condominios'] = CustomCondominio.objects.all()
         return context
 
     def form_valid(self, form):
-        # Strip mask from CPF
+        # Remove máscaras dos campos
         cpf_condomino = str(form.cleaned_data['cpf_condomino']).replace(".", "").replace("-", "")
+        celular_condomino = str(form.cleaned_data['celular_condomino']).replace("(", "").replace(")", "").replace("-", "").replace(" ", "")
+        
         form.instance.cpf_condomino = cpf_condomino
+        form.instance.celular_condomino = celular_condomino
 
-        # Get the selected condominio instance
-        condominio_instance = form.cleaned_data['n_condominio']
+        # Obtém o n_condominio do usuário logado
+        form.instance.n_condominio = self.request.user.n_condominio
 
-        # Assign the primary key of the selected condominium to the field
-        form.instance.n_condominio_id = condominio_instance.n_condominio
-
-        # Check if the selected condominium number exists
-        if not CustomCondominio.objects.filter(n_condominio=form.instance.n_condominio_id).exists():
-            messages.error(self.request, 'Número de condomínio inválido.')
-            return self.form_invalid(form)
-       
         # Verifica se o condômino já está cadastrado
-        if CustomCondomino.objects.filter(cpf_condomino=cpf_condomino).exists():
+        if CustomCondomino.objects.filter(cpf_condomino=cpf_condomino, n_condominio=form.instance.n_condominio).exists():
             messages.error(self.request, 'Condômino já cadastrado')
-            return self.form_invalid(form)
+            return self.form_invalid(form)   
 
         return super().form_valid(form)
-    
+
+
     def form_invalid(self, form):
-        # Customize error message for existing username
+        # Customize error message
         if 'cpf_condomino' in form.errors:
             form.errors['cpf_condomino'] = ['Condômino já cadastrado']
         return super().form_invalid(form)
-    
+
 
 # Tela Alteração De Condôminos
 class CondominosUpdateViews(UpdateView):
@@ -303,13 +324,18 @@ class CondominiosDeleteViews(DeleteView):
 #-----------------------Views Moradores.................................................................
 
 # Tela Lista Moradores
-class MoradoresListViews(ListView):
+class MoradoresListViews(LoginRequiredMixin, ListView):
     model = CustomMorador
     context_object_name = 'moradores_list'
     
     def get_context_data(self, **kwargs):
+        # Obter o contexto base da ListView
         context = super().get_context_data(**kwargs)
-        context['moradores'] = CustomMorador.objects.all()
+        
+        # Filtrar os moradores pelo condomínio do usuário logado
+        user_condominio = self.request.user.n_condominio
+        context['moradores_list'] = CustomMorador.objects.filter(n_condominio=user_condominio)
+        
         return context
 
 # Tela Verifica Moradores
@@ -412,13 +438,18 @@ class MoradoresDeleteViews(DeleteView):
     #-----------------------Views Blocos.................................................................
 
 # Tela Lista os Blocos
-class BlocosListViews(ListView):
+class BlocosListViews(LoginRequiredMixin, ListView):
     model = CustomBloco
     context_object_name = 'blocos_list'
     
     def get_context_data(self, **kwargs):
+        # Obter o contexto base da ListView
         context = super().get_context_data(**kwargs)
-        context['blocos'] = CustomBloco.objects.all()
+        
+        # Filtrar os blocos pelo condomínio do usuário logado
+        user_condominio = self.request.user.n_condominio
+        context['blocos_list'] = CustomBloco.objects.filter(n_condominio=user_condominio)
+        
         return context
 
 
@@ -426,28 +457,23 @@ class BlocosListViews(ListView):
 class BlocosCreateViews(CreateView):
     model = CustomBloco
     template_name = 'blocos_create.html'
-    fields = ["bloco", "n_condominio"]
+    fields = ["bloco"]  # Retirei 'n_condominio' já que será automaticamente associado ao user
     success_url = reverse_lazy("blocos_list")
 
-    # rotinas para gerar as informações na div do select no html
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['condominios'] = CustomCondominio.objects.all()
         return context
 
     def form_valid(self, form):
-        condominio_instance = form.cleaned_data['n_condominio']
-        form.instance.n_condominio_id = condominio_instance.n_condominio
-
-        if not CustomCondominio.objects.filter(n_condominio=form.instance.n_condominio_id).exists():
-            form.add_error('n_condominio', 'Número de condomínio inválido.')
-            return self.form_invalid(form)
+        # Atribuir automaticamente o n_condominio do usuário logado
+        form.instance.n_condominio = self.request.user.n_condominio
 
         bloco_instance = form.cleaned_data['bloco']
         form.instance.bloco = bloco_instance
 
-        # Verificar se a combinação bloco-condomínio já existe
-        if CustomBloco.objects.filter(bloco=form.instance.bloco, n_condominio=form.instance.n_condominio_id).exists():
+        # Verificar se a combinação bloco-condomínio já existe para o n_condominio do usuário
+        if CustomBloco.objects.filter(bloco=form.instance.bloco, n_condominio=form.instance.n_condominio).exists():
             form.add_error('bloco', 'Bloco já cadastrado para este condomínio.')
             return self.form_invalid(form)
 
@@ -496,14 +522,19 @@ class BlocosDeleteViews(DeleteView):
   #-----------------------Views Unidades.................................................................
 
 # Tela Lista as Unidades 
-class UnidadesListViews(ListView):
+class UnidadesListViews(LoginRequiredMixin, ListView):
     model = CustomUnidade
     context_object_name = 'unidades_list'
     
     def get_context_data(self, **kwargs):
+        # Obter o contexto base da ListView
         context = super().get_context_data(**kwargs)
-        context['unidades'] = CustomUnidade.objects.all()
-        return context    
+        
+        # Filtrar as unidades pelo condomínio do usuário logado
+        user_condominio = self.request.user.n_condominio
+        context['unidades_list'] = CustomUnidade.objects.filter(n_condominio=user_condominio)
+        
+        return context
 
 
 # Tela Cadastro de Unidades
@@ -609,11 +640,20 @@ class UnidadesDeleteViews(DeleteView):
   #-----------------------Views Veículos.................................................................
 
 # Tela Lista Veículos 
-class VeiculosListViews(ListView):
+class VeiculosListViews(LoginRequiredMixin, ListView):
     model = CustomVeiculo
-    template_name = 'veiculos/veiculos_list.html'
     context_object_name = 'veiculo_list'
-
+    
+    def get_context_data(self, **kwargs):
+        # Obter o contexto base da ListView
+        context = super().get_context_data(**kwargs)
+        
+        # Filtrar os veículos pelo condomínio do usuário logado
+        user_condominio = self.request.user.n_condominio
+        context['veiculo_list'] = CustomVeiculo.objects.filter(n_condominio=user_condominio)
+        
+        return context
+    
     
 # Tela Cadastro de Veículos
 class VeiculosCreateViews(View):
@@ -758,43 +798,42 @@ class VeiculosDeleteViews(DeleteView):
     success_url = reverse_lazy("veiculos_list")
 
 
+
 #-----------------------Views Colaborador.................................................................
 
 # Tela Lista Colaborador
-class ColaboradoresListViews(ListView):
+class ColaboradoresListViews(LoginRequiredMixin, ListView):
     model = CustomColaborador
     context_object_name = 'colaboradores_list'
+    
+    def get_context_data(self, **kwargs):
+        # Obter o contexto base da ListView
+        context = super().get_context_data(**kwargs)
+        
+        # Filtrar os colaboradores pelo condomínio do usuário logado
+        user_condominio = self.request.user.n_condominio
+        context['colaboradores_list'] = CustomColaborador.objects.filter(n_condominio=user_condominio)
+        
+        return context
 
 
 # Tela Cadastro de Colaborador
+@method_decorator(login_required, name='dispatch')
 class ColaboradoresCreateViews(CreateView):
     model = CustomColaborador
-    fields = ["cpf_colaborador", "nome_colaborador", "data_nascimento_colaborador", "endereco_colaborador", "telefone_colaborador", "celular_colaborador", "email_colaborador", "nome_contato_colaborador", "celular_contato_colaborador", "n_condominio"]
+    fields = ["cpf_colaborador", "nome_colaborador", "data_nascimento_colaborador", "endereco_colaborador", "telefone_colaborador", "celular_colaborador", "email_colaborador", "nome_contato_colaborador", "celular_contato_colaborador"]
     success_url = reverse_lazy("colaboradores_list")
-    
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['condominios'] = CustomCondominio.objects.all()
-        return context
 
     def form_valid(self, form):
-        # Strip mask from CPF
+        # Remove máscara do CPF
         cpf_colaborador = str(form.cleaned_data['cpf_colaborador']).replace(".", "").replace("-", "")
         form.instance.cpf_colaborador = cpf_colaborador
 
-        # Get the selected condominio instance
-        colaborador_instance = form.cleaned_data['n_condominio']
-
-        # Assign the primary key of the selected condominium to the field
-        form.instance.n_condominio_id = colaborador_instance.n_condominio
-
-        # Check if the selected condominium number exists
-        if not CustomCondominio.objects.filter(n_condominio=form.instance.n_condominio_id).exists():
-            messages.error(self.request, 'Número de condomínio inválido.')
-            return self.form_invalid(form)
-       
-        # Verifica se o condômino já está cadastrado
-        if CustomColaborador.objects.filter(cpf_colaborador=cpf_colaborador).exists():
+        # Atribuir automaticamente o n_condominio do usuário logado
+        form.instance.n_condominio = self.request.user.n_condominio
+               
+        # Verifica se o colaborador já está cadastrado no mesmo condomínio
+        if CustomColaborador.objects.filter(cpf_colaborador=cpf_colaborador, n_condominio=form.instance.n_condominio).exists():
             messages.error(self.request, 'Colaborador já cadastrado')
             return self.form_invalid(form)
 
@@ -805,7 +844,16 @@ class ColaboradoresCreateViews(CreateView):
         if 'cpf_colaborador' in form.errors:
             form.errors['cpf_colaborador'] = ['Colaborador já cadastrado']
         return super().form_invalid(form)
+
     
+
+
+
+
+
+
+
+
 
 # Tela Alteração De Colaborador
 class ColaboradoresUpdateViews(UpdateView):
@@ -848,9 +896,19 @@ class ColaboradoresDeleteViews(DeleteView):
 #-----------------------Views Garagens.................................................................
 
 # Tela Lista Garagem
-class GaragensListViews(ListView):
+class GaragensListViews(LoginRequiredMixin, ListView):
     model = CustomGaragem
     context_object_name = 'garagens_list'
+    
+    def get_context_data(self, **kwargs):
+        # Obter o contexto base da ListView
+        context = super().get_context_data(**kwargs)
+        
+        # Filtrar os garagens pelo condomínio do usuário logado
+        user_condominio = self.request.user.n_condominio
+        context['garagens_list'] = CustomGaragem.objects.filter(n_condominio=user_condominio)
+        
+        return context
 
 
 # Tela Cadastro Garagem
@@ -958,15 +1016,21 @@ class GaragensDeleteViews(DeleteView):
 #-----------------------Views Mudanças.................................................................
 
 # Tela Lista as Mudanças 
-class MudancasListViews(ListView):
+class MudancasListViews(LoginRequiredMixin, ListView):
     model = CustomMudanca
     context_object_name = 'mudancas_list'
     
     def get_context_data(self, **kwargs):
+        # Obter o contexto base da ListView
         context = super().get_context_data(**kwargs)
-        context['mudancas'] = CustomMudanca.objects.all()
-        return context    
- 
+        
+        # Filtrar as mudanças pelo condomínio do usuário logado
+        user_condominio = self.request.user.n_condominio
+        context['mudancas_list'] = CustomMudanca.objects.filter(n_condominio=user_condominio)
+        
+        return context
+
+
 
 # Tela Cadastro de Mudanças
 class MudancasCreateViews(View):
@@ -1068,17 +1132,22 @@ class MudancasDeleteViews(DeleteView):
 #-----------------------Views Ocorrências.................................................................
 
 # Tela Lista as Ocorrências 
-class OcorrenciasListViews(ListView):
+class OcorrenciasListViews(LoginRequiredMixin, ListView):
     model = CustomOcorrencia
     context_object_name = 'ocorrencias_list'
     
     def get_context_data(self, **kwargs):
+        # Obter o contexto base da ListView
         context = super().get_context_data(**kwargs)
-        context['ocorrencias'] = CustomOcorrencia.objects.all()
-        return context    
- 
+        
+        # Filtrar as ocorrencias pelo condomínio do usuário logado
+        user_condominio = self.request.user.n_condominio
+        context['ocorrencias_list'] = CustomOcorrencia.objects.filter(n_condominio=user_condominio)
+        
+        return context
 
 # Tela Cadastro de Ocorrências
+@method_decorator(login_required, name='dispatch')
 class OcorrenciasCreateViews(View):
     template_name = 'ocorrencias/ocorrencias_create.html'
     success_url = reverse_lazy("ocorrencias_list")
@@ -1098,8 +1167,7 @@ class OcorrenciasCreateViews(View):
         hora_ocorrencia = request.POST.get('hora_ocorrencia')
         dsc_ocorrencia = request.POST.get('dsc_ocorrencia')
         documento_ocorrencia = request.FILES.get('documento_ocorrencia')
-        n_condominio_id = request.POST.get('n_condominio')
-
+        
         context = self.get_context_data()
         
         
@@ -1110,12 +1178,8 @@ class OcorrenciasCreateViews(View):
             context['form_errors'] = {'cpf_condomino': 'test não cadastrado'}
             return render(request, self.template_name, context)
 
-        # Testar se o condomínio existe na tabela 'CustomCondominio'
-        try:
-            condominio_instance = CustomCondominio.objects.get(n_condominio=n_condominio_id)
-        except CustomCondominio.DoesNotExist:
-            context['form_errors'] = {'n_condominio': 'Condomínio não cadastrado'}
-            return render(request, self.template_name, context)
+       # Obter o n_condominio do usuário logado
+        user_condominio_instance = request.user.n_condominio
 
         # Inserir na tabela ocorrência nova linha
         CustomOcorrencia.objects.create(
@@ -1124,7 +1188,7 @@ class OcorrenciasCreateViews(View):
             hora_ocorrencia=hora_ocorrencia,
             dsc_ocorrencia=dsc_ocorrencia,
             documento_ocorrencia=documento_ocorrencia,
-            n_condominio=condominio_instance
+            n_condominio=user_condominio_instance 
         )
         return HttpResponseRedirect(self.success_url)
 
@@ -1179,18 +1243,23 @@ class OcorrenciasDeleteViews(DeleteView):
 #-----------------------Views Benefícios.................................................................
 
 # Tela Lista os Benefícios 
-class BeneficiosListViews(ListView):
+class BeneficiosListViews(LoginRequiredMixin, ListView):
     model = CustomBeneficio
     context_object_name = 'beneficios_list'
-    template_name = 'beneficios/beneficios_list.html'
     
     def get_context_data(self, **kwargs):
+        # Obter o contexto base da ListView
         context = super().get_context_data(**kwargs)
-        context['beneficios'] = CustomBeneficio.objects.all()
-        return context   
- 
+        
+        # Filtrar os bemefícios pelo condomínio do usuário logado
+        user_condominio = self.request.user.n_condominio
+        context['beneficios_list'] = CustomBeneficio.objects.filter(n_condominio=user_condominio)
+        
+        return context
+
 
 # Tela Cadastro de Benefícios
+@method_decorator(login_required, name='dispatch')
 class BeneficiosCreateViews(View):
     template_name = 'beneficios/beneficios_create.html'
     success_url = reverse_lazy("beneficios_list")
@@ -1198,7 +1267,6 @@ class BeneficiosCreateViews(View):
     # Obtém dados do condomínio p a caixa select
     def get_context_data(self, **kwargs):
         context = {}   
-        context['condominios'] = CustomCondominio.objects.all()
         return context
 
     # Obtém dados de contexto e renderiza um template HTML com esses dados
@@ -1209,20 +1277,15 @@ class BeneficiosCreateViews(View):
     # Estrutura as informações para inserir na tabela nova linha
     def post(self, request, *args, **kwargs):
         nome_beneficio = request.POST.get('nome_beneficio')
-        n_condominio_id = request.POST.get('n_condominio')  # Obtém o valor do ID do condomínio a partir do formulário
         context = self.get_context_data()
 
-        # Obter a instância do condomínio associada ao ID do condomínio
-        try:
-            condominio_instance = CustomCondominio.objects.get(pk=n_condominio_id)
-        except CustomCondominio.DoesNotExist:
-            context['form_errors'] = {'n_condominio': 'Condomínio não cadastrado'}
-            return render(request, self.template_name, context)        
-        
+        # Obter o n_condominio do usuário logado
+        user_condominio_instance = request.user.n_condominio   
+
         # Insere na tabela ocorrência nova linha
         CustomBeneficio.objects.create(
             nome_beneficio=nome_beneficio,       
-            n_condominio=condominio_instance
+            n_condominio= user_condominio_instance
         )
         return HttpResponseRedirect(self.success_url)
 
@@ -1246,25 +1309,30 @@ class BeneficiosDeleteViews(DeleteView):
 #-----------------------Views Benefícios recebidos pelos colaboradores....................................
 
 # Tela Lista os Benefícios recebidos
-class BeneficiosRecebidosListViews(ListView):
+class BeneficiosRecebidosListViews(LoginRequiredMixin, ListView):
     model = CustomBeneficioRecebido
     context_object_name = 'beneficios_recebidos_list'
-    template_name = 'beneficios_recebidos/beneficios_recebidos_list.html'
     
     def get_context_data(self, **kwargs):
+        # Obter o contexto base da ListView
         context = super().get_context_data(**kwargs)
-        context['beneficios_recebidos'] = CustomBeneficioRecebido.objects.all()
-        return context   
+        
+        # Filtrar os benefícios recebidos pelo condomínio do usuário logado
+        user_condominio = self.request.user.n_condominio
+        context['beneficios_recebidos_list'] = CustomBeneficioRecebido.objects.filter(n_condominio=user_condominio)
+        
+        return context
 
 
 # Tela Cadastro de Benefícios recebidos
+@method_decorator(login_required, name='dispatch')
 class BeneficiosRecebidosCreateViews(View):
     template_name = 'beneficios_recebidos/beneficios_recebidos_create.html'
     success_url = reverse_lazy("beneficios_recebidos_list")
 
     def get_context_data(self, **kwargs):
         context = {}
-        context['condominios'] = CustomCondominio.objects.all()
+        # context['condominios'] = CustomCondominio.objects.all()
         context['beneficios'] = CustomBeneficio.objects.all()
         return context
 
@@ -1278,15 +1346,16 @@ class BeneficiosRecebidosCreateViews(View):
         n_condominio_id = request.POST.get('n_condominio')
         context = self.get_context_data()
 
-        # try:
         colaborador_instance = CustomColaborador.objects.get(pk=cpf_colaborador_id)
-        condominio_instance = CustomCondominio.objects.get(pk=n_condominio_id)
         beneficio_instance = CustomBeneficio.objects.get(pk=beneficio_id)
+
+        # Obtém o n_condominio do usuário logado
+        user_condominio_instance = request.user.n_condominio
 
         CustomBeneficioRecebido.objects.create(
             cpf_colaborador=colaborador_instance,
             beneficio_id=beneficio_instance,
-            n_condominio=condominio_instance
+            n_condominio=user_condominio_instance
         )
    
         return HttpResponseRedirect(self.success_url)
@@ -1329,15 +1398,20 @@ class BeneficiosRecebidosDeleteViews(DeleteView):
 #-----------------------Views Correspondências .................................................................
 
 # Tela Lista as Correspondencias por Bloco e Unidade
-class CorrespondenciasListViews(ListView):
+class CorrespondenciasListViews(LoginRequiredMixin, ListView):
     model = CustomCorrespondencia
     context_object_name = 'correspondencias_list'
     
     def get_context_data(self, **kwargs):
+        # Obter o contexto base da ListView
         context = super().get_context_data(**kwargs)
-        context['correspondencias'] = CustomCorrespondencia.objects.all()
-        return context    
-     
+        
+        # Filtrar as correspondências pelo condomínio do usuário logado
+        user_condominio = self.request.user.n_condominio
+        context['correspondencias_list'] = CustomCorrespondencia.objects.filter(n_condominio=user_condominio)
+        
+        return context
+
 
 # Tela Cadastra as Correspondencias por Bloco e Unidade
 class CorrespondenciasCreateViews(View):
@@ -1439,15 +1513,19 @@ class CorrespondenciasDeleteViews(DeleteView):
 
 #-----------------------Views Espaços Administrativos .................................................................
 
-# Tela Lista os Espaços adm
-class EspacosAdmListViews(ListView):
+# Tela Lista os Espaços adm   
+class EspacosAdmListViews(LoginRequiredMixin, ListView):
     model = CustomEspacoAdm
     context_object_name = 'espacosAdm_list'
-    template_name = "espacosAdm/espacosAdm_list.html"
     
     def get_context_data(self, **kwargs):
+        # Obter o contexto base da ListView
         context = super().get_context_data(**kwargs)
-        context['espacosAdm_list'] = CustomEspacoAdm.objects.all()
+        
+        # Filtrar os espaços administrativos pelo condomínio do usuário logado
+        user_condominio = self.request.user.n_condominio
+        context['espacosAdm_list'] = CustomEspacoAdm.objects.filter(n_condominio=user_condominio)
+        
         return context
 
 
@@ -1468,6 +1546,13 @@ class EspacosAdmCreateViews(View):
     def post(self, request, *args, **kwargs):
         nome_espaco_adm = request.POST.get('espacoAdm')
         condominio_id = request.POST.get('n_condominio')
+
+        # Obtendo os valores do formulário
+        tipo_patrimonio_id = request.POST.get('tipo_patrimonio_id')
+        espaco_adm_id = request.POST.get('espaco_adm_id')
+        valor_patrimonio = request.POST.get('valor_patrimonio')
+        data_disposicao_patrimonio = request.POST.get('data_disposicao_patrimonio')
+        data_baixa_patrimonio = request.POST.get('data_baixa_patrimonio')
 
         context = self.get_context_data()
 
@@ -1528,14 +1613,18 @@ class EspacosAdmDeleteViews(DeleteView):
 #-----------------------Views Tipos DE Patrimônio .................................................................
 
 # Tela Lista os Tipos Patrimônio
-class TiposPatrimonioListViews(ListView):
+class TiposPatrimonioListViews(LoginRequiredMixin, ListView):
     model = CustomTipoPatrimonio
     context_object_name = 'tiposPatrimonio_list'
-    template_name = "tiposPatrimonio/tiposPatrimonio_list.html"
     
     def get_context_data(self, **kwargs):
+        # Obter o contexto base da ListView
         context = super().get_context_data(**kwargs)
-        context['tiposPatrimonio_list'] = CustomTipoPatrimonio.objects.all()
+        
+        # Filtrar os tipos de patimônio pelo condomínio do usuário logado
+        user_condominio = self.request.user.n_condominio
+        context['tiposPatrimonio_list'] = CustomTipoPatrimonio.objects.filter(n_condominio=user_condominio)
+        
         return context
 
 
@@ -1613,14 +1702,18 @@ class TiposPatrimonioDeleteViews(DeleteView):
 #-----------------------Views DE Patrimônio .................................................................
 
 # Tela Lista de Patrimônios
-class PatrimonioListViews(ListView):
+class PatrimonioListViews(LoginRequiredMixin, ListView):
     model = CustomPatrimonio
     context_object_name = 'patrimonio_list'
-    template_name = "patrimonio/patrimonio_list.html"
     
     def get_context_data(self, **kwargs):
+        # Obter o contexto base da ListView
         context = super().get_context_data(**kwargs)
-        context['patrimonio_list'] = CustomPatrimonio.objects.all()
+        
+        # Filtrar os patrimônios pelo condomínio do usuário logado
+        user_condominio = self.request.user.n_condominio
+        context['patrimonio_list'] = CustomPatrimonio.objects.filter(n_condominio=user_condominio)
+        
         return context
 
 
@@ -1786,14 +1879,18 @@ class PatrimonioDeleteViews(DeleteView):
 #-----------------------Views DE Espaços .................................................................
 
 # Tela Lista de Espaços
-class EspacosListViews(ListView):
+class EspacosListViews(LoginRequiredMixin, ListView):
     model = CustomEspaco
     context_object_name = 'espacos_list'
-    template_name = "espacos/espacos_list.html"
     
     def get_context_data(self, **kwargs):
+        # Obter o contexto base da ListView
         context = super().get_context_data(**kwargs)
-        context['espacos_list'] = CustomEspaco.objects.all()
+        
+        # Filtrar os espaços pelo condomínio do usuário logado
+        user_condominio = self.request.user.n_condominio
+        context['espacos_list'] = CustomEspaco.objects.filter(n_condominio=user_condominio)
+        
         return context
 
 
@@ -1872,15 +1969,24 @@ class EspacosDeleteViews(DeleteView):
 #-----------------------Views De Reservas .................................................................
 
 # Tela Lista de Reservas
-class ReservasListViews(ListView):
+
+class ReservasListViews(LoginRequiredMixin, ListView):
     model = CustomReserva
     context_object_name = 'reservas_list'
-    template_name = "reservas/reservas_list.html"
     
     def get_context_data(self, **kwargs):
+        # Obter o contexto base da ListView
         context = super().get_context_data(**kwargs)
-        context['reservas_list'] = CustomReserva.objects.all()
+        
+        # Filtrar as reservas pelo condomínio do usuário logado
+        user_condominio = self.request.user.n_condominio
+        context['reservas_list'] = CustomReserva.objects.filter(n_condominio=user_condominio)
+        
         return context
+
+
+
+
 
 
 # Tela Cadastro de Reservas
@@ -1892,6 +1998,7 @@ class ReservasCreateViews(View):
         context = {}
         context['condominios'] = CustomCondominio.objects.all()
         context['espacos'] = CustomEspaco.objects.all()
+        context['today'] = date.today().strftime('%Y-%m-%d')  # Adiciona a data de hoje ao contexto
         return context
 
     def get(self, request, *args, **kwargs):
@@ -1899,35 +2006,53 @@ class ReservasCreateViews(View):
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
-        cpf_morador = request.POST.get('cpf_morador')
+        cpf_morador_id = request.POST.get('cpf_morador', '').replace('.', '').replace('-', '').strip()
         espaco_id = request.POST.get('espaco_id')
         data_reserva = request.POST.get('data_reserva')
         hora_inicio_reserva = request.POST.get('hora_inicio_reserva')
         condominio_id = request.POST.get('n_condominio')
-
         context = self.get_context_data()
 
         try:
             espaco_instance = CustomEspaco.objects.get(pk=espaco_id)
             condominio_instance = CustomCondominio.objects.get(pk=condominio_id)
 
+            morador_instance = None
+            cpf_reserva = None
+
+            if CustomMorador.objects.filter(cpf_morador=cpf_morador_id).exists():
+                morador_instance = CustomMorador.objects.get(cpf_morador=cpf_morador_id)
+                cpf_reserva = morador_instance.cpf_morador
+            elif CustomMorador.objects.filter(cpf_condomino=cpf_morador_id).exists():
+                morador_instance = CustomMorador.objects.get(cpf_condomino=cpf_morador_id)
+                cpf_reserva = morador_instance.cpf_condomino
+            else:
+                context['error'] = "Morador inexistente no Condomínio"
+                return render(request, self.template_name, context)
+
+            if isinstance(cpf_reserva, str):
+                cpf_reserva = cpf_reserva[:14]
+
+                CustomReserva.objects.create(
+                    cpf_reserva=cpf_reserva,
+                    espaco_id=espaco_instance,
+                    data_reserva=data_reserva,
+                    hora_inicio_reserva=hora_inicio_reserva,
+                    n_condominio=condominio_instance,
+                )
+                return HttpResponseRedirect(self.success_url)
+            else:
+                context['error'] = "O CPF obtido não é uma string válida"
+                return render(request, self.template_name, context)
+
         except CustomEspaco.DoesNotExist:
             context['error'] = "Espaço para reserva inexistente"
             return render(request, self.template_name, context)
-        
+
         except CustomCondominio.DoesNotExist:
             context['error'] = "Condomínio inexistente"
-            return render(request, self.template_name, context)   
-
-        CustomEspaco.objects.create(
-            cpf_morador=cpf_morador,
-            espaco_id=espaco_instance,
-            data_reserva=data_reserva,
-            hora_inicio_reserva=hora_inicio_reserva,
-            n_condominio=condominio_instance,
-        )
-        return HttpResponseRedirect(self.success_url)
-
+            return render(request, self.template_name, context)
+        
 
 # Tela Alteração de Reservas
 class ReservasUpdateViews(UpdateView):
@@ -1968,36 +2093,117 @@ class ReservasDeleteViews(DeleteView):
 
 
 
+  #-----------------------Views Pets.................................................................
 
-
-#----------------------- SUBSISTEMA FINANCEIRO .......................................................
-
-
-#-----------------------Views Plano de Contas.......................................................
-        
-# Tela Lista a Estrutura Plano Contas 
-# class FinanceiroEstruturaListViews(ListView):
-#     model = FinanceiroEstrutura
-#     context_object_name = 'financeiro_estrutura_list'
+# Tela Lista Pets 
+class PetsListViews(LoginRequiredMixin, ListView):
+    model = CustomPets
+    context_object_name = 'pets_list'
     
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         financeiro_estrutura_list = FinanceiroEstrutura.objects.all()
-
-        # Ordenar as categorias baseando-se em sua posição na hierarquia
-        # def sort_key(fel):
-        #     return [int(n) for n in fel.get_nivel().split('.') if n]
-
-        # sorted_list = sorted(financeiro_estrutura_list, key=sort_key)
-
-        # Adicionar padding baseado no nível
-        # for fel in sorted_list:
-        #     nivel_count = len(fel.get_nivel().split('.'))
-        #     fel.padding_left = nivel_count * 20  # Ajuste o valor conforme necessário
-
-        # context['financeiro_estrutura_list'] = sorted_list
+    def get_context_data(self, **kwargs):
+        # Obter o contexto base da ListView
+        context = super().get_context_data(**kwargs)
         
-        # return context
+        # Filtrar os pets pelo condomínio do usuário logado
+        user_condominio = self.request.user.n_condominio
+        context['pets_list'] = CustomPets.objects.filter(n_condominio=user_condominio)
+        
+        return context
+
+
+# Tela Cadastro Pets
+@method_decorator(login_required, name='dispatch') # =============================================================
+class PetsCreateViews(View):
+    template_name = 'pets/pets_create.html'
+    success_url = reverse_lazy("pets_list")
+
+    def get_context_data(self, **kwargs):
+        context = {}
+        context['condominios'] = CustomCondominio.objects.all()
+        context['condominos'] = CustomCondomino.objects.all()
+        return context
+
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data()
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        cpf_condomino_id = request.POST.get('cpf_condomino')
+        nome_pet = request.POST.get('nome_pet')
+        raca_pet = request.POST.get('raca_pet')
+        altura_pet = request.POST.get('altura_pet')
+        peso_pet = request.POST.get('peso_pet')
+
+        context = self.get_context_data()
+        form_errors = {}
+
+        # Verificar se o CPF do condômino existe
+        try:
+            condomino_instance = CustomCondomino.objects.get(cpf_condomino=cpf_condomino_id)
+        except CustomCondomino.DoesNotExist:
+            form_errors['cpf_condomino'] = 'Condômino inexistente'
+            condomino_instance = None
+
+        # Obter o n_condominio do usuário logado ===============================================================
+        user_condominio_instance = request.user.n_condominio
+
+        # Se houver erros, retornar para o formulário com as mensagens de erro
+        if form_errors:
+            context['form_errors'] = form_errors
+            return render(request, self.template_name, context)
+
+        # Criar linha na tabela pets com o n_condominio do usuário logado
+        if condomino_instance and user_condominio_instance:
+            CustomPets.objects.create(
+                cpf_condomino=condomino_instance,  # Usar a instância de CustomCondomino
+                nome_pet=nome_pet,
+                raca_pet=raca_pet,
+                altura_pet=altura_pet,
+                peso_pet=peso_pet,
+                n_condominio=user_condominio_instance  # Usar o n_condominio do usuário logado ======================
+            )
+
+        return HttpResponseRedirect(self.success_url)
+
+
+
+# Tela Alteração Pets
+class PetsUpdateViews(View):
+    template_name = 'pets/pets_update.html'
+    success_url = reverse_lazy("pets_list")
+
+    def get_context_data(self, pk, **kwargs):
+        context = {}
+        context['condominios'] = CustomCondominio.objects.all()
+        context['pets'] = CustomPets.objects.get(pk=pk)  # Carregar o pet com base no pk
+        return context
+
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data(pk=kwargs['pk'])
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        pk = kwargs['pk']
+        pets = CustomPets.objects.get(pk=pk)
+
+        # Atualizar os dados com base no formulário
+        pets.nome_pet = request.POST.get('nome_pet')
+        pets.raca_pet = request.POST.get('raca_pet')
+        pets.altura_pet = request.POST.get('altura_pet')
+        pets.peso_pet = request.POST.get('peso_pet')
+        pets.n_condominio_id = request.POST.get('n_condominio')
+
+        # Salvar as alterações
+        pets.save()
+        return HttpResponseRedirect(self.success_url)
+
+# Tela Exclusão Pets
+class PetsDeleteViews(DeleteView):
+    model = CustomPets
+    success_url = reverse_lazy("pets_list")
+     
+   
+
 
 
 
@@ -2012,7 +2218,7 @@ class ReservasDeleteViews(DeleteView):
 
 #-----------------------Views Plano de Contas.......................................................
         
-# Tela Lista a Estrutura Plano Contas 
+# Tela Lista Plano Contas 
 class FinanceiroEstruturaListViews(ListView):
     model = FinanceiroEstrutura
     context_object_name = 'financeiro_estrutura_list'
@@ -2021,24 +2227,29 @@ class FinanceiroEstruturaListViews(ListView):
         context = super().get_context_data(**kwargs)
         financeiro_estrutura_list = FinanceiroEstrutura.objects.all()
 
-        # Ordenar as categorias baseando-se em sua posição na hierarquia
+        # Função para ordenar com base no nível hierárquico
         def sort_key(fel):
-            return [int(n) for n in fel.get_nivel().split('.') if n]
+            nivel = fel.get_nivel()
+            if nivel:
+                return [int(n) for n in nivel.split('.') if n]
+            return []
 
         sorted_list = sorted(financeiro_estrutura_list, key=sort_key)
 
-        # Adicionar padding baseado no nível
+        # Adicionar padding_left baseado no nível
         for fel in sorted_list:
-            nivel_count = len(fel.get_nivel().split('.'))
-            fel.padding_left = nivel_count * 20  # Ajuste o valor conforme necessário
+            nivel = fel.get_nivel()
+            if nivel:
+                nivel_count = len(nivel.split('.'))
+                fel.padding_left = nivel_count * 20  # Ajustar o valor conforme a necessidade
+            else:
+                fel.padding_left = 0
 
         context['financeiro_estrutura_list'] = sorted_list
-        
-        return context   
+        return context
 
 
-
-# Tela Cadastro de Plano de contas
+# Tela Cadastro Plano de contas
 class FinanceiroEstruturaCreateViews(CreateView):
     model = FinanceiroEstrutura
     fields = ['nome', 'parent', 'n_condominio']
@@ -2085,6 +2296,7 @@ class FinanceiroEstruturaCreateViews(CreateView):
         return super().form_invalid(form)
     
     
+# Tela altera Plano de contas
 class FinanceiroEstruturaUpdateViews(UpdateView):
     model = FinanceiroEstrutura
     context_object_name = 'financeiro_estrutura'
@@ -2103,30 +2315,39 @@ class FinanceiroEstruturaUpdateViews(UpdateView):
         form.instance.n_condominio = self.get_object().n_condominio  # Mantém o valor existente
         return super().form_valid(form)
     
-# Tela Exclusão de Plano de contas
+# Tela Exclusão Plano de contas
 class FinanceiroEstruturaDeleteViews(DeleteView):
     model = FinanceiroEstrutura
     success_url = reverse_lazy("financeiro_estrutura_list")
     
     
-# Tela Lista as Contas a Receber
-class ReceitasListViews(ListView):
+
+#-----------------------Views Contas a Receber.................................................................
+
+# Tela Lista Contas a Receber
+class ContasReceberListViews(LoginRequiredMixin, ListView):
     model = Receita
-    context_object_name = 'receita_list'
+    context_object_name = 'contas_receber_list'
     
     def get_context_data(self, **kwargs):
+        # Obter o contexto base da ListView
         context = super().get_context_data(**kwargs)
-        context['receita_list'] = Receita.objects.all()
-        return context    
-    
-    
-class ReceitasCreateViews(CreateView):
+        
+        # Filtrar as contas a receber pelo condomínio do usuário logado
+        user_condominio = self.request.user.n_condominio
+        context['contas_receber_list'] = Receita.objects.filter(n_condominio=user_condominio)
+        
+        return context
+
+
+# Tela Cadastra Contas a Receber 
+class ContasReceberCreateViews(CreateView):
     model = Receita
     fields = [
         "data_vencimento", "data_recebimento", "numero_documento", "tipo_documento",
         "descricao", "valor", "valor_recebido", "categoria", "n_condominio"
     ]
-    success_url = reverse_lazy("receita_list")
+    success_url = reverse_lazy("contas_receber_list")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -2149,15 +2370,15 @@ class ReceitasCreateViews(CreateView):
         return super().form_invalid(form)
 
 
-# Tela Alteração de Contas a Receber
-class ReceitasUpdateViews(UpdateView):
+# Tela Altera Contas a Receber 
+class ContasReceberUpdateViews(UpdateView):
     model = Receita
     context_object_name = 'conta_receber'
     fields = [
         "data_vencimento", "data_recebimento", "numero_documento", "tipo_documento",
         "descricao", "valor", "valor_recebido", "categoria", "n_condominio"
     ]
-    success_url = reverse_lazy("receita_list")
+    success_url = reverse_lazy("contas_receber_list")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -2169,31 +2390,39 @@ class ReceitasUpdateViews(UpdateView):
         return super().form_valid(form)
 
 
-# Tela Exclusão de Contas a Receber
-class ReceitasDeleteViews(DeleteView):
+# Tela Exclusão Contas a Receber
+class ContasReceberDeleteViews(DeleteView):
     model = Receita
-    success_url = reverse_lazy("receita_list")
+    success_url = reverse_lazy("contas_receber_list")
+    
+    
 
+#-----------------------Views Contas a Pagar.................................................................
 
-
-# Tela Lista as Contas a Receber
-class DespesasListViews(ListView):
+# Tela Lista Contas a Pagar
+class ContasPagarListViews(LoginRequiredMixin, ListView):
     model = Despesas
-    context_object_name = 'despesas_list'
+    context_object_name = 'contas_pagar_list'
     
     def get_context_data(self, **kwargs):
+        # Obter o contexto base da ListView
         context = super().get_context_data(**kwargs)
-        context['despesas_list'] = Despesas.objects.all()
-        return context    
-    
-    
-class DespesasCreateViews(CreateView):
+        
+        # Filtrar as contas a pagar pelo condomínio do usuário logado
+        user_condominio = self.request.user.n_condominio
+        context['contas_pagar_list'] = Despesas.objects.filter(n_condominio=user_condominio)
+        
+        return context
+
+
+# Tela Cadastra Contas a Pagar
+class ContasPagarCreateViews(CreateView):
     model = Despesas
     fields = [
         "data_vencimento", "data_pagamento", "numero_documento", "tipo_documento",
         "descricao", "valor", "valor_pago", "categoria", "documento", "n_condominio"
     ]
-    success_url = reverse_lazy("despesas_list")
+    success_url = reverse_lazy("contas_pagar_list")
 
 
     def get_context_data(self, **kwargs):
@@ -2216,15 +2445,15 @@ class DespesasCreateViews(CreateView):
         return super().form_invalid(form)
 
 
-# Tela Alteração de Contas a Receber
-class DespesasUpdateViews(UpdateView):
+# Tela Alteração Contas a Pagar
+class ContasPagarUpdateViews(UpdateView):
     model = Despesas
     context_object_name = 'conta_receber'
     fields = [
         "data_vencimento", "data_pagamento",  "numero_documento", "tipo_documento",
         "descricao", "valor", "valor_pago", "categoria", "documento", "n_condominio"
     ]
-    success_url = reverse_lazy("despesas_list")
+    success_url = reverse_lazy("contas_pagar_list")
 
 
     def get_context_data(self, **kwargs):
@@ -2236,22 +2465,32 @@ class DespesasUpdateViews(UpdateView):
     def form_valid(self, form):
         return super().form_valid(form)
 
-# Tela Exclusão de Contas a Receber
-class DespesasDeleteViews(DeleteView):
+# Tela Exclusão Contas a Pagar
+class ContasPagarDeleteViews(DeleteView):
     model = Despesas
-    success_url = reverse_lazy("despesas_list")
+    success_url = reverse_lazy("contas_pagar_list")
+   
+    
 
+#-----------------------Views Controle Bancário.................................................................
 
-class BancoListViews(ListView):
+# Tela Lista Controle Bancário
+class BancoListViews(LoginRequiredMixin, ListView):
     model = Banco
     context_object_name = 'bancos_list'
-
+    
     def get_context_data(self, **kwargs):
+        # Obter o contexto base da ListView
         context = super().get_context_data(**kwargs)
-        bancos_list = Banco.objects.all()
+        
+        # Filtrar os pets pelo condomínio do usuário logado
+        user_condominio = self.request.user.n_condominio
+        context['bancos_list'] = Banco.objects.filter(n_condominio=user_condominio)
+        
         return context
-    
-    
+
+
+# Tela Cadastra Controle Bancário   
 class BancoCreateViews(CreateView):
     model = Banco
     fields = [
@@ -2279,7 +2518,7 @@ class BancoCreateViews(CreateView):
         return super().form_invalid(form)
 
 
-# Tela Alteração de Contas a Receber
+# Tela Alteração Controle Bancário  
 class BancoUpdateViews(UpdateView):
     model = Banco
     context_object_name = 'banco'
@@ -2300,7 +2539,7 @@ class BancoUpdateViews(UpdateView):
         return super().form_valid(form)
 
 
-# Tela Exclusão de Contas a Receber
+# Tela Exclusão de Controle Bancário
 class BancoDeleteViews(DeleteView):
     model = Banco
     success_url = reverse_lazy("bancos_list")

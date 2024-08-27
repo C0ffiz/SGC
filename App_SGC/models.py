@@ -116,6 +116,13 @@ class CustomVeiculo(models.Model):
         null=False, 
         blank=False,
         related_name='veiculos_por_cpf')
+    n_condominio = models.ForeignKey(
+        CustomCondominio, 
+        on_delete=models.CASCADE, 
+        verbose_name="Número do Condomínio", 
+        null=False, 
+        blank=False,
+        related_name='veiculo_condominio')
     
     class Meta:
         db_table='veiculo'
@@ -381,9 +388,8 @@ class CustomCorrespondencia(models.Model):
 class CustomEspaco(models.Model):
     espaco_id = models.AutoField(primary_key=True)
     nome_espaco = models.CharField(verbose_name="Nome espaço *", max_length=60, null=False, blank=False)
-    dsc_espaco = models.CharField(verbose_name="Descrição espaço *", max_length=100, null=True, blank=True)
+    dsc_espaco = models.CharField(verbose_name="Descrição espaço *", max_length=135, null=True, blank=True)
     TEMPO_CHOICES = [
-        ('0', '0'),
         ('1', '1'),
         ('24', '24'),
     ]
@@ -420,13 +426,7 @@ class CustomEspaco(models.Model):
 #  Definição da Tabela Reserva
 class CustomReserva(models.Model):
     reserva_id = models.AutoField(primary_key=True)
-    cpf_morador = models.ForeignKey(
-        CustomMorador, 
-        on_delete=models.CASCADE,
-        verbose_name="CPF Morador *",
-        null=False,
-        blank=False,
-    )
+    cpf_reserva = models.CharField(verbose_name="CPF Reserva *", max_length=14, null=False, blank=False) 
     espaco_id = models.ForeignKey(
         CustomEspaco, 
         on_delete=models.CASCADE,
@@ -451,7 +451,30 @@ class CustomReserva(models.Model):
         ordering = ['data_reserva', 'hora_inicio_reserva']
 
 
-
+class CustomPets(models.Model):
+    pets_id = models.AutoField(primary_key=True)
+    nome_pet = models.CharField(verbose_name="Nome pet *", max_length=30, null=False, blank=False)
+    raca_pet = models.CharField(verbose_name="Raça pet *", max_length=40, null=False, blank=False)
+    altura_pet = models.CharField(verbose_name="Altura pet *", max_length=3, null=False, blank=False)
+    peso_pet = models.CharField(verbose_name="Peso pet *", max_length=2, null=False, blank=False)
+    cpf_condomino = models.ForeignKey(
+        'CustomCondomino', 
+        on_delete=models.CASCADE, 
+        verbose_name="CPF Condômino *", 
+        null=False, 
+        blank=False,
+        related_name='pet_por_cpf')
+    n_condominio = models.ForeignKey(
+        CustomCondominio,  
+        on_delete=models.CASCADE,
+        verbose_name="Número Condomínio *",
+        null=False,
+        blank=False,
+        )              
+    class Meta:
+        db_table = 'pets'
+        managed = True
+        ordering = ['nome_pet']
 
 
 
@@ -528,7 +551,8 @@ class CustomPatrimonio(models.Model):
         null=False, 
         blank=False, 
         default=0
-    )    
+    )   
+    Qtd_patrimonio = models.IntegerField(verbose_name="Qtd Patrimônio") 
     data_disposicao_patrimonio = models.DateField(verbose_name="Data disposição *", null=False, blank=False) 
     data_baixa_patrimonio = models.DateField(verbose_name="Data baixa *", null=True, blank=True)        
     n_condominio = models.ForeignKey(

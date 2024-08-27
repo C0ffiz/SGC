@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="pt-br">
-
+    {% load custom_filters %}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -85,16 +85,18 @@
                     <th scope="col" class="close-th">MARCA</th>
                     <th scope="col" class="close-th">MODELO</th>
                     <th scope="col" class="close-th">COR</th>
+                    <th scope="col" class="close-th">CONDOMÍNIO</th>
                 </tr>
             </thead>
             <tbody>
                 {% for veic in veiculo_list %}
                 <tr>
-                    <td class="cpf-condomino">{{ veic.cpf_condomino.cpf_condomino }}</td>
+                    <td class="cpf-condomino">{{ veic.cpf_condomino.cpf_condomino|format_cpf }}</td>
                     <td class="placa-veiculo">{{ veic.placa_veiculo }}</td>
                     <td>{{ veic.marca_veiculo }}</td>
                     <td>{{ veic.modelo_veiculo }}</td>
                     <td>{{ veic.cor_veiculo }}</td>
+                    <td>{{ veic.n_condominio.nome_condominio }}</td>
                     <td style="border: none; width:200px">
                         <a href="{% url 'veiculos_update' pk=veic.pk %}" class="btn btn-primary btn-sm">ALTERAR</a>
                         <a href="{% url 'veiculos_delete' pk=veic.pk %}" class="btn btn-danger btn-sm">EXCLUIR</a>
@@ -124,29 +126,9 @@
             });
         }
 
-        // Função para formatar o CPF
-        function formatCPF(cpf) {
-            if (cpf.length === 11) {
-                return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
-            } else if (cpf.length === 10) {
-                return cpf.replace(/(\d{2})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
-            }
-            return cpf;
-        }
-
-        // Função para formatar todos os CPFs na tabela
-        function formatAllCPFs() {
-            var cpfElements = document.querySelectorAll('.cpf-condomino');
-            cpfElements.forEach(function (element) {
-                var cpf = element.textContent.trim();
-                element.textContent = formatCPF(cpf);
-            });
-        }
-
         // Ouvinte de evento para DOMContentLoaded para chamar as funções necessárias
         document.addEventListener('DOMContentLoaded', function () {
             handleSearch();
-            formatAllCPFs();  // Chama a função para formatar os CPFs quando o DOM é carregado
         });
     </script>
 

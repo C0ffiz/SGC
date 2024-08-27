@@ -19,13 +19,11 @@ html body {
 }
 
 
-
 /* Botões da tela de listagem */
 
 .btn-danger, .btn-primary {
     font-weight: bold;
 }
-
 
 
 /* Div da Main da tela de listagem */
@@ -39,7 +37,6 @@ html body {
 }
 
 
-
 /* Titulo da Pagina da tela de listagem */
 
 #titulo_list {
@@ -50,7 +47,6 @@ html body {
     font-size: 40px;
     padding-bottom: 30px;
 }
-
 
 
 /* Div de Cadastrar|Buscar da tela de listagem */
@@ -74,7 +70,6 @@ html body {
     align-items: center;   /* Centraliza verticalmente */
     
 }
-
 
 
 /* Buscar na tabela */
@@ -109,7 +104,6 @@ html body {
 }
 
 
-
 /* Colunas da Tabela da tela de listagem */
 
 th {
@@ -139,7 +133,6 @@ td {
 }
 
 
-
 /* Colunas dos campos da tela de cadastrar|update */
 
 .colunas {
@@ -156,7 +149,6 @@ td {
 }
 
 
-
 /* Campos da tela de cadastrar|update */
 
 .input-bottom {
@@ -170,8 +162,6 @@ input[type="text"], input[type="number"], input[type="tel"], input[type="email"]
     height: 33px;
     border-width: 1px;
 }
-
-
 
 /* Botões da tela de cadastrar */
 
@@ -188,4 +178,15 @@ input[type="text"], input[type="number"], input[type="tel"], input[type="email"]
 .message {
     width: 100%;
     height: 40px;
+}
+
+/* 2/2 Utilizado para que o link do arquivo do list fique azul e sublinhado */
+.link-personalizado {
+    color: #ceceed; /* Azul escuro */
+    text-decoration: underline; /* Sublinhado */
+}
+
+.link-personalizado:hover {
+    color: #ceceed; /* Mantém o azul escuro ao passar o mouse */
+    text-decoration: underline;
 }

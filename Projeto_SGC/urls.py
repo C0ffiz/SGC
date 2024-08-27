@@ -2,6 +2,12 @@
 from django.contrib import admin
 from django.urls import path
 from App_SGC import views
+from django.views.generic import ListView
+from django.urls import reverse_lazy
+from django.conf import settings
+from django.conf.urls.static import static
+
+# Sistema SGC
 from App_SGC.views import CondominosListViews,CondominosCreateViews,CondominosUpdateViews,CondominosDeleteViews
 from App_SGC.views import UsuariosListViews,UsuariosCreateViews,UsuariosUpdateViews,UsuariosDeleteViews
 from App_SGC.views import CondominiosListViews,CondominiosCreateViews,CondominiosUpdateViews,CondominiosDeleteViews
@@ -15,20 +21,21 @@ from App_SGC.views import MudancasListViews,MudancasCreateViews,MudancasUpdateVi
 from App_SGC.views import OcorrenciasListViews,OcorrenciasCreateViews,OcorrenciasUpdateViews,OcorrenciasDeleteViews
 from App_SGC.views import BeneficiosListViews,BeneficiosCreateViews,BeneficiosUpdateViews,BeneficiosDeleteViews
 from App_SGC.views import BeneficiosRecebidosListViews,BeneficiosRecebidosCreateViews,BeneficiosRecebidosUpdateViews,BeneficiosRecebidosDeleteViews
-from App_SGC.views import FinanceiroEstruturaListViews,FinanceiroEstruturaCreateViews,FinanceiroEstruturaUpdateViews,FinanceiroEstruturaDeleteViews
-from App_SGC.views import ReceitasListViews,ReceitasCreateViews,ReceitasUpdateViews,ReceitasDeleteViews
-from App_SGC.views import DespesasListViews,DespesasCreateViews,DespesasUpdateViews,DespesasDeleteViews
-from App_SGC.views import BancoListViews,BancoCreateViews,BancoUpdateViews,BancoDeleteViews
 from App_SGC.views import CorrespondenciasListViews,CorrespondenciasCreateViews,CorrespondenciasUpdateViews,CorrespondenciasDeleteViews
+from App_SGC.views import EspacosListViews,EspacosCreateViews,EspacosUpdateViews,EspacosDeleteViews
+from App_SGC.views import ReservasListViews,ReservasCreateViews,ReservasUpdateViews,ReservasDeleteViews
+from App_SGC.views import PetsListViews,PetsCreateViews,PetsUpdateViews,PetsDeleteViews
+
+# Subsistema Patrimônio
 from App_SGC.views import EspacosAdmListViews,EspacosAdmCreateViews,EspacosAdmUpdateViews,EspacosAdmDeleteViews
 from App_SGC.views import TiposPatrimonioListViews,TiposPatrimonioCreateViews,TiposPatrimonioUpdateViews,TiposPatrimonioDeleteViews
 from App_SGC.views import PatrimonioListViews,PatrimonioCreateViews,PatrimonioUpdateViews,PatrimonioDeleteViews
-from App_SGC.views import EspacosListViews,EspacosCreateViews,EspacosUpdateViews,EspacosDeleteViews
-from App_SGC.views import ReservasListViews,ReservasCreateViews,ReservasUpdateViews,ReservasDeleteViews
-from django.views.generic import ListView
-from django.urls import reverse_lazy
 
-
+# Subsistema Financeiro
+from App_SGC.views import FinanceiroEstruturaListViews,FinanceiroEstruturaCreateViews,FinanceiroEstruturaUpdateViews,FinanceiroEstruturaDeleteViews
+from App_SGC.views import ContasReceberListViews,ContasReceberCreateViews,ContasReceberUpdateViews,ContasReceberDeleteViews
+from App_SGC.views import ContasPagarListViews,ContasPagarCreateViews,ContasPagarUpdateViews,ContasPagarDeleteViews
+from App_SGC.views import BancoListViews,BancoCreateViews,BancoUpdateViews,BancoDeleteViews
 
 urlpatterns = [
 
@@ -165,6 +172,17 @@ urlpatterns = [
     path('reservas_delete/<str:pk>', ReservasDeleteViews.as_view(template_name="reservas/reservas_confirm_delete.html"), name="reservas_delete"),
 
 
+#  Caminhos de Pets
+    path('pets_list',PetsListViews.as_view(template_name="pets/pets_list.html"), name="pets_list"),
+    path('pets_create',PetsCreateViews.as_view(template_name="pets/pets_create.html"), name="pets_create"),
+    path('pets_update/<str:pk>',PetsUpdateViews.as_view(template_name="pets/pets_update.html"), name="pets_update"),
+    path("pets_delete/<str:pk>",PetsDeleteViews.as_view(template_name="pets/pets_confirm_delete.html"), name="pets_delete"),
+
+
+
+
+
+
 
 
 
@@ -197,30 +215,29 @@ urlpatterns = [
 #  Caminhos SUBSISTEMA FINANCEIRO ....................................................................
 
 
-<<<<<<< Updated upstream
 
 #  Caminhos dos Bancos
     path('bancos_list', BancoListViews.as_view(template_name="bancos/bancos_list.html"), name="bancos_list"),
     path('bancos_create', BancoCreateViews.as_view(template_name="bancos/bancos_create.html"), name="bancos_create"),
     path('bancos_update/<int:pk>', BancoUpdateViews.as_view(template_name="bancos/bancos_update.html"), name="bancos_update"),
     path('bancos_delete/<int:pk>', BancoDeleteViews.as_view(template_name="bancos/bancos_confirm_delete.html"), name="bancos_delete"),
-=======
-#  Caminhos das Receitas
-    path('receitas_list', ReceitasListViews.as_view(template_name="receitas/receitas_list.html"), name="receitas_list"),
-    path('receitas_create', ReceitasCreateViews.as_view(template_name="receitas/receitas_create.html"), name="receitas_create"),
-    path('receitas_update/<int:pk>', ReceitasUpdateViews.as_view(template_name="receitas/receitas_update.html"), name="receitas_update"),
-    path('receitas_delete/<int:pk>', ReceitasDeleteViews.as_view(template_name="receitas/receitas_confirm_delete.html"), name="receitas_delete"),
->>>>>>> Stashed changes
 
-#  Caminhos das Despesas
-    path('despesas_list', DespesasListViews.as_view(template_name="despesas/despesas_list.html"), name="despesas_list"),
-    path('despesas_create', DespesasCreateViews.as_view(template_name="despesas/despesas_create.html"), name="despesas_create"),
-    path('despesas_update/<int:pk>', DespesasUpdateViews.as_view(template_name="despesas/despesas_update.html"), name="despesas_update"),
-    path('despesas_delete/<int:pk>', DespesasDeleteViews.as_view(template_name="despesas/despesas_confirm_delete.html"), name="despesas_delete"),
+#  Caminhos das Contas a Receber
+    path('contas_receber_list', ContasReceberListViews.as_view(template_name="contas_receber/contas_receber_list.html"), name="contas_receber_list"),
+    path('contas_receber_create', ContasReceberCreateViews.as_view(template_name="contas_receber/contas_receber_create.html"), name="contas_receber_create"),
+    path('contas_receber_update/<int:pk>', ContasReceberUpdateViews.as_view(template_name="contas_receber/contas_receber_update.html"), name="contas_receber_update"),
+    path('contas_receber_delete/<int:pk>', ContasReceberDeleteViews.as_view(template_name="contas_receber/contas_receber_confirm_delete.html"), name="contas_receber_delete"),
+
+#  Caminhos das Contas a Pagar
+    path('contas_pagar_list', ContasPagarListViews.as_view(template_name="contas_pagar/contas_pagar_list.html"), name="contas_pagar_list"),
+    path('contas_pagar_create', ContasPagarCreateViews.as_view(template_name="contas_pagar/contas_pagar_create.html"), name="contas_pagar_create"),
+    path('contas_pagar_update/<int:pk>', ContasPagarUpdateViews.as_view(template_name="contas_pagar/contas_pagar_update.html"), name="contas_pagar_update"),
+    path('contas_pagar_delete/<int:pk>', ContasPagarDeleteViews.as_view(template_name="contas_pagar/contas_pagar_confirm_delete.html"), name="contas_pagar_delete"),
 
 ]
 
-
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
 

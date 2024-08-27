@@ -9,32 +9,26 @@
     <link rel="stylesheet" href="/static/css/reservas.css">
 
     <style>
-        /* Espaçamento entre as colunas */
         .container-cols {
             display: flex;
-            gap: 20px; 
+            gap: 20px;
         }
-        /* Cada coluna ocupa o mesmo espaço */
         .input-col {
-            flex: 1; 
+            flex: 1;
             display: flex;
             flex-direction: column;
         }
-        /* Espaçamento entre as linhas */
         .input-bottom {
-            margin-bottom: 30px; 
+            margin-bottom: 30px;
         }
-        /* Espaçamento entre o label e o input */
-        .input-bottom label {           
-            margin-bottom: 5px; 
+        .input-bottom label {
+            margin-bottom: 5px;
         }
-        /* Define o tamanho dos campos input */
         input[type="text"], input[type="date"], input[type="time"], select.form-control-sm {
             width: 220px;
             height: 30px;
             margin: auto;
         }
-        /* Define o tamanho do botão salvar */
         #btnsalvar {
             display: block;
             margin: auto;
@@ -45,10 +39,28 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
     <script>
         $(document).ready(function(){
+            // Máscara para o CPF
             $('#cpf_morador').mask('000.000.000-00');
+
+            // Configura a data mínima no campo de data_reserva para o dia atual
+            var today = '{{ today }}';
+            $('#data_reserva').attr('min', today);
+
+            // Aplica estilo para datas bloqueadas
+            $('#data_reserva').on('change', function() {
+                var selectedDate = new Date($(this).val());
+                var todayDate = new Date(today);
+                if (selectedDate < todayDate) {
+                    $(this).css('background-color', '#e0e0e0');  // Cor mais clara
+                } else {
+                    $(this).css('background-color', '#ffffff');  // Cor padrão
+                }
+            });
+
+            // Remove formatação do CPF antes de enviar
             $('#btnsalvar').click(function(event) {
-                 var cpf = $('#cpf_morador').val().replace(/\D/g, '');
-            $('#cpf_morador').val(cpf);
+                var cpf = $('#cpf_morador').val().replace(/\D/g, '');
+                $('#cpf_morador').val(cpf);
             });
         });
     </script>
@@ -60,7 +72,7 @@
         </div>
     </nav>
     <main class="container">
-        <h1 id="titulo">CADASTRO RESERVAS DE ESPAÇOS</h1><br>
+        <h1 id="titulo">CADASTRO DE RESERVAS DOS ESPAÇOS</h1><br>
 
         <div class="painel" style="height: 500px;">
             <form method="POST" action="{% url 'reservas_create' %}">
@@ -78,7 +90,7 @@
                                 <div class="text-danger">{{ form_errors.cpf_morador }}</div>
                             {% endif %}
                         </div>
-
+                        
                         <div class="input-bottom">
                             <label for="data_reserva" class="form-label">Data reserva:</label>
                             <input type="date" class="form-control" id="data_reserva" name="data_reserva" required tabindex="3">
@@ -101,30 +113,29 @@
 
                     <!-- Coluna 2 -->
                     <div id="coluna2" class="input-col-md-2">
-
+                        
                         <div class="input-bottom">
-                            <label for="espaco_id" class="form-label-sm">Espaço:</label><br>
-                            <select class="form-control-sm" id="espaco_id" name="espaco_id" tabindex="2" required>
+                            <label for="espaco_id" class="form-label">Espaço:</label><br>
+                            <select id="espaco_id" name="espaco_id" class="form-control-sm" tabindex="4">
                                 <option value="">Espaço</option>
                                 {% for espaco in espacos %}
-                                    <option value="{{ espaco.espaco_id }}">{{ espaco.nome_espaco }}</option>
+                                    <option value="{{ espaco.espaco_id }}">{{ espaco.espaco_id }} - {{ espaco.nome_espaco }}</option>
                                 {% endfor %}
                             </select>
                         </div>
 
                         <div class="input-bottom">
-                            <label for="hora_inicio_reserva" class="form-label">Início da reserva:</label>
-                            <input type="time" class="form-control" id="hora_inicio_reserva" name="hora_inicio_reserva" required tabindex="4">
+                            <label for="hora_inicio_reserva" class="form-label">Período:</label>
+                            <input type="time" class="form-control" id="hora_inicio_reserva" name="hora_inicio_reserva" required tabindex="2">
                             {% if form_errors.hora_inicio_reserva %}
                                 <div class="text-danger">{{ form_errors.hora_inicio_reserva }}</div>
                             {% endif %}
                         </div>
-                      
+
                     </div>
-                   
                 </div>
-                <br>
-                <button type="submit" class="btn btn-primary" id="btnsalvar">Salvar</button>
+                
+                <button id="btnsalvar" type="submit" class="btn btn-dark" tabindex="6">Salvar</button>
             </form>
         </div>
     </main>

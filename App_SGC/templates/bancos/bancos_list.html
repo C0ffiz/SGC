@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="pt-br">
-    {% load custom_filters %}
+{% load custom_filters %}
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,30 +9,9 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
             integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
         <!-- Folhas de Estilo Locais -->
-        <link rel="stylesheet" href="/static/css/receitas.css">
+        <link rel="stylesheet" href="/static/css/controle_bancario.css">
         <title>SGC</title>
         <style>
-            .container-cols {
-                display: flex;
-                gap: 0px; /* Espaçamento entre as colunas */
-            }
-            .input-col {
-                flex: 1; /* Cada coluna ocupa o mesmo espaço */
-                display: flex;
-                flex-direction: column;
-            }
-            .input-col .input-row {
-                margin-bottom: 20px; /* Espaçamento entre as linhas */
-            }
-            .form-control-sm {
-                /* width: 50%;  */
-            }
-            input[type="text"], input[type="date"], select {
-                width: 220px;
-            }
-            .close-th {
-                padding-right: 10px; /* Ajuste o valor conforme necessário */
-            }
             /* altera ambiente do cabeçalho e linha q fica abaixo */
             .auto-layout {
                 table-layout: auto; /* Ajusta o layout da tabela conforme o conteúdo */
@@ -71,23 +50,23 @@
             <!-- Opções de Pesquisa e Cadastro -->
             <div class="container_1">
                 <div class="box">
-                    <a href="{% url 'bancos_create' %}" class="btn btn-primary" id="cadastrar">CADASTRAR BANCO</a>
+                    <a href="{% url 'bancos_create' %}" class="btn btn-primary" id="cadastrar">CADASTRAR MOVIMENTOS</a>
                 </div>
 
                 <div class="box" id="divBusca">
-                    <input type="text" id="txtBusca" placeholder="Documento" />
+                    <input type="text" id="txtBusca" placeholder="Data do lançamento" />
                     <button id="btnBusca">BUSCAR</button>
                 </div>
 
-                <div class="box" id="saldo">
+                <div class="box" id="saldo" style="margin-left: 3cm;">
                     <strong>SALDO TOTAL:</strong>
-                    <span id="saldo-total">0,00R$</span>
+                    <strong><span id="saldo-total" style="margin-left: 1cm;">R$ 0,00</span></strong>
                 </div>
                 
             </div>
 
             <!-- Tabela de Contas a Receber -->
-            <table id="ReceitasTable" class="table auto-layout">
+            <table id="BancosTable" class="table auto-layout">
                 <thead>
                     <tr>
                         <th scope="col" class="close-th">DATA</th>
@@ -95,18 +74,17 @@
                         <th scope="col" class="close-th">CRÉDITO</th>
                         <th scope="col" class="close-th">DÉBITO</th>
                         <th scope="col" class="close-th">SALDO</th>
-                        <th scope="col" class="close-th">NÚMERO CONDOMÍNIO</th>
                     </tr>
                 </thead>
                 <tbody id="table-body">
                     {% for bc in bancos_list %}
                     <tr>
-                        <td>{{ bc.data_banco }}</td>    
+                        <td>{{ bc.data_banco|date:"d/m/y" }}</td>    
                         <td>{{ bc.historico_banco }}</td>
-                        <td class="credito">{% if bc.valor_banco > 0 %}{{ bc.valor_banco|floatformat:2 }}{% endif %}</td>
-                        <td class="debito">{% if bc.valor_banco < 0 %}{{ bc.valor_banco|floatformat:2 }}{% endif %}</td>
-                        <td class="saldo"></td>
-                        <td>{{ bc.n_condominio.nome_condominio }}</td>
+                        <td class="credito">{% if bc.valor_banco > 0 %}{{ bc.valor_banco|currency_brl |default_if_none:'' }}{% endif %}</td>
+                        <td class="debito">{% if bc.valor_banco < 0 %}{{ bc.valor_banco|currency_brl |default_if_none:'' }}{% endif %}</td>
+                        <!-- <td class="saldo"|currency_brl |default_if_none:''></td> -->
+                        <td class="saldo">{{ bc.valor_banco|currency_brl|default_if_none:'' }}</td>
                         <td style="border: none; width:200px">
                             <a href="{% url 'bancos_update' pk=bc.pk %}" class="btn btn-primary btn-sm">ALTERAR</a>
                             <a href="{% url 'bancos_delete' pk=bc.pk %}" class="btn btn-danger btn-sm">EXCLUIR</a>
@@ -130,22 +108,47 @@
                     const rows = document.querySelectorAll('#table-body tr');
 
                     rows.forEach(row => {
-                        const credito = parseFloat(row.querySelector('.credito').textContent.replace(',', '.')) || 0;
-                        const debito = parseFloat(row.querySelector('.debito').textContent.replace(',', '.')) || 0;
-                        
-                        saldoAcumulado += credito; // Adiciona crédito ao saldo acumulado
-                        saldoAcumulado += debito;  // Adiciona débito (negativo) ao saldo acumulado
+                        const credito = parseFloat(row.querySelector('.credito')?.textContent.replace('.', '').replace(',', '.')) || 0;
+                        const debito = parseFloat(row.querySelector('.debito')?.textContent.replace('.', '').replace(',', '.')) || 0;
 
-                        // Atualiza o saldo da linha atual
-                        row.querySelector('.saldo').textContent = saldoAcumulado.toFixed(2).replace('.', ',');
+                        saldoAcumulado += credito;  // Adiciona crédito ao saldo acumulado
+                        saldoAcumulado += debito;   // Adiciona débito (negativo) ao saldo acumulado
+
+                        // Atualiza o saldo da linha atual formatando para moeda brasileira
+                        row.querySelector('.saldo').textContent = "R$ " + saldoAcumulado.toFixed(2).replace('.', ',').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
                     });
 
                     // Atualiza o saldo total na parte inferior da tabela
-                    document.getElementById('saldo-total').textContent = "R$" + saldoAcumulado.toFixed(2).replace('.', ',');
+                    document.getElementById('saldo-total').textContent = "R$ " + saldoAcumulado.toFixed(2).replace('.', ',').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
                 }
 
                 updateSaldos();
             });
+
+             // Função para manipular a pesquisa/filtragem
+            function handleSearch() {
+                document.getElementById('txtBusca').addEventListener('input', function () {
+                    var searchText = this.value.toLowerCase();
+                    var rows = document.querySelectorAll('#BancosTable tbody tr'); 
+
+                    rows.forEach(function (row) {
+                        var data_banco = row.cells[0].textContent.toLowerCase();
+                        // Check if the 'data_banco' contains the search text
+                        if (data_banco.includes(searchText)) {
+                            row.style.display = '';
+                        } else {
+                            row.style.display = 'none';
+                        }
+                    });
+                });
+            }
+
+
+            // Ouvinte de evento para DOMContentLoaded para chamar as funções necessárias
+            document.addEventListener('DOMContentLoaded', function () {
+                handleSearch();
+            });
+
         </script>
 
         <!-- Bootstrap JavaScript -->

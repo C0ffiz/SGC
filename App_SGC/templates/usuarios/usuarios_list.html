@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="pt-br">
-
+    {% load custom_filters %}
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -60,7 +60,7 @@
                         <td class="linha">{{ forloop.counter }}</td>
                         <td class="username">{{ usua.username }}</td>
                         <td>{{ usua.password }}</td>
-                        <td id="cpf_cell_{{ forloop.counter }}">{{ usua.cpf_usuario }}</td>
+                        <td id="cpf_cell_{{ forloop.counter }}">{{ usua.cpf_usuario|format_cpf }}</td>
                         <td>{{ usua.n_condominio.nome_condominio }}</td>
                         <td style="border: none; width:200px">
                             <a href="{% url 'usuarios_update' pk=usua.pk %}" class="btn btn-primary btn-sm">ALTERAR</a>
@@ -146,21 +146,10 @@
                 });
             }
 
-            // Função para formatar os números de CPF
-            function formatCPF() {
-                var cpfCells = document.querySelectorAll('[id^="cpf_cell_"]');
-                cpfCells.forEach(function (cell) {
-                    var cpf = cell.textContent;
-                    var cpfFormatted = cpf.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, '$1.$2.$3-$4');
-                    cell.textContent = cpfFormatted;
-                });
-            }
-
             // Ouvinte de evento para DOMContentLoaded para chamar as funções necessárias
             document.addEventListener('DOMContentLoaded', function () {
                 handleSort();
                 handleSearch();
-                formatCPF();
             });
         </script>
 

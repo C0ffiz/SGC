@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="pt-br">
-
+    {% load custom_filters %}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -11,63 +11,10 @@
     <!-- Folhas de Estilo Locais -->
     <link rel="stylesheet" href="/static/css/mudancas.css">
     <title>SGC</title>
-    <style>
-        .container-cols {
-            display: flex;
-            gap: 0px; /* Espaçamento entre as colunas */
-        }
-        .input-col {
-            flex: 1; /* Cada coluna ocupa o mesmo espaço */
-            display: flex;
-            flex-direction: column;
-        }
-        .input-col .input-row {
-            margin-bottom: 20px; /* Espaçamento entre as linhas */
-        }
-      
-        input[type="text"], input[type="date"], select {
-            width: 220px;
-        }
-        .close-th {
-            padding-right: 10px; /* Ajuste o valor conforme necessário */
-        }
-        /* altera ambiente do cabeçalho e linha q fica abaixo */
-        .auto-layout {
-            table-layout: auto; /* Ajusta o layout da tabela conforme o conteúdo */
-            margin-left: auto;
-            margin-right: auto;
-            /* border-collapse: separate; */
-            border-spacing: 0px; /* Aumenta a distância entre as colunas */
-        }
-        /* altera ambiente do botão cadastrar e buscar */
-        .box {
-            width: 350px;
-            height: 32px;
-            display: inline-block;
-            margin-right: 20px; /* Adiciona margem à direita para separar as divs horizontalmente */
-            margin-bottom: 20px; /* Adiciona margem inferior para separar as divs verticalmente */
-        }
-    </style>   
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
     <script>
         $(document).ready(function(){
-            $('#cpf_condomino').mask('000.000.000-00');
-            $('#btnsalvar').click(function(event) {
-                var cpf = $('#cpf_condomino').val().replace(/\D/g, '');
-                $('#cpf_condomino').val(cpf);
-            });
-
-            // Formata os CPFs na tabela ao carregar a página
-            $('.cpf-condomino').each(function(){
-                var cpf = $(this).text().replace(/\D/g, '');
-                if(cpf.length === 11){
-                    cpf = cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
-                } else if(cpf.length === 10){
-                    cpf = cpf.replace(/(\d{2})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
-                }
-                $(this).text(cpf);
-            });
 
             // Função para manipular a pesquisa/filtragem
             $('#txtBusca').on('input', function() {
@@ -81,29 +28,8 @@
                     }
                 });
             });
-
-            // Formata as horas na tabela ao carregar a página
-            $('.hora-mudanca').each(function(){
-                var hora = $(this).text().trim();
-                var formattedHora = formatTimeTo24Hour(hora);
-                $(this).text(formattedHora);
-            });
         });
-
-        // Função para formatar a hora no formato 24 horas
-        function formatTimeTo24Hour(time) {
-            var match = time.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)?$/i);
-            if (!match) return time;
-
-            var hours = parseInt(match[1], 10);
-            var minutes = match[2];
-            var period = match[3] ? match[3].toUpperCase() : '';
-
-            if (period === 'PM' && hours < 12) hours += 12;
-            if (period === 'AM' && hours === 12) hours = 0;
-
-            return (hours < 10 ? '0' : '') + hours + ':' + minutes;
-        }
+        
     </script>
 </head>
 
@@ -148,11 +74,11 @@
             <tbody>
                 {% for muda in mudancas_list %}
                     <tr>
-                        <td class="cpf-condomino">{{ muda.cpf_condomino.cpf_condomino }}</td>
+                        <td class="cpf-condomino">{{ muda.cpf_condomino.cpf_condomino|format_cpf }}</td>
                         <td>{{ muda.bloco_id.bloco }}</td>
                         <td>{{ muda.unidade_id.unidade }}</td>
-                        <td>{{ muda.data_mudanca|date:'d/m/Y' }}</td>
-                        <td class="hora-mudanca">{{ muda.hora_mudanca }}</td>
+                        <td>{{ muda.data_mudanca|format_date }}</td>
+                        <td class="hora-mudanca">{{ muda.hora_mudanca|format_time }}</td>
                         <td>{{ muda.transportadora }}</td>
                         <td>{{ muda.placa_veiculo_transportadora }}</td>
                         <td>{{ muda.n_condominio.nome_condominio }}</td>

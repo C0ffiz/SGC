@@ -133,21 +133,6 @@
                                 <div class="text-danger">{{ form_errors.dsc_ocorrencia }}</div>
                             {% endif %}
                         </div>
-            
-                        <div class="update-form input-center">
-                            <label for="n_condominio" class="form-label">Condomínio:</label><br>
-                            <select id="n_condominio" name="n_condominio" class="form-control-sm" tabindex="5" required>
-                                <option value="">Condomínio</option>
-                                {% for condominio in condominios %}
-                                    <option value="{{ condominio.n_condominio }}" {% if ocorrencia.n_condominio.n_condominio == condominio.n_condominio %}selected{% endif %}>
-                                        {{ condominio.nome_condominio }}
-                                    </option>
-                                {% endfor %}
-                            </select>
-                            {% if form_errors.n_condominio %}
-                                <div class="text-danger">{{ form_errors.n_condominio }}</div>
-                            {% endif %}
-                        </div>
 
                     </div>    
                 </div><br><br>                

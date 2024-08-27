@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="pt-br">
-
+    {% load custom_filters %}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -11,6 +11,13 @@
     <!-- Folhas de Estilo Locais -->
     <link rel="stylesheet" href="/static/css/colaboradores.css">
     <title>SGC</title>
+    <style>
+        /* Faz com que o CPF fique somente em uma linha, em conjunto com o comando no 'td' */
+        .cpf {
+            white-space: nowrap;
+            width: 100px; /* Ajuste conforme necessário */
+        }
+    </style>    
 </head>
 
 <body>
@@ -55,24 +62,23 @@
                     <th scope="col">CELULAR</th>
                     <th scope="col">EMAIL</th>
                     <th scope="col">NOME CONTATO</th>
-                    <th scope="col">CELULAR CONTATO</th>                  
-                    <th scope="col">CONDOMÍNIO</th>
+                    <th scope="col">CELULAR CONTATO</th>    
                 </tr>
             </thead>
             <tbody>
                 {% for colab in colaboradores_list %}
                 <tr>
-                    <td>{{ colab.cpf_colaborador }}</td>
+                    <!-- Obriga o CPF ficar em uma única linha -->
+                    <td class="cpf no-wrap">{{ colab.cpf_colaborador|format_cpf }}</td> 
                     <td>{{ colab.nome_colaborador }}</td>
-                    <td>{{ colab.data_nascimento_colaborador|date:'Y-m-d' }}</td>
+                    <td>{{ colab.data_nascimento_colaborador|format_date }}</td>
                     <td>{{ colab.endereco_colaborador }}</td>
-                    <td class="celular">{{ colab.telefone_colaborador }}</td>
-                    <td class="celular">{{ colab.celular_colaborador }}</td>
+                    <td class="celular">{{ colab.telefone_colaborador|default_if_none:"" }}</td>
+                    <td class="celular">{{ colab.celular_colaborador|format_celular }}</td>
                     <td>{{ colab.email_colaborador }}</td>
                     <td>{{ colab.nome_contato_colaborador }}</td>
-                    <td>{{ colab.celular_contato_colaborador }}</td>
-                    <td>{{ colab.n_condominio.nome_condominio }}</td>
-                    <td>
+                    <td class="celular">{{ colab.celular_contato_colaborador|format_celular }}</td>
+                    <td style="border: none; width:200px">
                         <div class="btn-group">
                             <a href="{% url 'colaboradores_update' pk=colab.pk %}" class="btn btn-primary btn-sm">ALTERAR</a>
                             <a href="{% url 'colaboradores_delete' pk=colab.pk %}" class="btn btn-danger btn-sm">EXCLUIR</a>
@@ -85,21 +91,6 @@
     </main>
 
     <script>
-        // Função para formatar CPF no modelo xxx.xxx.xxx-xx
-        function formatCPF() {
-            var cpfs = document.querySelectorAll('#condominosTable tbody td:first-child');
-            cpfs.forEach(function (element) {
-                var cpf = element.textContent.trim();
-
-                if (cpf.length === 11) {
-                    cpf = cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
-                } else if (cpf.length === 10) {
-                    cpf = cpf.replace(/(\d{2})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
-                }
-
-                element.textContent = cpf;
-            });
-        }
 
         // Função para manipular a ordenação das colunas
         function handleSort() {
@@ -164,7 +155,6 @@
         window.addEventListener('load', function () {
             handleSort();
             handleSearch();
-            formatCPF();
         });
     </script>
 

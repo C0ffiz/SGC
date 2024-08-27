@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="pt-br">
-
+    {% load custom_filters %}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -14,6 +14,13 @@
     <!-- jQuery e jQuery Mask Plugin -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+    <style>
+        /* Faz com que o CPF fique somente em uma linha, em conjunto com o comando no 'td' */
+        .cpf {
+            white-space: nowrap;
+            width: 100px; /* Ajuste conforme necessário */
+        }
+    </style> 
 </head>
 
 <body>
@@ -63,12 +70,12 @@
             <tbody>
                 {% for mora in moradores_list %}
                 <tr>
-                    <td class="cpf_condomino">{{ mora.cpf_condomino.cpf_condomino }}</td>
-                    <td class="cpf_morador">{{ mora.cpf_morador }}</td>
+                    <td class="cpf no-wrap">{{ mora.cpf_condomino.cpf_condomino|format_cpf }}</td>
+                    <td class="cpf no-wrap">{{ mora.cpf_morador|format_cpf }}</td>
                     <td class="nome_morador">{{ mora.nome_morador }}</td>
-                    <td class="data_nascimento_morador">{{ mora.data_nascimento_morador|date:"d/m/Y" }}</td>
+                    <td class="data_nascimento_morador">{{ mora.data_nascimento_morador|format_date }}</td>
                     <td class="parentesco_condomino">{{ mora.parentesco_condomino }}</td>
-                    <td class="celular_morador">{{ mora.celular_morador }}</td>
+                    <td class="celular_morador">{{ mora.celular_morador|format_celular }}</td>
                     <td class="email_morador">{{ mora.email_morador }}</td>
                     <td class="email_morador">{{ mora.n_condominio.nome_condominio }}</td>
                     <td style="border: none; width:200px">
@@ -84,46 +91,6 @@
 
     <!-- Scripts JavaScript -->
     <script>
-        // Função para formatar CPF e Celular
-        function formatCPFandCelular() {
-            var cpfsCond = document.querySelectorAll('#usuariosTable tbody tr td:nth-child(1)');
-            cpfsCond.forEach(function (element) {
-                var cpfCond = element.textContent.trim();
-
-                if (cpfCond.length === 11) {
-                    cpfCond = cpfCond.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
-                } else if (cpfCond.length === 10) {
-                    cpfCond = cpfCond.replace(/(\d{2})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
-                }
-
-                element.textContent = cpfCond;
-            });
-
-            var cpfsMor = document.querySelectorAll('#usuariosTable tbody tr td:nth-child(2)');
-            cpfsMor.forEach(function (element) {
-                var cpfMor = element.textContent.trim();
-
-                if (cpfMor.length === 11) {
-                    cpfMor = cpfMor.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
-                } else if (cpfMor.length === 10) {
-                    cpfMor = cpfMor.replace(/(\d{2})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
-                }
-
-                element.textContent = cpfMor;
-            });
-
-            var celulares = document.querySelectorAll('#usuariosTable tbody tr td:nth-child(6)');
-            celulares.forEach(function (element) {
-                var celular = element.textContent.trim();
-
-                if (celular.length === 11) {
-                    celular = celular.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
-                }
-
-                element.textContent = celular;
-            });
-        }
-
         // Função para manipular a pesquisa/filtragem
         function handleSearch() {
             document.getElementById('txtBusca').addEventListener('input', function () {
@@ -144,7 +111,6 @@
         }
 
         document.addEventListener('DOMContentLoaded', function () {
-            formatCPFandCelular();
             handleSearch();
         });
     </script>

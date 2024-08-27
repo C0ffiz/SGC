@@ -8,7 +8,7 @@
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
-        <link rel="stylesheet" href="/static/css/receitas.css">
+        <link rel="stylesheet" href="/static/css/contas_receber.css">
 
     <style>
         .error-duplicate{
@@ -29,14 +29,14 @@
 <body>
     <nav class="navbar bg-dark mb-30" data-bs-theme="dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="{% url 'receitas_list' %}">CONDOMINIUM</a>
+            <a class="navbar-brand" href="{% url 'contas_receber_list' %}">CONDOMINIUM</a>
         </div>
     </nav>
     <main class="container">
-        <h1 id="titulo_list">CADASTRO DE CONTA A RECEBER</h1><br>
+        <h1 id="titulo_list">CADASTRO CONTAS A RECEBER</h1><br>
         
         <div class="painel" style="">
-            <form method="POST" action="{% url 'receita_create' %}">
+            <form method="POST" action="{% url 'contas_receber_create' %}">
                 {% csrf_token %}
                 <div>
                     {% if form.errors %}
@@ -62,8 +62,6 @@
                                     {% endfor %}
                                 </select>
                         </div>
-                        
-                    
 
                         <div class="input-bottom">
                             <label for="data_vencimento" class="form-label">Data Vencimento:</label>
@@ -101,7 +99,6 @@
                             {% endif %}
                         </div>
                     </div>
-
                 
                     <div class="coluna">
                         <div class="input-bottom">
@@ -143,11 +140,9 @@
                     </div>
                 </div>
             
-            
                 <div>
                     <button type="submit" class="btn btn-primary btnsalvar">Salvar</button>
                 </div>
-                
                
             </form>
         </div>

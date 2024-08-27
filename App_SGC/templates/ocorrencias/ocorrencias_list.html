@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="pt-br">
-
+    {% load custom_filters %}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -11,6 +11,18 @@
     <!-- Folhas de Estilo Locais -->
     <link rel="stylesheet" href="/static/css/ocorrencias.css">
     <title>SGC</title>
+    <style>
+        /* 2/2 define a cor do link */
+        .link-personalizado {
+            
+            color: #1919e7;/* Azul escuro */
+            text-decoration: underline; /* Sublinhado */
+        }
+        .link-personalizado:hover {
+            color: #ceceed; /* Mantém o azul escuro ao passar o mouse */
+            text-decoration: underline;
+        }
+    </style>    
 </head>
 
 <body>
@@ -42,28 +54,24 @@
             <thead>
                 <tr>
                     <th scope="col" class="close-th">CPF CONDÔMINO</th>
-                    <th scope="col" class="close-th">DATA OCORRÊNCIA</th>
-                    <th scope="col" class="close-th">HORA OCORRÊNCIA</th>
+                    <th scope="col" class="close-th">DATA</th>
+                    <th scope="col" class="close-th">HORA</th>
                     <th scope="col" class="close-th">DESCRIÇÃO</th>
                     <th scope="col" class="close-th">DOCUMENTO</th>
-                    <th scope="col" class="close-th">Nº CONDOMÍNIO</th>
                 </tr>
             </thead>
             <tbody>
                 {% for ocor in ocorrencias_list %}
                     <tr>
-                        <td class="cpf-condomino">{{ ocor.cpf_condomino.cpf_condomino }}</td>
+                        <td class="cpf-condomino">{{ ocor.cpf_condomino.cpf_condomino|format_cpf }}</td>
                         <td>{{ ocor.data_ocorrencia|date:"d/m/y"  }}</td>
                         <td>{{ ocor.hora_ocorrencia|date:"H:i" }}</td>
                         <td>{{ ocor.dsc_ocorrencia }}</td>
-<<<<<<< Updated upstream
-                        <td>{{ ocor.documento_ocorrencia }}</td>
-                        <td>{{ ocor.n_condominio.nome_condominio }}</td>
-=======
-                        <!-- class="documento-ocorrencia" p determinar tamanho máximo do campo no list -->
-                        <td class="documento-ocorrencia" data-documento="{{ ocor.documento_ocorrencia }}"></td>
-                        <td>{{ ocor.n_condominio.n_condominio }}</td>
->>>>>>> Stashed changes
+                        <td>
+                            <a href="{{ ocor.documento_ocorrencia.url }}" target="_blank" title="{{ ocor.documento_ocorrencia.name }}" class="link-personalizado">
+                                {{ ocor.documento_ocorrencia|truncate_document }}
+                            </a>
+                        </td>
                         <td style="border: none; width:200px">
                             <a href="{% url 'ocorrencias_update' pk=ocor.pk %}" class="btn btn-primary btn-sm">ALTERAR</a>
                             <a href="{% url 'ocorrencias_delete' pk=ocor.pk %}" class="btn btn-danger btn-sm">EXCLUIR</a>
@@ -92,26 +100,6 @@
             });
         }
 
-
-        // Função para formatar o CPF
-        function formatCPF(cpf) {
-            if (cpf.length === 11) {
-                return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
-            } else if (cpf.length === 10) {
-                return cpf.replace(/(\d{2})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
-            }
-            return cpf;
-        }
-
-        // Função para formatar todos os CPFs na tabela
-        function formatAllCPFs() {
-            var cpfElements = document.querySelectorAll('.cpf-condomino');
-            cpfElements.forEach(function (element) {
-                var cpf = element.textContent.trim();
-                element.textContent = formatCPF(cpf);
-            });
-        }
-
         // Função para truncar o tamanho da descrição do arquivo
         function truncateDocumentoOcorrencia() {
         var documentoCells = document.querySelectorAll('.documento-ocorrencia');
@@ -129,12 +117,10 @@
             }
         });
         }
-        
 
         // Ouvinte de evento para DOMContentLoaded para chamar as funções necessárias
         document.addEventListener('DOMContentLoaded', function () {
             handleSearch();
-            formatAllCPFs();  // Chama a função para formatar os CPFs quando o DOM é carregado
             truncateDocumentoOcorrencia(); // Chama a função ao carregar a página
         });
     </script>
