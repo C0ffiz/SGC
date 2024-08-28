@@ -36,6 +36,7 @@ from App_SGC.views import FinanceiroEstruturaListViews,FinanceiroEstruturaCreate
 from App_SGC.views import ContasReceberListViews,ContasReceberCreateViews,ContasReceberUpdateViews,ContasReceberDeleteViews
 from App_SGC.views import ContasPagarListViews,ContasPagarCreateViews,ContasPagarUpdateViews,ContasPagarDeleteViews
 from App_SGC.views import BancoListViews,BancoCreateViews,BancoUpdateViews,BancoDeleteViews
+from App_SGC.views import CaixaListViews,CaixaCreateViews,CaixaUpdateViews,CaixaDeleteViews
 
 urlpatterns = [
 
@@ -221,6 +222,12 @@ urlpatterns = [
     path('bancos_create', BancoCreateViews.as_view(template_name="bancos/bancos_create.html"), name="bancos_create"),
     path('bancos_update/<int:pk>', BancoUpdateViews.as_view(template_name="bancos/bancos_update.html"), name="bancos_update"),
     path('bancos_delete/<int:pk>', BancoDeleteViews.as_view(template_name="bancos/bancos_confirm_delete.html"), name="bancos_delete"),
+
+#  Caminhos dos caixas
+    path('caixas_list', CaixaListViews.as_view(template_name="caixas/caixas_list.html"), name="caixas_list"),
+    path('caixas_create', CaixaCreateViews.as_view(template_name="caixas/caixas_create.html"), name="caixas_create"),
+    path('caixas_update/<int:pk>', CaixaUpdateViews.as_view(template_name="caixas/caixas_update.html"), name="caixas_update"),
+    path('caixas_delete/<int:pk>', CaixaDeleteViews.as_view(template_name="caixas/caixas_confirm_delete.html"), name="caixas_delete"),
 
 #  Caminhos das Contas a Receber
     path('contas_receber_list', ContasReceberListViews.as_view(template_name="contas_receber/contas_receber_list.html"), name="contas_receber_list"),

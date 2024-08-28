@@ -7,7 +7,7 @@ from .models import CustomBeneficioRecebido, CustomCorrespondencia, CustomEspaco
 from .models import CustomPatrimonio, CustomEspacoAdm, CustomTipoPatrimonio
 
 # Models Subsistema Financeiro
-from .models import FinanceiroEstrutura, Receita, Despesas, Banco
+from .models import FinanceiroEstrutura, Receita, Despesas, Banco, Caixa
 
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
@@ -2543,3 +2543,76 @@ class BancoUpdateViews(UpdateView):
 class BancoDeleteViews(DeleteView):
     model = Banco
     success_url = reverse_lazy("bancos_list")
+
+
+#-----------------------Views Controle Caixa.................................................................
+
+# Tela Lista Controle Caixa
+class CaixaListViews(LoginRequiredMixin, ListView):
+    model = Caixa
+    context_object_name = 'caixas_list'
+    
+    def get_context_data(self, **kwargs):
+        # Obter o contexto base da ListView
+        context = super().get_context_data(**kwargs)
+        
+        # Filtrar os pets pelo condomínio do usuário logado
+        user_condominio = self.request.user.n_condominio
+        context['caixas_list'] = Caixa.objects.filter(n_condominio=user_condominio)
+        
+        return context
+
+
+# Tela Cadastra Controle Bancário   
+class CaixaCreateViews(CreateView):
+    model = Caixa
+    fields = [
+        "data_caixa", "historico_caixa", "valor_caixa", "n_condominio"  # Adjust fields based on your model
+    ]
+    success_url = reverse_lazy("caixas_list")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['caixas_list'] = Caixa.objects.all()
+        context['condominios'] = CustomCondominio.objects.all()
+        return context
+
+    def form_valid(self, form):
+        # Optionally print form details for debugging
+        print("Form is valid!")
+        print("Form cleaned data:", form.cleaned_data)
+        print("n_condominio value:", form.cleaned_data.get('n_condominio'))
+        
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        print("Form is invalid!")
+        print(form.errors)
+        return super().form_invalid(form)
+
+
+# Tela Alteração Controle Bancário  
+class CaixaUpdateViews(UpdateView):
+    model = Caixa
+    context_object_name = 'caixa'
+    fields = [
+        "data_caixa", "historico_caixa", "valor_caixa"  # Adjust fields based on your model
+    ]
+    success_url = reverse_lazy("caixas_list")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['caixas_list'] = Caixa.objects.all()
+        # context['condominios'] = CustomCondominio.objects.all()
+        return context
+
+    def form_valid(self, form):
+        print("Form is valid!")
+        print("Form cleaned data:", form.cleaned_data)
+        return super().form_valid(form)
+
+
+# Tela Exclusão de Controle Bancário
+class CaixaDeleteViews(DeleteView):
+    model = Caixa
+    success_url = reverse_lazy("caixas_list")

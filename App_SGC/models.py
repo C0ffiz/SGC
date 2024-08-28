@@ -732,3 +732,22 @@ class Banco(models.Model):
         
     def __str__(self):
         return f"Banco {self.banco_id} - {self.historico_banco} ({self.valor_banco})"
+
+class Caixa(models.Model):
+    caixa_id = models.AutoField(primary_key=True, verbose_name="ID do Caixa")  # Campo ID automático
+    data_caixa = models.DateField(null=False, blank=False, verbose_name="Data do Caixa")  # Campo de data
+    historico_caixa = models.CharField(max_length=40, null=False, blank=False, verbose_name="Histórico do Caixa")  # Campo de texto com comprimento máximo de 40 caracteres
+    valor_caixa = models.DecimalField(max_digits=10, decimal_places=2, null=False, blank=False, verbose_name="Valor do Caixa")  # Campo decimal
+    n_condominio = models.ForeignKey(
+        'CustomCondominio',  # Foreign key to CustomCondominio
+        on_delete=models.CASCADE,
+        verbose_name="Número Condominio *",
+        null=False,
+        blank=False)
+
+    class Meta:
+        db_table = 'caixa'
+        managed = True
+        
+    def __str__(self):
+        return f"Caixa {self.caixa_id} - {self.historico_caixa} ({self.valor_caixa})"

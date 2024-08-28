@@ -1,5 +1,6 @@
 from django.core.management.base import BaseCommand
-from App_SGC.models import CustomCondominio, CustomCondomino, CustomBloco, FinanceiroEstrutura
+from django.contrib.auth.hashers import make_password  # Import this for password hashing
+from App_SGC.models import CustomCondominio, CustomCondomino, CustomBloco, FinanceiroEstrutura, CustomUser
 
 class Command(BaseCommand):
     help = 'Populate the database with initial data'
@@ -122,5 +123,17 @@ class Command(BaseCommand):
             n_condominio=condominio1
         )[0]
         self.stdout.write(self.style.SUCCESS('Successfully created FinanceiroEstrutura: Fundo Garantia'))
+
+        # Create CustomUser instance
+        user, created8 = CustomUser.objects.get_or_create(
+            username='coffee',
+            defaults={
+                'password': make_password('123'),
+                'cpf_usuario': '12345678901',
+                'n_condominio': condominio1
+            }
+        )
+        if created8:
+            self.stdout.write(self.style.SUCCESS('Successfully created CustomUser: coffee'))
 
         self.stdout.write(self.style.SUCCESS('Successfully populated the database'))
