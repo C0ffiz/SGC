@@ -751,3 +751,59 @@ class Caixa(models.Model):
         
     def __str__(self):
         return f"Caixa {self.caixa_id} - {self.historico_caixa} ({self.valor_caixa})"
+
+class PrevisaoReceitas(models.Model):
+    data_orcamento_receita = models.DateField(verbose_name="Data do Orçamento")
+    valor_orcamento_receita = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        verbose_name="Valor do Orçamento"
+    )
+    categoria = models.ForeignKey(
+        FinanceiroEstrutura,
+        on_delete=models.CASCADE,
+        related_name="previsoes_receita",
+        verbose_name="Categoria"
+    )
+    n_condominio = models.ForeignKey(
+        CustomCondominio,
+        on_delete=models.CASCADE,
+        verbose_name="Número do Condomínio"
+    )
+
+    class Meta:
+        db_table = 'previsao_receita'
+        managed = True
+        verbose_name = 'Previsão de Receita'
+        verbose_name_plural = 'Previsões de Receita'
+
+    def __str__(self):
+        return f"{self.categoria} - {self.data_orcamento_receita} - R${self.valor_orcamento_receita}"
+
+class PrevisaoDespesas(models.Model):
+    data_orcamento_despesa = models.DateField(verbose_name="Data do Orçamento")
+    valor_orcamento_despesa = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        verbose_name="Valor do Orçamento"
+    )
+    categoria = models.ForeignKey(
+        FinanceiroEstrutura,
+        on_delete=models.CASCADE,
+        related_name="previsoes_despesa",
+        verbose_name="Categoria"
+    )
+    n_condominio = models.ForeignKey(
+        CustomCondominio,
+        on_delete=models.CASCADE,
+        verbose_name="Número do Condomínio"
+    )
+
+    class Meta:
+        db_table = 'previsao_despesa'
+        managed = True
+        verbose_name = 'Previsão de Despesa'
+        verbose_name_plural = 'Previsões de Despesa'
+
+    def __str__(self):
+        return f"{self.categoria} - {self.data_orcamento_despesa} - R${self.valor_orcamento_despesa}"

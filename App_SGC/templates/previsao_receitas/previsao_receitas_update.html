@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SGC</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="/static/css/previsao_receitas.css">
+
+    <style>
+        .input-bottom {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px; /* Espaçamento entre as linhas */
+        }
+        input[type="text"], input[type="number"], input[type="tel"], input[type="email"], input[type="date"], select {
+            width: 220px;
+            height: 31px;
+        }
+        .form-label {
+            width: 220px;
+            height: 31px;
+        }
+        #btnsalvar {
+            display: block;
+            margin: auto;
+            width: 140px;
+        }
+        .field-error {
+            border: 2px solid red;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+</head>
+<body>
+    <nav class="navbar bg-dark mb-30" data-bs-theme="dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'previsao_receitas_list' %}">CONDOMINIUM</a>
+        </div>
+    </nav>
+    <main class="container">
+        <h1 id="titulo_list">{% if form.instance.pk %}ALTERAÇÃO DE Receita PREVISTA{% else %}CADASTRO DE RECEITA PREVISTA{% endif %}</h1><br>
+        
+        <div class="painel">
+            <form method="POST" action="{% if form.instance.pk %}{% url 'previsao_receitas_update' form.instance.pk %}{% else %}{% url 'previsao_receitas_create' %}{% endif %}">
+                {% csrf_token %}
+            
+                <div class="colunas">
+                    <div class="coluna">
+                        <div class="input-bottom">
+                            <label for="id_categoria" class="form-label">Categoria:</label>
+                            <select name="categoria" id="id_categoria" class="form-control-sm">
+                                <option value="">-- Selecione --</option>
+                                {% for categoria in categorias %}
+                                    <option value="{{ categoria.id }}" {% if categoria.id == form.instance.categoria.id %}selected{% endif %}>
+                                        {{ categoria.get_nivel }} {{ categoria.nome }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="input-bottom">
+                            <label for="data_orcamento_receita" class="form-label">Data Orçamento:</label>
+                            <input type="date" class="form-control-sm {% if form.data_orcamento_receita.errors %}field-error{% endif %}" id="data_orcamento_receita" name="data_orcamento_receita" value="{{ form.data_orcamento_receita.value|default:''|date:'Y-m-d' }}" required>
+                            {% if form.data_orcamento_receita.errors %}
+                            <div class="text-danger">{{ form.data_orcamento_receita.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="input-bottom">
+                            <label for="valor_orcamento_receita" class="form-label">Valor Orçamento:</label>
+                            <input type="text" class="form-control-sm {% if form.valor_orcamento_receita.errors %}field-error{% endif %}" id="valor_orcamento_receita" name="valor_orcamento_receita" value="{{ form.valor_orcamento_receita.value|stringformat:'0.2f' }}" required>
+                            {% if form.valor_orcamento_receita.errors %}
+                                <div class="text-danger">{{ form.valor_orcamento_receita.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="input-bottom">
+                            <label for="n_condominio" class="form-label">Condomínio:</label>
+                            <select class="form-control-sm {% if form.n_condominio.errors %}field-error{% endif %}" id="n_condominio" name="n_condominio" required>
+                                <option value="">Condomínio</option>
+                                {% for condominio in condominios %}
+                                <option value="{{ condominio.n_condominio }}" {% if form.n_condominio.value == condominio.n_condominio %}selected{% endif %}>{{ condominio.nome_condominio }}</option>
+                                {% endfor %}
+                            </select>
+                            {% if form.n_condominio.errors %}
+                                <div class="text-danger">{{ form.n_condominio.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <button type="submit" class="btn btn-primary" id="btnsalvar">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </main>
+    <script>
+        $(document).ready(function(){
+            // Aplicar a máscara de moeda ao carregar a página
+            $('#valor_orcamento_receita').mask('000.000.000.000.000,00', {reverse: true});
+            
+            // Remover a máscara antes de enviar o formulário
+            $('form').submit(function() {
+                $('#valor_orcamento_receita').each(function(){
+                    var valor = $(this).val().replace(/\./g, '').replace(',', '.');
+                    $(this).val(valor);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

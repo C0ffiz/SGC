@@ -7,7 +7,7 @@ from .models import CustomBeneficioRecebido, CustomCorrespondencia, CustomEspaco
 from .models import CustomPatrimonio, CustomEspacoAdm, CustomTipoPatrimonio
 
 # Models Subsistema Financeiro
-from .models import FinanceiroEstrutura, Receita, Despesas, Banco, Caixa
+from .models import FinanceiroEstrutura, Receita, Despesas, Banco, Caixa, PrevisaoDespesas, PrevisaoReceitas
 
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
@@ -2616,3 +2616,152 @@ class CaixaUpdateViews(UpdateView):
 class CaixaDeleteViews(DeleteView):
     model = Caixa
     success_url = reverse_lazy("caixas_list")
+
+
+# -----------------------Views Previsao Despesas.................................................................
+
+# Tela Lista Contas a Pagar
+class PrevisaoDespesasListViews(LoginRequiredMixin, ListView):
+    model = PrevisaoDespesas
+    context_object_name = 'previsao_despesas_list'
+
+    def get_context_data(self, **kwargs):
+        # Obter o contexto base da ListView
+        context = super().get_context_data(**kwargs)
+
+        # Filtrar as contas a pagar pelo condomínio do usuário logado
+        user_condominio = self.request.user.n_condominio
+        context['previsao_despesas_list'] = PrevisaoDespesas.objects.filter(n_condominio=user_condominio)
+
+        return context
+
+
+# Tela Cadastra Contas a Pagar
+class PrevisaoDespesasCreateViews(CreateView):
+    model = PrevisaoDespesas
+    fields = [
+        "data_orcamento_despesa", "valor_orcamento_despesa", "categoria", "n_condominio"
+    ]
+
+    success_url = reverse_lazy("previsao_despesas_list")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['condominios'] = CustomCondominio.objects.all()
+        context['categorias'] = [categoria for categoria in FinanceiroEstrutura.objects.all() if len(categoria.get_nivel().split('.')) >= 3]
+        return context
+
+    def form_valid(self, form):
+        # Optionally print form details for debugging
+        print("Form is valid!")
+        print("Form cleaned data:", form.cleaned_data)
+        print("n_condominio value:", form.cleaned_data.get('n_condominio'))
+
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        print("Form is invalid!")
+        print(form.errors)
+        return super().form_invalid(form)
+
+
+# Tela Alteração Contas a Pagar
+class PrevisaoDespesasUpdateViews(UpdateView):
+    model = PrevisaoDespesas
+    context_object_name = 'previsao_despesas_list'
+    fields = [
+        "data_orcamento_despesa", "valor_orcamento_despesa", "categoria", "n_condominio"
+    ]
+
+    success_url = reverse_lazy("previsao_despesas_list")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['condominios'] = CustomCondominio.objects.all()
+        context['categorias'] = [categoria for categoria in FinanceiroEstrutura.objects.all() if
+                                 len(categoria.get_nivel().split('.')) >= 3]
+        return context
+
+    def form_valid(self, form):
+        return super().form_valid(form)
+
+
+# Tela Exclusão Contas a Pagar
+class PrevisaoDespesasDeleteViews(DeleteView):
+    model = PrevisaoDespesas
+    success_url = reverse_lazy("previsao_despesas_list")
+
+
+
+# -----------------------Views Previsao Receitas.................................................................
+
+# Tela Lista Contas a Pagar
+class PrevisaoReceitasListViews(LoginRequiredMixin, ListView):
+    model = PrevisaoReceitas
+    context_object_name = 'previsao_receitas_list'
+
+    def get_context_data(self, **kwargs):
+        # Obter o contexto base da ListView
+        context = super().get_context_data(**kwargs)
+
+        # Filtrar as contas a pagar pelo condomínio do usuário logado
+        user_condominio = self.request.user.n_condominio
+        context['previsao_receitas_list'] = PrevisaoReceitas.objects.filter(n_condominio=user_condominio)
+
+        return context
+
+
+# Tela Cadastra Contas a Pagar
+class PrevisaoReceitasCreateViews(CreateView):
+    model = PrevisaoReceitas
+    fields = [
+        "data_orcamento_receita", "valor_orcamento_receita", "categoria", "n_condominio"
+    ]
+
+    success_url = reverse_lazy("previsao_receitas_list")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['condominios'] = CustomCondominio.objects.all()
+        context['categorias'] = [categoria for categoria in FinanceiroEstrutura.objects.all() if len(categoria.get_nivel().split('.')) >= 3]
+        return context
+
+    def form_valid(self, form):
+        # Optionally print form details for debugging
+        print("Form is valid!")
+        print("Form cleaned data:", form.cleaned_data)
+        print("n_condominio value:", form.cleaned_data.get('n_condominio'))
+
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        print("Form is invalid!")
+        print(form.errors)
+        return super().form_invalid(form)
+
+
+# Tela Alteração Contas a Pagar
+class PrevisaoReceitasUpdateViews(UpdateView):
+    model = PrevisaoReceitas
+    context_object_name = 'previsao_receitas_list'
+    fields = [
+        "data_orcamento_receita", "valor_orcamento_receita", "categoria", "n_condominio"
+    ]
+
+    success_url = reverse_lazy("previsao_receitas_list")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['condominios'] = CustomCondominio.objects.all()
+        context['categorias'] = [categoria for categoria in FinanceiroEstrutura.objects.all() if
+                                 len(categoria.get_nivel().split('.')) >= 3]
+        return context
+
+    def form_valid(self, form):
+        return super().form_valid(form)
+
+
+# Tela Exclusão Contas a Pagar
+class PrevisaoReceitasDeleteViews(DeleteView):
+    model = PrevisaoReceitas
+    success_url = reverse_lazy("previsao_receitas_list")

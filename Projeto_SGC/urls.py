@@ -37,6 +37,8 @@ from App_SGC.views import ContasReceberListViews,ContasReceberCreateViews,Contas
 from App_SGC.views import ContasPagarListViews,ContasPagarCreateViews,ContasPagarUpdateViews,ContasPagarDeleteViews
 from App_SGC.views import BancoListViews,BancoCreateViews,BancoUpdateViews,BancoDeleteViews
 from App_SGC.views import CaixaListViews,CaixaCreateViews,CaixaUpdateViews,CaixaDeleteViews
+from App_SGC.views import PrevisaoDespesasUpdateViews,PrevisaoDespesasDeleteViews,PrevisaoDespesasCreateViews,PrevisaoDespesasListViews
+from App_SGC.views import PrevisaoReceitasUpdateViews,PrevisaoReceitasDeleteViews,PrevisaoReceitasCreateViews,PrevisaoReceitasListViews
 
 urlpatterns = [
 
@@ -229,9 +231,21 @@ urlpatterns = [
     path('caixas_update/<int:pk>', CaixaUpdateViews.as_view(template_name="caixas/caixas_update.html"), name="caixas_update"),
     path('caixas_delete/<int:pk>', CaixaDeleteViews.as_view(template_name="caixas/caixas_confirm_delete.html"), name="caixas_delete"),
 
+#  Caminhos das Previsões de Despesa
+    path('previsao_despesas_list', PrevisaoDespesasListViews.as_view(template_name="previsao_despesas/previsao_despesas_list.html"), name="previsao_despesas_list"),
+    path('previsao_despesas_create', PrevisaoDespesasCreateViews.as_view(template_name="previsao_despesas/previsao_despesas_create.html"), name="previsao_despesas_create"),
+    path('previsao_despesas_update/<int:pk>', PrevisaoDespesasUpdateViews.as_view(template_name="previsao_despesas/previsao_despesas_update.html"), name="previsao_despesas_update"),
+    path('previsao_despesas_delete/<int:pk>', PrevisaoDespesasDeleteViews.as_view(template_name="previsao_despesas/previsao_despesas_confirm_delete.html"), name="previsao_despesas_delete"),
+
+#  Caminhos das Previsões de Receita
+    path('previsao_receitas_list', PrevisaoReceitasListViews.as_view(template_name="previsao_receitas/previsao_receitas_list.html"), name="previsao_receitas_list"),
+    path('previsao_receitas_create', PrevisaoReceitasCreateViews.as_view(template_name="previsao_receitas/previsao_receitas_create.html"), name="previsao_receitas_create"),
+    path('previsao_receitas_update/<int:pk>', PrevisaoReceitasUpdateViews.as_view(template_name="previsao_receitas/previsao_receitas_update.html"), name="previsao_receitas_update"),
+    path('previsao_receitas_delete/<int:pk>', PrevisaoReceitasDeleteViews.as_view(template_name="previsao_receitas/previsao_receitas_confirm_delete.html"), name="previsao_receitas_delete"),
+
 #  Caminhos das Contas a Receber
     path('contas_receber_list', ContasReceberListViews.as_view(template_name="contas_receber/contas_receber_list.html"), name="contas_receber_list"),
-    path('contas_receber_create', ContasReceberCreateViews.as_view(template_name="contas_receber/contas_receber_create.html"), name="contas_receber_create"),
+    path('c', ContasReceberCreateViews.as_view(template_name="contas_receber/contas_receber_create.html"), name="contas_receber_create"),
     path('contas_receber_update/<int:pk>', ContasReceberUpdateViews.as_view(template_name="contas_receber/contas_receber_update.html"), name="contas_receber_update"),
     path('contas_receber_delete/<int:pk>', ContasReceberDeleteViews.as_view(template_name="contas_receber/contas_receber_confirm_delete.html"), name="contas_receber_delete"),
 
