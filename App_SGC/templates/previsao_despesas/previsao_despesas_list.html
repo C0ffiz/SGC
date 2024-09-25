@@ -73,7 +73,7 @@
                 {% for pd in previsao_despesas_list %}
                 <tr>
                     <td>{{ pd.categoria.nome }}</td>
-                    <td>{{ pd.data_orcamento_despesa|date:"d/m/Y" }}</td>
+                    <td>{{ pd.data_orcamento_despesa|format_month_year }}</td>
                     <td>{{ pd.valor_orcamento_despesa|currency_brl }}</td>
                     <td>{{ pd.n_condominio.nome_condominio }}</td>
                     <td style="border: none; width:200px">

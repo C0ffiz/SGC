@@ -68,9 +68,11 @@ def verificarLogin(request):
     return render(request, 'login/login.html')            
 
 # Exibe Home
+@login_required
 def exibirHome(request):
-    
-    return render(request,'login/home.html')
+   
+    # Render home page with user-specific data here
+    return render(request, 'login/home.html')
 
 
 #-----------------------Views Usuário.................................................................
@@ -2644,6 +2646,11 @@ class PrevisaoDespesasCreateViews(CreateView):
     ]
 
     success_url = reverse_lazy("previsao_despesas_list")
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields['data_orcamento_despesa'].widget = forms.DateInput(attrs={'type': 'month'})
+        return form
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

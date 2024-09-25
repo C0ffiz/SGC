@@ -19,7 +19,7 @@
                 <img id="imagem" src="https://grandaladvocacia.com.br/wp-content/uploads/2023/07/site.jpg" alt="nao"> <br><br>        
                 <div class="painel">
                                        
-                    <form action="/signin" method="post">
+                    <form action="{% url 'verificarLogin' %}" method="post">
                         {% csrf_token %}  
                         
                         <div class="message">

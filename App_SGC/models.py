@@ -4,6 +4,8 @@ from django.contrib.auth.models import AbstractUser
 from django.urls import reverse
 from django.core.validators import MinLengthValidator, MaxLengthValidator
 from datetime import date
+from django.core.exceptions import ValidationError
+import re
 
 
 # Definição da Tabela Usuário...................................................................
@@ -609,29 +611,29 @@ class FinanceiroEstrutura(models.Model):
         return self.nome
 
     def get_nivel(self):
-        # Inicializar uma lista vazia para armazenar a hierarquia do nível
+        # Initialize a list to store the level hierarchy
         nivel = []
         atual = self
 
-        # Percorrer a hierarquia da categoria atual até a categoria de nível superior
+        # Traverse the hierarchy from the current category to the top-level category
         while atual:
+            # Get all siblings at the same level that belong to the same condominium
             if atual.parent:
-                # Obter todos os irmãos no mesmo nível sem ordenar por nome
-                irmaos = list(atual.parent.subcategorias.all())
+                irmaos = list(atual.parent.subcategorias.filter(n_condominio=self.n_condominio))
             else:
-                # Para categorias de nível superior, obter todas as categorias sem pai
-                irmaos = list(FinanceiroEstrutura.objects.filter(parent__isnull=True))
+                # For top-level categories, get all categories without a parent in the same condominium
+                irmaos = list(FinanceiroEstrutura.objects.filter(parent__isnull=True, n_condominio=self.n_condominio))
 
-            # Determinar a posição atual dentro dos irmãos ou categorias de nível superior
+            # Determine the current position among siblings or top-level categories
             posicao = irmaos.index(atual) + 1
 
-            # Adicionar a posição no início da lista (para construir de baixo para cima)
+            # Add the position to the list (build from bottom to top)
             nivel.insert(0, str(posicao))
 
-            # Subir um nível na hierarquia
+            # Move up one level in the hierarchy
             atual = atual.parent
 
-        # Unir os elementos da lista com '.' para formar o identificador hierárquico
+        # Join the elements of the list with '.' to form the hierarchical identifier
         return '.'.join(nivel)
 
 
@@ -781,7 +783,14 @@ class PrevisaoReceitas(models.Model):
         return f"{self.categoria} - {self.data_orcamento_receita} - R${self.valor_orcamento_receita}"
 
 class PrevisaoDespesas(models.Model):
-    data_orcamento_despesa = models.DateField(verbose_name="Data do Orçamento")
+    data_orcamento_despesa = models.CharField(
+        verbose_name="Data do Orçamento",
+        max_length=7,
+        help_text="Formato: MM-YYYY"
+    )
+
+
+
     valor_orcamento_despesa = models.DecimalField(
         max_digits=10,
         decimal_places=2,

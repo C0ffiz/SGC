@@ -52,7 +52,20 @@ def format_date(value):
         return value.strftime('%d/%m/%y')
     return value  # Retorna o valor original se não for uma data
 
-
+# Formata uma data no formato MM/YYYY.
+@register.filter(name='format_month_year')
+def format_date(value):
+    """
+    Aceita strings no formato 'YYYY-MM' ou objetos de data (datetime.date).
+    """
+    if isinstance(value, str) and len(value) == 7 and '-' in value:
+        # Se a string estiver no formato 'YYYY-MM'
+        ano, mes = value.split('-')
+        return f"{mes}/{ano}"
+    elif isinstance(value, (datetime.date, datetime.datetime)):
+        # Se for um objeto de data, formata no estilo MM/YYYY
+        return value.strftime('%m/%Y')
+    return value  # Retorna o valor original se não for uma data válida
 
 # Formata o horário em 24 h. (xx:xx)
 @register.filter(name='format_time')

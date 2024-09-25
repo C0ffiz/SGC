@@ -65,7 +65,7 @@
 
                         <div class="input-bottom">
                             <label for="data_orcamento_despesa" class="form-label">Data do Orçamento:</label>
-                            <input type="date" class="form-control-sm" id="data_orcamento_despesa" name="data_orcamento_despesa" required autofocus>
+                            <input type="month" class="form-control-sm" id="data_orcamento_despesa" name="data_orcamento_despesa" required autofocus>
                             {% if form_errors.data_orcamento_despesa %}
                             <div class="text-danger">{{ form_errors.data_orcamento_despesa }}</div>
                             {% endif %}
