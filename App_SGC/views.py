@@ -57,8 +57,8 @@ def verificarLogin(request):
             user = authenticate(username=usuario, password=senha)
             if user is not None:
                 login(request, user)
-                # messages.info(request, f"{usuario}")
-                return redirect('exibirHome')  # Redirect to the home page after successful login
+                next_url = request.GET.get('next', 'exibirHome')  # Redirect to next or home
+                return redirect(next_url)
             else:
                 messages.error(request, 'Usuário ou senha inválidos.')
         else:
