@@ -330,6 +330,12 @@ class MoradoresListViews(LoginRequiredMixin, ListView):
     model = CustomMorador
     context_object_name = 'moradores_list'
     
+    def get_queryset(self):
+        # Get the user's associated condominium
+        user_condominio = self.request.user.n_condominio
+        # Filter the residents based on the user's condominium
+        return CustomMorador.objects.filter(n_condominio=user_condominio)
+    
     def get_context_data(self, **kwargs):
         # Obter o contexto base da ListView
         context = super().get_context_data(**kwargs)
@@ -414,9 +420,16 @@ class MoradoresUpdateViews(UpdateView):
     fields = ["cpf_condomino", "cpf_morador", "nome_morador", "data_nascimento_morador", "celular_morador", "email_morador", "parentesco_condomino", "n_condominio"]
     success_url = reverse_lazy("moradores_list")
 
+    def get_queryset(self):
+        # Filter the queryset to only show moradores linked to the user's condominium
+        user_condominio = self.request.user.n_condominio
+        return CustomMorador.objects.filter(n_condominio=user_condominio.n_condominio)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['condominios'] = CustomCondominio.objects.all()
+        # Only show condominios linked to the user
+        user_condominio = self.request.user.n_condominio
+        context['condominios'] = CustomCondominio.objects.filter(n_condominio=user_condominio.n_condominio)
         context['condominos'] = CustomCondomino.objects.all()
         return context
 
@@ -2225,9 +2238,16 @@ class FinanceiroEstruturaListViews(ListView):
     model = FinanceiroEstrutura
     context_object_name = 'financeiro_estrutura_list'
     
+    def get_queryset(self):
+        # Get the user's associated condominium
+        user_condominio = self.request.user.n_condominio
+        # Filter the finance structure based on the user's condominium
+        return FinanceiroEstrutura.objects.filter(n_condominio=user_condominio)
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        financeiro_estrutura_list = FinanceiroEstrutura.objects.all()
+        financeiro_estrutura_list = self.get_queryset()
+            
 
         # Função para ordenar com base no nível hierárquico
         def sort_key(fel):

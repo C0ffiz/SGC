@@ -47,8 +47,8 @@ urlpatterns = [
 
 
 #  Caminhos do Login    
-    path('',views.exibirLogin,name='exibirLogin'), 
-    path('login',views.exibirLogin,name='exibirLogin'),
+    path('',views.exibirLogin,name='exibirLogin'),
+    path('login/',views.exibirLogin,name='exibirLogin'),
     path('signin',views.verificarLogin,name='verificarLogin'),
     
  

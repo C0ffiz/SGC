@@ -26,7 +26,8 @@ SECRET_KEY = 'django-insecure-c%rhyutkrb5%bw*-ws&*9m@li&w&8ef(8qla3fh#$u^^kmi8$^
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['riviera.sgc.com', 'rionegro.sgc.com', 'sgc.com', 'localhost', '127.0.0.1']
+
 
 
 # Application definition
@@ -49,6 +50,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'App_SGC.middleware.SubdomainMiddleware',
 ]
 
 ROOT_URLCONF = 'Projeto_SGC.urls'
@@ -139,7 +141,7 @@ DATE_FORMAT = 'd/m/Y'
 DATE_INPUT_FORMATS = ['%d/%m/%Y', '%Y-%m-%d']  # Aceitar ambos formatos, mas preferir DD/MM/YYYY
 
 # Iniciar site na url /login
-LOGIN_URL = 'exibirLogin'
+LOGIN_URL = '/login/'
 
 # Desabilitar encriptação de senhas ao salvar no banco de dados (ex: ce7a3ced60ceb06e746665fd5d22a2a0dfa187ec em vez de 123)
 PASSWORD_HASHERS = [
