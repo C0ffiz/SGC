@@ -64,12 +64,16 @@
                             
                             <div class="input-bottom">
                                 <label for="cpf_condomino">CPF condômino:</label> <br>
-                                <input id="cpf_condomino" name="cpf_condomino" class="form-control-sm {% if form.cpf_condomino.errors %}field-error{% endif %}" type="text" 
-                                    value="{{ form.instance.cpf_condomino.cpf_condomino|slice:':3' }}.{{ form.instance.cpf_condomino.cpf_condomino|slice:'3:6' }}.{{ form.instance.cpf_condomino.cpf_condomino|slice:'6:9' }}-{{ form.instance.cpf_condomino.cpf_condomino|slice:'9:' }}" readonly="readonly">
+                                <input id="cpf_condomino" name="cpf_condomino" class="form-control-sm {% if form.cpf_condomino.errors %}field-error{% endif %}" type="text"
+                                       value="{{ morador.cpf_condomino.cpf_condomino }}" readonly="readonly">
                                 {% if form.cpf_condomino.errors %}
-                                    <div class="text-danger"></div>
+                                    <div class="text-danger">{{ form.cpf_condomino.errors }}</div>
                                 {% endif %}
                             </div>
+
+
+
+
                         </div>
                     </div> 
                 </div> 
@@ -102,20 +106,7 @@
                                 <div class="text-danger"></div>
                             {% endif %}
                         </div>   
-                        
-                        <div class="input-bottom">
-                            <label for="n_condominio">Condomínio:</label><br>
-                            <select id="n_condominio" name="n_condominio" class="form-control-sm {% if form.n_condominio.errors %}field-error{% endif %}" tabindex="10"> 
-                                <option value="">Condomínio</option>
-                                {% for condominio in condominios %}
-                                <option value="{{ condominio.n_condominio }}" {% if condominio.n_condominio == morador.n_condominio.n_condominio %}selected{% endif %}>{{ condominio.nome_condominio }}</option>
-                                {% endfor %}
-                            </select>
-                            {% if form.n_condominio.errors %}
-                                <div class="text-danger"></div>
-                            {% endif %}
-                        </div>
-                        
+
                     </div>
 
                     <!-- Coluna 2 -->

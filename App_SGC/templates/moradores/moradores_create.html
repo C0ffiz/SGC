@@ -64,14 +64,18 @@
                         <div id="coluna" class="input-col-md-2">
                             <div id="linha" class="input-row no-gutters">
 
+                                <!-- Hidden field for cpf_condomino -->
+                                <input id="cpf_condomino" name="cpf_condomino" type="hidden" value="{{ cpf_condomino }}">
+                                
+                                <!-- Display the CPF condômino as readonly text -->
                                 <div class="input-bottom">
-                                    <label for="cpf_condomino">CPF condômino:</label> <br>
-                                    <input id="cpf_condomino" name="cpf_condomino" class="form-control-sm {% if form.cpf_condomino.errors %}field-error{% endif %}" type="text" 
-                                            value="{{ request.GET.cpf_condomino }}" readonly="readonly">
+                                    <label for="cpf_condomino_display">CPF condômino:</label> <br>
+                                    <input id="cpf_condomino_display" class="form-control-sm" type="text" value="{{ cpf_condomino }}" readonly="readonly">
                                     {% if form.cpf_condomino.errors %}
-                                        <div class="text-danger"></div>
+                                        <div class="text-danger">{{ form.cpf_condomino.errors }}</div>
                                     {% endif %}
                                 </div>
+
                             </div>
                         </div> 
                     </div>       
@@ -130,12 +134,14 @@
                                 <div class="input-bottom">
                                     <label for="parentesco_condomino">Parentesco c/ condômino:</label> <br>
                                     <select id="parentesco_condomino" name="parentesco_condomino" class="form-control-sm {% if form.parentesco_condomino.errors %}field-error{% endif %}" tabindex="6">
-                                        <option value="esposo">Esposo(a)</option>
-                                        <option value="filho">Filho(a)</option>
-                                        <option value="pai">Pai</option>
-                                        <option value="mae">Mãe</option>
-                                        <option value="locatario">Locatário</option>
-                                        <option value="outros">Outros</option>
+                                        <option value="Esposo">Esposo</option>
+                                        <option value="Esposa">Esposa</option>
+                                        <option value="Filho">Filho</option>
+                                        <option value="Filha">Filha</option>
+                                        <option value="Pai">Pai</option>
+                                        <option value="Mãe">Mãe</option>
+                                        <option value="Locatário">Locatário</option>
+                                        <option value="Outros">Outros</option>
                                     </select>
                                     {% if form.parentesco_condomino.errors %}
                                         <div class="text-danger"></div>

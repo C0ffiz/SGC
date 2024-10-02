@@ -366,58 +366,67 @@ def verificar_cpf_condomino(request):
 
 
 # Tela Cadastro De Moradores
+@method_decorator(login_required, name='dispatch')
 class MoradoresCreateViews(CreateView):
     model = CustomMorador
     template_name = 'moradores_create.html'
-    fields = ["cpf_condomino", "cpf_morador", "nome_morador", "data_nascimento_morador", "celular_morador", "email_morador", "parentesco_condomino"]
-    
+    fields = ["cpf_morador", "nome_morador", "data_nascimento_morador", "celular_morador",
+              "email_morador", "parentesco_condomino"]
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['condominos'] = CustomCondomino.objects.all()
+        context['cpf_condomino'] = self.request.GET.get('cpf_condomino', '')
         return context
 
     def form_valid(self, form):
-        # Extract the cpf_condomino value from the form
-        cpf_condomino_obj = form.cleaned_data['cpf_condomino']
-        cpf_condomino_str = str(cpf_condomino_obj.cpf_condomino).replace(".", "").replace("-", "")
-        print("CPF Condômino:", cpf_condomino_str)
+        # Extract the cpf_condomino value from the URL parameters
+        cpf_condomino_str = self.request.GET.get('cpf_condomino', None)
+
+        if cpf_condomino_str:
+            # Clean up the cpf_condomino string (remove periods and dashes)
+            cpf_condomino_str = cpf_condomino_str.replace(".", "").replace("-", "")
+
+            # Find the corresponding CustomCondomino object
+            condomino = CustomCondomino.objects.filter(cpf_condomino=cpf_condomino_str).first()
+
+            if not condomino:
+                messages.error(self.request, 'CPF de condômino não encontrado.')
+                return self.form_invalid(form)
+
+            # Assign the condômino and condomínio to the morador
+            form.instance.cpf_condomino = condomino
+            form.instance.n_condominio = condomino.n_condominio
+
+        else:
+            messages.error(self.request, 'CPF de condômino não fornecido.')
+            return self.form_invalid(form)
 
         # Remove máscara do CPF do morador
         cpf_morador = form.cleaned_data['cpf_morador'].replace(".", "").replace("-", "")
-        print("CPF Morador:", cpf_morador)
         form.instance.cpf_morador = cpf_morador
-        
-        # Verifica se o CPF do morador já está cadastrado
-        if CustomMorador.objects.filter(cpf_morador=cpf_morador).exists():
-            messages.error(self.request, 'Morador já cadastrado')
+
+        # Verifica se o CPF do morador já está cadastrado para este condômino e condomínio
+        if CustomMorador.objects.filter(cpf_morador=cpf_morador, cpf_condomino=condomino,
+                                        n_condominio=condomino.n_condominio).exists():
+            messages.error(self.request, 'Morador já cadastrado para este condômino e condomínio.')
             return self.form_invalid(form)
-        
-        # Verifica se o CPF do condômino já está cadastrado
-        condomino = CustomCondomino.objects.filter(cpf_condomino=cpf_condomino_str).first()
-        print("Queryset result:", condomino)
-        if not condomino:
-            messages.error(self.request, 'CPF de condômino não encontrado.')
-            return self.form_invalid(form)
-            
-        # Assign the condomínio to the morador
-        form.instance.cpf_condomino = condomino
-        form.instance.n_condominio = condomino.n_condominio
 
         self.object = form.save()
-        
+
         # Recarrega página com o mesmo cpf
-        return redirect(reverse('moradores_create') + f'?cpf_condomino={cpf_condomino_str}')    
+        return redirect(reverse('moradores_create') + f'?cpf_condomino={condomino.cpf_condomino}')
 
     def form_invalid(self, form):
         return super().form_invalid(form)
-        
+
 
 # Tela Alteração De Moradores
+@method_decorator(login_required, name='dispatch')
 class MoradoresUpdateViews(UpdateView):
     model = CustomMorador
     template_name = 'moradores/moradores_update.html'
     context_object_name = 'morador'
-    fields = ["cpf_condomino", "cpf_morador", "nome_morador", "data_nascimento_morador", "celular_morador", "email_morador", "parentesco_condomino", "n_condominio"]
+    fields = ["cpf_morador", "nome_morador", "data_nascimento_morador", "celular_morador", "email_morador", "parentesco_condomino"]
     success_url = reverse_lazy("moradores_list")
 
     def get_queryset(self):
@@ -433,13 +442,24 @@ class MoradoresUpdateViews(UpdateView):
         context['condominos'] = CustomCondomino.objects.all()
         return context
 
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        # Set the initial value of cpf_condomino from the instance
+        form.fields['cpf_condomino'] = forms.CharField(
+            initial=self.object.cpf_condomino,
+            widget=forms.TextInput(attrs={'readonly': 'readonly'})
+        )
+        return form
+
     def form_valid(self, form):
         # Get the selected condominium instance
-        condominio_instance = form.cleaned_data['n_condominio']
+        # You might want to remove this if you're not updating n_condominio anymore
         return super().form_valid(form)
 
     def form_invalid(self, form):
         return super().form_invalid(form)
+
+
 
 
 # Tela Exclusão De Moradores
