@@ -279,3 +279,16 @@ Projeto_SGC/__pycache__/urls.cpython-312.pyc
 /documentos_ocorrencias
 /App_SGC/migrations
 App_SGC/migrations/0001_initial.py
+.idea/dataSources.xml
+.idea/httpClient.xml
+.idea/inspectionProfiles/profiles_settings.xml
+.idea/misc.xml
+.idea/modules.xml
+.idea/SGC.iml
+.idea/vcs.xml
+App_SGC/migrations/0001_initial.py
+App_SGC/migrations/0002_alter_banco_options_alter_banco_table.py
+App_SGC/migrations/0003_banco_n_condominio.py
+App_SGC/migrations/0001_initial.py
+App_SGC/migrations/0002_alter_banco_options_alter_banco_table.py
+App_SGC/migrations/0003_banco_n_condominio.py
