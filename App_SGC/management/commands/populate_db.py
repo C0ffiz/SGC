@@ -128,7 +128,7 @@ class Command(BaseCommand):
         user, created8 = CustomUser.objects.get_or_create(
             username='coffee',
             defaults={
-                'password': make_password('123'),
+                'password': make_password('123'),  # Ensure password is hashed
                 'cpf_usuario': '12345678901',
                 'n_condominio': condominio1
             }

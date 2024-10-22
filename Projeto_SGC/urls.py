@@ -39,6 +39,7 @@ from App_SGC.views import BancoListViews,BancoCreateViews,BancoUpdateViews,Banco
 from App_SGC.views import CaixaListViews,CaixaCreateViews,CaixaUpdateViews,CaixaDeleteViews
 from App_SGC.views import PrevisaoDespesasUpdateViews,PrevisaoDespesasDeleteViews,PrevisaoDespesasCreateViews,PrevisaoDespesasListViews
 from App_SGC.views import PrevisaoReceitasUpdateViews,PrevisaoReceitasDeleteViews,PrevisaoReceitasCreateViews,PrevisaoReceitasListViews
+from App_SGC.views import PrevisaoxRealizadoListViews
 
 urlpatterns = [
 
@@ -245,7 +246,7 @@ urlpatterns = [
 
 #  Caminhos das Contas a Receber
     path('contas_receber_list', ContasReceberListViews.as_view(template_name="contas_receber/contas_receber_list.html"), name="contas_receber_list"),
-    path('c', ContasReceberCreateViews.as_view(template_name="contas_receber/contas_receber_create.html"), name="contas_receber_create"),
+    path('contas_receber_create', ContasReceberCreateViews.as_view(template_name="contas_receber/contas_receber_create.html"), name="contas_receber_create"),
     path('contas_receber_update/<int:pk>', ContasReceberUpdateViews.as_view(template_name="contas_receber/contas_receber_update.html"), name="contas_receber_update"),
     path('contas_receber_delete/<int:pk>', ContasReceberDeleteViews.as_view(template_name="contas_receber/contas_receber_confirm_delete.html"), name="contas_receber_delete"),
 
@@ -254,6 +255,9 @@ urlpatterns = [
     path('contas_pagar_create', ContasPagarCreateViews.as_view(template_name="contas_pagar/contas_pagar_create.html"), name="contas_pagar_create"),
     path('contas_pagar_update/<int:pk>', ContasPagarUpdateViews.as_view(template_name="contas_pagar/contas_pagar_update.html"), name="contas_pagar_update"),
     path('contas_pagar_delete/<int:pk>', ContasPagarDeleteViews.as_view(template_name="contas_pagar/contas_pagar_confirm_delete.html"), name="contas_pagar_delete"),
+
+#  Caminhos das Previsões x Realizado
+    path('previsao_realizado_list', PrevisaoxRealizadoListViews.as_view(template_name="previsaoXrealizado/previsao_realizado_list.html"), name="previsao_realizado_list"),
 
 ]
 

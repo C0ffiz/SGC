@@ -58,14 +58,16 @@ def format_date(value):
     """
     Aceita strings no formato 'YYYY-MM' ou objetos de data (datetime.date).
     """
-    if isinstance(value, str) and len(value) == 7 and '-' in value:
-        # Se a string estiver no formato 'YYYY-MM'
+    if isinstance(value, str) and len(value) == 7 and value.count('-') == 1:
+        # Verifica se a string está no formato 'YYYY-MM' com 4 dígitos para o ano
         ano, mes = value.split('-')
-        return f"{mes}/{ano}"
+        if len(ano) == 4 and ano.isdigit() and mes.isdigit() and 1 <= int(mes) <= 12:
+            return f"{mes}/{ano}"
     elif isinstance(value, (datetime.date, datetime.datetime)):
         # Se for um objeto de data, formata no estilo MM/YYYY
         return value.strftime('%m/%Y')
     return value  # Retorna o valor original se não for uma data válida
+
 
 # Formata o horário em 24 h. (xx:xx)
 @register.filter(name='format_time')
@@ -98,3 +100,24 @@ def truncate_document(value, length=20):
 @register.filter
 def multiply(value, arg):
     return value * arg
+
+@register.filter
+def get_item(dictionary, key):
+    return dictionary.get(key)
+
+@register.filter
+def display_zero(value):
+    try:
+        # Verificar se o valor é None ou não pode ser convertido em float
+        if value is None:
+            return ' '  # Valor não existe no banco de dados
+        float_value = float(value)  # Garantir que o valor pode ser convertido para float
+    except (ValueError, TypeError):
+        return ' '  # Para valores inválidos, ou seja, não numéricos
+    
+    # Retornar '-' se o valor for 0
+    if float_value == 0:
+        return '0'
+    
+    # Retornar o valor formatado para dois dígitos decimais
+    return f'{float_value:.2f}'

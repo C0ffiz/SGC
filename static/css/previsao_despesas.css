@@ -190,3 +190,119 @@ input[type="text"], input[type="number"], input[type="tel"], input[type="email"]
     color: #ceceed; /* Mantém o azul escuro ao passar o mouse */
     text-decoration: underline;
 }
+
+/* Date Picker */
+:root, [data-bs-theme="light"] {
+    --bs-blue: #0d6efd;
+    --bs-indigo: #6610f2;
+    --bs-purple: #6f42c1;
+    --bs-pink: #d63384;
+    --bs-red: #dc3545;
+    --bs-orange: #fd7e14;
+    --bs-yellow: #ffc107;
+    --bs-green: #198754;
+    --bs-teal: #20c997;
+    --bs-cyan: #0dcaf0;
+    --bs-black: #000;
+    --bs-white: #fff;
+    --bs-gray: #6c757d;
+    --bs-gray-dark: #343a40;
+    --bs-gray-100: #f8f9fa;
+    --bs-gray-200: #e9ecef;
+    --bs-gray-300: #dee2e6;
+    --bs-gray-400: #ced4da;
+    --bs-gray-500: #adb5bd;
+    --bs-gray-600: #6c757d;
+    --bs-gray-700: #495057;
+    --bs-gray-800: #343a40;
+    --bs-gray-900: #212529;
+    --bs-primary: #0d6efd;
+    --bs-secondary: #6c757d;
+    --darkreader-bg--bs-success: #146c43;
+    --bs-info: #0dcaf0;
+    --bs-warning: #ffc107;
+    --darkreader-bg--bs-danger: #a51d2a;
+    --bs-light: #f8f9fa;
+    --bs-dark: #212529;
+    --darkreader-bg--bs-primary-rgb: 2, 80, 196;
+    --darkreader-text--bs-primary-rgb: 35, 148, 253;
+    --darkreader-border--bs-primary-rgb: 1, 71, 174;
+    --darkreader-bg--bs-secondary-rgb: 88, 95, 99;
+    --darkreader-text--bs-secondary-rgb: 158, 150, 137;
+    --darkreader-border--bs-secondary-rgb: 102, 94, 83;
+    --darkreader-bg--bs-success-rgb: 20, 108, 67;
+    --darkreader-text--bs-success-rgb: 117, 230, 178;
+    --darkreader-border--bs-success-rgb: 32, 175, 109;
+    --darkreader-bg--bs-info-rgb: 10, 162, 192;
+    --darkreader-text--bs-info-rgb: 39, 209, 243;
+    --darkreader-border--bs-info-rgb: 9, 143, 170;
+    --darkreader-bg--bs-warning-rgb: 150, 112, 0;
+    --darkreader-text--bs-warning-rgb: 255, 199, 30;
+    --darkreader-border--bs-warning-rgb: 176, 132, 0;
+    --darkreader-bg--bs-danger-rgb: 165, 29, 42;
+    --darkreader-text--bs-danger-rgb: 223, 70, 85;
+    --darkreader-border--bs-danger-rgb: 148, 26, 37;
+    --darkreader-bg--bs-light-rgb: 27, 30, 31;
+    --darkreader-text--bs-light-rgb: 228, 226, 222;
+    --darkreader-border--bs-light-rgb: 50, 54, 56;
+    --darkreader-bg--bs-dark-rgb: 28, 30, 31;
+    --darkreader-text--bs-dark-rgb: 209, 205, 199;
+    --darkreader-border--bs-dark-rgb: 128, 119, 105;
+    --darkreader-bg--bs-primary-text-emphasis: #042351;
+    --darkreader-text--bs-primary-text-emphasis: #92c7fa;
+    --darkreader-border--bs-primary-text-emphasis: #0b5dd5;
+    --darkreader-bg--bs-secondary-text-emphasis: #232627;
+    --darkreader-text--bs-secondary-text-emphasis: #cbc6bf;
+    --darkreader-border--bs-secondary-text-emphasis: #7d7466;
+    --darkreader-bg--bs-success-text-emphasis: #082b1b;
+    --darkreader-text--bs-success-text-emphasis: #d4d0ca;
+    --darkreader-border--bs-success-text-emphasis: #81786a;
+    --darkreader-bg--bs-info-text-emphasis: #04414d;
+    --darkreader-text--bs-info-text-emphasis: #c8c3bc;
+    --darkreader-border--bs-info-text-emphasis: #7b7365;
+    --darkreader-bg--bs-warning-text-emphasis: #523e02;
+    --darkreader-text--bs-warning-text-emphasis: #fbde86;
+    --darkreader-border--bs-warning-text-emphasis: #d9a406;
+    --darkreader-bg--bs-danger-text-emphasis: #461116;
+    --darkreader-text--bs-danger-text-emphasis: #e698a0;
+    --darkreader-border--bs-danger-text-emphasis: #b32b39;
+    --darkreader-bg--bs-light-text-emphasis: #3c4144;
+    --darkreader-text--bs-light-text-emphasis: #b5afa6;
+    --darkreader-border--bs-light-text-emphasis: #726a5d;
+    --darkreader-bg--bs-dark-text-emphasis: #3c4144;
+    --darkreader-text--bs-dark-text-emphasis: #b5afa6;
+    --darkreader-border--bs-dark-text-emphasis: #726a5d;
+}
+
+.dropdown-menu {
+    color: var(--darkreader-text--bs-dropdown-color, #e8e6e3);
+    background-color: var(--darkreader-bg--bs-dropdown-bg, #181a1b);
+    border-color: var(--darkreader-border--bs-dropdown-border-color);
+}
+
+.dropdown-menu {
+    --bs-dropdown-color: var(--bs-body-color);
+    --bs-dropdown-bg: var(--bs-body-bg);
+    --bs-dropdown-border-color: var(--bs-border-color-translucent);
+    
+    --bs-dropdown-link-color: var(--bs-body-color);
+    --bs-dropdown-link-hover-color: var(--bs-body-color);
+    --bs-dropdown-link-hover-bg: var(--bs-tertiary-bg);
+    --bs-dropdown-link-active-color: #fff;
+    --bs-dropdown-link-active-bg: #0d6efd;
+    --bs-dropdown-link-disabled-color: var(--bs-tertiary-color);
+    
+    --bs-dropdown-header-color: #6c757d;
+}
+.datepicker table tr td span.focused, .datepicker table tr td span:hover {
+    background-image: initial;
+    background-color: rgb(34, 36, 38);
+}
+
+.datepicker table tr td span.active, .datepicker table tr td span.active.disabled, .datepicker table tr td span.active.disabled:hover, .datepicker table tr td span.active:hover {
+    background-image: none;
+}
+
+.datepicker th,td {
+    color: rgb(219, 219, 219);
+}

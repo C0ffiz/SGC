@@ -145,8 +145,12 @@ LOGIN_URL = '/login/'
 
 # Desabilitar encriptação de senhas ao salvar no banco de dados (ex: ce7a3ced60ceb06e746665fd5d22a2a0dfa187ec em vez de 123)
 PASSWORD_HASHERS = [
-    'django.contrib.auth.hashers.UnsaltedMD5PasswordHasher',
+    'django.contrib.auth.hashers.PBKDF2PasswordHasher',  # Use PBKDF2 as the main hasher
+    'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
+    'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
+    'django.contrib.auth.hashers.BCryptPasswordHasher',
 ]
+
 
 # Modificar Authenticação para logar sem password com hash
 AUTHENTICATION_BACKENDS = [

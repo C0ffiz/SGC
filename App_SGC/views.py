@@ -33,7 +33,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-
+from django.db.models import Sum
 
 
 
@@ -2689,13 +2689,22 @@ class PrevisaoDespesasCreateViews(CreateView):
 
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
-        form.fields['data_orcamento_despesa'].widget = forms.DateInput(attrs={'type': 'month'})
+        # Set the widget for the data_orcamento_despesa field to text for the date picker
+        form.fields['data_orcamento_despesa'].widget = forms.TextInput(attrs={
+            'id': 'data_orcamento_despesa',  # Ensure this matches your HTML
+            'class': 'form-control-sm',
+            'placeholder': 'mm-yyyy',  # Adjust as needed
+            'required': 'required'
+        })
         return form
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['condominios'] = CustomCondominio.objects.all()
-        context['categorias'] = [categoria for categoria in FinanceiroEstrutura.objects.all() if len(categoria.get_nivel().split('.')) >= 3]
+        context['categorias'] = [
+            categoria for categoria in FinanceiroEstrutura.objects.all() 
+            if categoria.get_nivel().startswith("2")
+        ]
         return context
 
     def form_valid(self, form):
@@ -2766,15 +2775,30 @@ class PrevisaoReceitasCreateViews(CreateView):
     ]
 
     success_url = reverse_lazy("previsao_receitas_list")
+    
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        # Set the widget for the data_orcamento_receita field to text for the date picker
+        form.fields['data_orcamento_receita'].widget = forms.TextInput(attrs={
+            'id': 'data_orcamento_receita',  # Ensure this matches your HTML
+            'class': 'form-control-sm',
+            'placeholder': 'mm-yyyy',  # Adjust as needed
+            'required': 'required'
+        })
+        return form
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['condominios'] = CustomCondominio.objects.all()
-        context['categorias'] = [categoria for categoria in FinanceiroEstrutura.objects.all() if len(categoria.get_nivel().split('.')) >= 3]
+        context['categorias'] = [
+            categoria for categoria in FinanceiroEstrutura.objects.all() 
+            if categoria.get_nivel().startswith("1")
+        ]
         return context
 
     def form_valid(self, form):
         # Optionally print form details for debugging
+        
         print("Form is valid!")
         print("Form cleaned data:", form.cleaned_data)
         print("n_condominio value:", form.cleaned_data.get('n_condominio'))
@@ -2812,3 +2836,56 @@ class PrevisaoReceitasUpdateViews(UpdateView):
 class PrevisaoReceitasDeleteViews(DeleteView):
     model = PrevisaoReceitas
     success_url = reverse_lazy("previsao_receitas_list")
+    
+    
+
+class PrevisaoxRealizadoListViews(LoginRequiredMixin, ListView):
+    model = PrevisaoReceitas
+    template_name = 'previsao_realizado_list.html'
+    context_object_name = 'previsao_realizado_list'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        user_condominio = self.request.user.n_condominio
+        context['previsao_receitas'] = PrevisaoReceitas.objects.filter(n_condominio=user_condominio)
+        context['previsao_despesas'] = PrevisaoDespesas.objects.filter(n_condominio=user_condominio)
+        context['realizado_receitas'] = Receita.objects.filter(n_condominio=user_condominio)
+
+        # Gerar a lista de meses para o cabeçalho da tabela
+        context['months'] = ['01-2024', '02-2024', '03-2024', '04-2024', '05-2024', '06-2024',
+                             '07-2024', '08-2024', '09-2024', '10-2024', '11-2024', '12-2024']
+        context['financeiro_estrutura'] = FinanceiroEstrutura.objects.filter(n_condominio=user_condominio)
+
+        # Calcular Executado e percentual para cada conta
+        for conta in context['financeiro_estrutura']:
+            conta.executado = {}
+            conta.percentual = {}
+            conta.previsao = {}
+            conta.realizado = {}
+            for month in context['months']:
+                # Extrair o mês e ano do formato MM-YYYY
+                month_int, year_int = month.split('-')
+
+                # Obter valores de PrevisaoReceitas e Receita (se existirem)
+                receita_valor = context['previsao_receitas']\
+                    .filter(categoria=conta, data_orcamento_receita=month)\
+                    .aggregate(Sum('valor_orcamento_receita'))['valor_orcamento_receita__sum']
+
+                realizado_valor = context['realizado_receitas']\
+                    .filter(categoria=conta,
+                            data_recebimento__year=int(year_int),
+                            data_recebimento__month=int(month_int))\
+                    .aggregate(Sum('valor_recebido'))['valor_recebido__sum']
+
+                # Se não houver valor, definir como None para o filtro funcionar corretamente
+                conta.previsao[month] = receita_valor if receita_valor is not None else None
+                conta.realizado[month] = realizado_valor if realizado_valor is not None else None
+                conta.executado[month] = max(receita_valor - realizado_valor, 0) if receita_valor and realizado_valor else None
+                conta.percentual[month] = (realizado_valor / receita_valor * 100) if receita_valor and realizado_valor else None
+
+        return context
+
+
+
+

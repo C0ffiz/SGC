@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="pt-br">
+    {% load custom_filters %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <title>SGC - Previsão x Realizado</title> 
+    <link rel="stylesheet" href="/static/css/previsao_realizado.css">
+</head>
+
+<style>
+    /* Ensure the table container is scrollable */
+    .table-container {
+      width: 100%;
+      height: 670px; /* Adjust as needed */
+      overflow: hidden;
+      position: relative;
+      border: 1px solid #ddd;
+    }
+  
+    .table-scrollable {
+      width: fit-content;
+      height: fit-content;
+      transform-origin: top left;
+      transition: transform 0.1s ease-out;
+    }
+
+    /* Style for the instructions */
+    .instructions {
+      margin-top: 20px;
+      font-size: 1.1em;
+    }
+</style>
+
+<body>
+    <nav class="navbar bg-dark mb-30">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="home">CONDOMINIUM</a>
+        </div>
+    </nav>
+
+    <main class="container-xl">
+        <h1 id="titulo_list">Previsão x Realizado</h1>
+
+        <div class="table-container" id="tableContainer">
+            <div class="table-scrollable" id="tableScrollable">
+                <table id="usuariosTable" class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th class="month-cell" rowspan="2">CONTA</th>
+                            {% for month in months %}
+                                <th colspan="4" class="text-center month-header">{{ month }}</th>
+                            {% endfor %}
+                        </tr>
+                        <tr>
+                            {% for month in months %}
+                                <th>Previsão</th>
+                                <th>Realizado</th>
+                                <th>A Executar</th>
+                                <th class="month-cell">Executado</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for conta in financeiro_estrutura %}
+                        <tr>
+                            <td class="month-cell">{{ conta.nome }} ({{ conta.get_nivel }})</td>
+                            {% for month in months %}
+                            <td>{{ conta.previsao|get_item:month|display_zero }}</td>
+                            <td>{{ conta.realizado|get_item:month|display_zero }}</td>
+                            <td>{{ conta.executado|get_item:month|display_zero }}</td>
+                            <td class="month-cell">{{ conta.percentual|get_item:month|display_zero }}%</td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+
+        <!-- Instructions below the table -->
+        <div class="instructions text-center">
+            <p>Pressione <strong>Ctrl</strong> e arraste para mover a tabela.</p>
+            <p>Use a roda do mouse para <strong>zoom in</strong> / <strong>zoom out</strong>.</p>
+        </div>
+    </main>
+
+    <script>
+        const tableContainer = document.getElementById('tableContainer');
+        const tableScrollable = document.getElementById('tableScrollable');
+
+        let isDragging = false;
+        let startX, startY, scrollLeft, scrollTop, scale = 1;
+
+        // Set the default cursor
+        tableContainer.style.cursor = 'default';
+
+        // Update cursor style based on whether Ctrl is pressed
+        document.addEventListener('keydown', (e) => {
+        if (e.ctrlKey) {
+            tableContainer.style.cursor = 'grab'; // Set grab cursor when Ctrl is pressed
+        }
+        });
+
+        document.addEventListener('keyup', (e) => {
+        if (!e.ctrlKey) {
+            tableContainer.style.cursor = 'default'; // Reset to default cursor when Ctrl is released
+        }
+        });
+
+        // Set default cursor on click
+        tableContainer.addEventListener('click', () => {
+        tableContainer.style.cursor = 'default'; // Reset cursor to default on click
+        });
+
+        // Dragging functionality
+        tableContainer.addEventListener('mousedown', (e) => {
+            if (e.ctrlKey) {
+                e.preventDefault(); // Prevent text selection
+                isDragging = true;
+                startX = e.pageX - tableContainer.offsetLeft;
+                startY = e.pageY - tableContainer.offsetTop;
+                scrollLeft = tableContainer.scrollLeft;
+                scrollTop = tableContainer.scrollTop;
+                tableContainer.style.cursor = 'grabbing'; // Change cursor to grabbing when dragging
+            } else {
+                isDragging = false; // Prevent dragging if Ctrl is not pressed
+                tableContainer.style.cursor = 'default'; // Reset cursor to default
+            }
+        });
+
+        tableContainer.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            e.preventDefault();
+            const x = e.pageX - tableContainer.offsetLeft;
+            const y = e.pageY - tableContainer.offsetTop;
+            const walkX = (x - startX) * 1; // Adjust scroll speed if necessary
+            const walkY = (y - startY) * 1;
+            tableContainer.scrollLeft = scrollLeft - walkX;
+            tableContainer.scrollTop = scrollTop - walkY;
+        });
+
+        tableContainer.addEventListener('mouseup', () => {
+            isDragging = false;
+            tableContainer.style.cursor = 'default'; // Reset cursor to default when not dragging
+        });
+
+        tableContainer.addEventListener('mouseleave', () => {
+            isDragging = false;
+            tableContainer.style.cursor = 'default'; // Reset cursor to default when leaving the container
+        });
+
+        // Zooming functionality
+        tableContainer.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            if (e.deltaY < 0) {
+                scale += 0.1; // Zoom in
+            } else {
+                scale -= 0.1; // Zoom out
+                if (scale < 0.5) scale = 0.5; // Minimum zoom level
+            }
+            tableScrollable.style.transform = `scale(${scale})`;
+        });
+
+    </script>
+      
+</body>
+</html>

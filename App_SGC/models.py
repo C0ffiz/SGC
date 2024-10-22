@@ -764,7 +764,11 @@ class Caixa(models.Model):
         return f"Caixa {self.caixa_id} - {self.historico_caixa} ({self.valor_caixa})"
 
 class PrevisaoReceitas(models.Model):
-    data_orcamento_receita = models.DateField(verbose_name="Data do Orçamento")
+    data_orcamento_receita = models.CharField(
+        verbose_name="Data do Orçamento",
+        max_length=7,
+        help_text="Formato: MM-YYYY"
+    )
     valor_orcamento_receita = models.DecimalField(
         max_digits=10,
         decimal_places=2,
