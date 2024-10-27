@@ -40,6 +40,7 @@ from App_SGC.views import CaixaListViews,CaixaCreateViews,CaixaUpdateViews,Caixa
 from App_SGC.views import PrevisaoDespesasUpdateViews,PrevisaoDespesasDeleteViews,PrevisaoDespesasCreateViews,PrevisaoDespesasListViews
 from App_SGC.views import PrevisaoReceitasUpdateViews,PrevisaoReceitasDeleteViews,PrevisaoReceitasCreateViews,PrevisaoReceitasListViews
 from App_SGC.views import PrevisaoxRealizadoListViews
+from App_SGC.views import GraficosListViews
 
 urlpatterns = [
 
@@ -258,6 +259,7 @@ urlpatterns = [
 
 #  Caminhos das Previsões x Realizado
     path('previsao_realizado_list', PrevisaoxRealizadoListViews.as_view(template_name="previsaoXrealizado/previsao_realizado_list.html"), name="previsao_realizado_list"),
+    path('exec_orcamento_list', GraficosListViews.as_view(template_name="execOrcamento/exec_orcamento.html"), name="exec_orcamento_list"),
 
 ]
 

@@ -117,6 +117,7 @@
         </div>
     </main>
     
+    <!-- jQuery scripts for handling currency and date formats -->
     <script>
         $(document).ready(function(){
             // Aplicar a máscara de moeda ao carregar a página
@@ -128,6 +129,15 @@
                     var valor = $(this).val().replace(/\./g, '').replace(',', '.');
                     $(this).val(valor);
                 });
+
+                // Convert MM-YYYY to YYYY-MM-DD
+                var input = $('#data_orcamento_receita').val();
+                var parts = input.split('-');
+                if (parts.length === 2) {
+                    // Format the date as 'YYYY-MM-01'
+                    var formattedDate = parts[1] + '-' + parts[0] + '-01';
+                    $('#data_orcamento_receita').val(formattedDate);
+                }
             });
         });
     </script>

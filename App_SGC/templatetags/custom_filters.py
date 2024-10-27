@@ -121,3 +121,14 @@ def display_zero(value):
     
     # Retornar o valor formatado para dois dígitos decimais
     return f'{float_value:.2f}'
+
+
+# Custom filter to replace commas with periods in numbers
+@register.filter(name='replace_comma')
+def replace_comma(value):
+    """
+    Replace commas with periods for proper number formatting in JavaScript.
+    """
+    if isinstance(value, str):
+        return value.replace(',', '.')
+    return value

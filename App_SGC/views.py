@@ -28,7 +28,7 @@ from django.utils.dateformat import DateFormat
 from django.utils.formats import get_format
 import locale
 from django.db.utils import ProgrammingError
-from datetime import date
+from datetime import datetime, date
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from django.contrib.auth.decorators import login_required
@@ -2678,13 +2678,31 @@ class PrevisaoDespesasListViews(LoginRequiredMixin, ListView):
         return context
 
 
+class PrevisaoDespesasForm(forms.ModelForm):
+    class Meta:
+        model = PrevisaoDespesas
+        fields = ['data_orcamento_despesa', 'valor_orcamento_despesa', 'categoria', 'n_condominio']
+
+    def clean_data_orcamento_despesa(self):
+        data_orcamento_str = self.cleaned_data.get('data_orcamento_despesa')
+
+        if isinstance(data_orcamento_str, date):
+            # If it's already a date object, return it as is
+            return data_orcamento_str
+        
+        try:
+            # Convert 'MM-YYYY' into 'YYYY-MM-DD' (default to the first day of the month)
+            data_orcamento = datetime.strptime(data_orcamento_str, '%m-%Y').replace(day=1)
+            return data_orcamento
+        except ValueError:
+            raise forms.ValidationError('Informe uma data válida no formato MM-YYYY.')
+
+
+
 # Tela Cadastra Contas a Pagar
 class PrevisaoDespesasCreateViews(CreateView):
     model = PrevisaoDespesas
-    fields = [
-        "data_orcamento_despesa", "valor_orcamento_despesa", "categoria", "n_condominio"
-    ]
-
+    form_class = PrevisaoDespesasForm  # Use the custom form
     success_url = reverse_lazy("previsao_despesas_list")
 
     def get_form(self, form_class=None):
@@ -2707,39 +2725,40 @@ class PrevisaoDespesasCreateViews(CreateView):
         ]
         return context
 
-    def form_valid(self, form):
-        # Optionally print form details for debugging
-        print("Form is valid!")
-        print("Form cleaned data:", form.cleaned_data)
-        print("n_condominio value:", form.cleaned_data.get('n_condominio'))
-
-        return super().form_valid(form)
-
     def form_invalid(self, form):
         print("Form is invalid!")
+        print("Raw input:", self.request.POST['data_orcamento_despesa'])
         print(form.errors)
         return super().form_invalid(form)
+
 
 
 # Tela Alteração Contas a Pagar
 class PrevisaoDespesasUpdateViews(UpdateView):
     model = PrevisaoDespesas
-    context_object_name = 'previsao_despesas_list'
-    fields = [
-        "data_orcamento_despesa", "valor_orcamento_despesa", "categoria", "n_condominio"
-    ]
-
+    form_class = PrevisaoDespesasForm  # Use the same form as in the create view
     success_url = reverse_lazy("previsao_despesas_list")
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        # Customize the widget for 'data_orcamento_despesa' to be a text input for 'mm-yyyy'
+        form.fields['data_orcamento_despesa'].widget = forms.TextInput(attrs={
+            'id': 'data_orcamento_despesa',
+            'class': 'form-control-sm',
+            'placeholder': 'mm-yyyy',
+            'required': 'required'
+        })
+        return form
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        # Fetch condominios and categories, similar to create view
         context['condominios'] = CustomCondominio.objects.all()
         context['categorias'] = [categoria for categoria in FinanceiroEstrutura.objects.all() if
                                  len(categoria.get_nivel().split('.')) >= 3]
         return context
 
-    def form_valid(self, form):
-        return super().form_valid(form)
+
 
 
 # Tela Exclusão Contas a Pagar
@@ -2768,14 +2787,31 @@ class PrevisaoReceitasListViews(LoginRequiredMixin, ListView):
 
 
 # Tela Cadastra Contas a Pagar
+class PrevisaoReceitasForm(forms.ModelForm):
+    class Meta:
+        model = PrevisaoReceitas
+        fields = ['data_orcamento_receita', 'valor_orcamento_receita', 'categoria', 'n_condominio']
+
+    def clean_data_orcamento_receita(self):
+        data_orcamento_str = self.cleaned_data.get('data_orcamento_receita')
+
+        if isinstance(data_orcamento_str, date):
+            # If it's already a date object, return it as is
+            return data_orcamento_str
+
+        try:
+            # Convert 'MM-YYYY' into 'YYYY-MM-DD' (default to the first day of the month)
+            data_orcamento = datetime.strptime(data_orcamento_str, '%m-%Y').replace(day=1)
+            return data_orcamento
+        except ValueError:
+            raise forms.ValidationError('Informe uma data válida no formato MM-YYYY.')
+
+
 class PrevisaoReceitasCreateViews(CreateView):
     model = PrevisaoReceitas
-    fields = [
-        "data_orcamento_receita", "valor_orcamento_receita", "categoria", "n_condominio"
-    ]
-
+    form_class = PrevisaoReceitasForm  # Use the custom form with validation
     success_url = reverse_lazy("previsao_receitas_list")
-    
+
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
         # Set the widget for the data_orcamento_receita field to text for the date picker
@@ -2796,40 +2832,44 @@ class PrevisaoReceitasCreateViews(CreateView):
         ]
         return context
 
-    def form_valid(self, form):
-        # Optionally print form details for debugging
-        
-        print("Form is valid!")
-        print("Form cleaned data:", form.cleaned_data)
-        print("n_condominio value:", form.cleaned_data.get('n_condominio'))
-
-        return super().form_valid(form)
-
     def form_invalid(self, form):
         print("Form is invalid!")
         print(form.errors)
         return super().form_invalid(form)
 
 
+
 # Tela Alteração Contas a Pagar
+
 class PrevisaoReceitasUpdateViews(UpdateView):
     model = PrevisaoReceitas
-    context_object_name = 'previsao_receitas_list'
-    fields = [
-        "data_orcamento_receita", "valor_orcamento_receita", "categoria", "n_condominio"
-    ]
-
+    form_class = PrevisaoReceitasForm  # Use the custom form as in the create view
     success_url = reverse_lazy("previsao_receitas_list")
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        # Customize the widget for 'data_orcamento_receita' to be a text input for 'mm-yyyy'
+        form.fields['data_orcamento_receita'].widget = forms.TextInput(attrs={
+            'id': 'data_orcamento_receita',
+            'class': 'form-control-sm',
+            'placeholder': 'mm-yyyy',
+            'required': 'required'
+        })
+        return form
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        # Fetch condominios and categories, similar to create view
         context['condominios'] = CustomCondominio.objects.all()
-        context['categorias'] = [categoria for categoria in FinanceiroEstrutura.objects.all() if
-                                 len(categoria.get_nivel().split('.')) >= 3]
+        context['categorias'] = [
+            categoria for categoria in FinanceiroEstrutura.objects.all() 
+            if len(categoria.get_nivel().split('.')) >= 3
+        ]
         return context
 
     def form_valid(self, form):
         return super().form_valid(form)
+
 
 
 # Tela Exclusão Contas a Pagar
@@ -2886,6 +2926,65 @@ class PrevisaoxRealizadoListViews(LoginRequiredMixin, ListView):
 
         return context
 
+
+class GraficosListViews(LoginRequiredMixin, ListView):
+    model = PrevisaoReceitas
+    template_name = 'execOrcamento.html'
+    context_object_name = 'previsoes_receita'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Obter o condomínio do usuário
+        user_condominio = self.request.user.n_condominio
+
+        # Verificar se o mês foi passado como parâmetro na URL
+        mes = self.request.GET.get('mes')
+
+        if mes:
+            # Filtrar os valores agregados pelo mês
+            total_orcamento_receita = PrevisaoReceitas.objects.filter(
+                n_condominio=user_condominio,
+                data_orcamento_receita__month=mes
+            ).aggregate(Sum('valor_orcamento_receita'))['valor_orcamento_receita__sum'] or 0
+
+            total_recebido_receita = Receita.objects.filter(
+                n_condominio=user_condominio,
+                data_recebimento__month=mes
+            ).aggregate(Sum('valor_recebido'))['valor_recebido__sum'] or 0
+
+            total_orcamento_despesa = PrevisaoDespesas.objects.filter(
+                n_condominio=user_condominio,
+                data_orcamento_despesa__month=mes
+            ).aggregate(Sum('valor_orcamento_despesa'))['valor_orcamento_despesa__sum'] or 0
+
+            total_pago_despesa = Despesas.objects.filter(
+                n_condominio=user_condominio,
+                data_pagamento__month=mes
+            ).aggregate(Sum('valor_pago'))['valor_pago__sum'] or 0
+        else:
+            # Valores sem filtro de mês
+            total_orcamento_receita = PrevisaoReceitas.objects.filter(n_condominio=user_condominio).aggregate(Sum('valor_orcamento_receita'))['valor_orcamento_receita__sum'] or 0
+            total_recebido_receita = Receita.objects.filter(n_condominio=user_condominio).aggregate(Sum('valor_recebido'))['valor_recebido__sum'] or 0
+            total_orcamento_despesa = PrevisaoDespesas.objects.filter(n_condominio=user_condominio).aggregate(Sum('valor_orcamento_despesa'))['valor_orcamento_despesa__sum'] or 0
+            total_pago_despesa = Despesas.objects.filter(n_condominio=user_condominio).aggregate(Sum('valor_pago'))['valor_pago__sum'] or 0
+
+        # Adicionando os valores agregados ao contexto
+        context['orcamento_receita'] = total_orcamento_receita
+        context['recebido_receita'] = total_recebido_receita
+        context['orcamento_despesa'] = total_orcamento_despesa
+        context['pago_despesa'] = total_pago_despesa
+
+        # Retornar os dados JSON se for uma requisição AJAX
+        if self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            return JsonResponse({
+                'orcamento_receita': total_orcamento_receita,
+                'recebido_receita': total_recebido_receita,
+                'orcamento_despesa': total_orcamento_despesa,
+                'pago_despesa': total_pago_despesa
+            })
+
+        return context
 
 
 
