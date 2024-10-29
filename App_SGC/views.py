@@ -2904,12 +2904,13 @@ class PrevisaoxRealizadoListViews(LoginRequiredMixin, ListView):
             conta.previsao = {}
             conta.realizado = {}
             for month in context['months']:
-                # Extrair o mês e ano do formato MM-YYYY
+                # Convert MM-YYYY to a full date format (YYYY-MM-01)
                 month_int, year_int = month.split('-')
+                month_date = datetime.strptime(f"{year_int}-{month_int}-01", '%Y-%m-%d').date()
 
                 # Obter valores de PrevisaoReceitas e Receita (se existirem)
                 receita_valor = context['previsao_receitas']\
-                    .filter(categoria=conta, data_orcamento_receita=month)\
+                    .filter(categoria=conta, data_orcamento_receita=month_date)\
                     .aggregate(Sum('valor_orcamento_receita'))['valor_orcamento_receita__sum']
 
                 realizado_valor = context['realizado_receitas']\
