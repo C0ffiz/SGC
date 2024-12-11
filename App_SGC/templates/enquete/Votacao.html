@@ -284,6 +284,7 @@
             margin-bottom: 8px;
             border-radius: 8px;
             transition: all 0.3s ease;
+            cursor: pointer; /* Adiciona cursor pointer para indicar que é clicável */
         }
 
         .resposta-item:hover {
@@ -299,6 +300,9 @@
             margin-left: 12px;
             font-size: 16px;
             color: #444;
+            cursor: pointer; /* Adiciona cursor pointer também no label */
+            flex: 1; /* Faz o label ocupar todo espaço disponível */
+            user-select: none; /* Previne seleção do texto */
         }
 
         .btn-votar {
@@ -341,10 +345,80 @@
             background-color: #ccc;
             cursor: not-allowed;
         }
+
+        /* Estilos do sistema de notificação */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 4px;
+            color: white;
+            font-weight: 500;
+            transform: translateY(-100%);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 9999;
+            max-width: 350px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .notification.success {
+            background-color: #4caf50;
+        }
+
+        .notification.error {
+            background-color: #f44336;
+        }
+
+        .notification.info {
+            background-color: #2196F3;
+        }
+
+        .notification-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .notification-message {
+            flex-grow: 1;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .notification-close {
+            background: transparent;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 18px;
+            padding: 0;
+            opacity: 0.8;
+        }
+
+        .notification-close:hover {
+            opacity: 1;
+        }
+
+        /* Ajuste o espaçamento do input */
+        .resposta-item input[type="radio"],
+        .resposta-item input[type="checkbox"] {
+            margin: 0;
+            cursor: pointer;
+        }
     </style>
     
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('enquete-form');
+            form.setAttribute('novalidate', ''); // Desabilita validação padrão do HTML5
+
             const enqueteForm = document.getElementById('enquete-form');
             const btnVotar = document.getElementById('btnvotar');
         
@@ -377,7 +451,7 @@
         
                 // Verificar se há respostas selecionadas
                 if (respostasSelecionadas.length === 0) {
-                    alert('Por favor, selecione pelo menos uma resposta.');
+                    showNotification('Por favor, selecione pelo menos uma resposta.', 'error');
                     return;
                 }
         
@@ -395,14 +469,16 @@
                     const data = await response.json();
         
                     if (response.ok) {
-                        alert('Voto registrado com sucesso!');
-                        window.location.href = '/home';  // Redirecionar para a página inicial após votar
+                        showNotification('Voto registrado com sucesso!', 'success');
+                        setTimeout(() => {
+                            window.location.href = '/home';
+                        }, 2000);
                     } else {
-                        alert(`Erro ao registrar voto: ${data.message}`);
+                        showNotification(`Erro ao registrar voto: ${data.message}`, 'error');
                     }
                 } catch (error) {
                     console.error('Erro:', error);
-                    alert('Erro ao enviar o voto. Por favor, tente novamente.');
+                    showNotification('Erro ao enviar o voto. Por favor, tente novamente.', 'error');
                 }
             });
 
@@ -458,6 +534,7 @@
 
         // Update the submitVoto function
         function submitVoto(perguntaId) {
+            event.preventDefault(); // Previne o comportamento padrão do formulário
             const form = document.getElementById('enquete-form');
             const formData = new FormData(form);
             const respostas = [];
@@ -467,8 +544,8 @@
             const respostasValues = Array.from(selectedInputs).map(input => input.value);
 
             if (respostasValues.length === 0) {
-                alert('Por favor, selecione pelo menos uma resposta.');
-                return;
+                showNotification('Por favor, selecione pelo menos uma resposta.', 'error');
+                return false; // Retorna false para prevenir o submit do form
             }
 
             const data = {
@@ -503,14 +580,14 @@
                         input.closest('.resposta-item').classList.add('resposta-selecionada');
                     });
                     
-                    alert('Voto registrado com sucesso!');
+                    showNotification('Voto registrado com sucesso!', 'success');
                 } else {
-                    alert(`Erro: ${data.message}`);
+                    showNotification(`Erro: ${data.message}`, 'error');
                 }
             })
             .catch(error => {
                 console.error('Erro:', error);
-                alert('Erro ao enviar o voto. Por favor, tente novamente.');
+                showNotification('Erro ao enviar o voto. Por favor, tente novamente.', 'error');
             });
 
             // Prevent default form submission
@@ -519,6 +596,30 @@
 
         // Add this to bind the submitVoto function to window
         window.submitVoto = submitVoto;
+
+        // Função para mostrar notificações
+        function showNotification(message, type = 'info') {
+            const notification = document.getElementById('notification');
+            const messageEl = notification.querySelector('.notification-message');
+            
+            // Remove classes anteriores
+            notification.classList.remove('success', 'error', 'info');
+            // Adiciona a classe do tipo
+            notification.classList.add(type);
+            
+            messageEl.textContent = message;
+            notification.classList.add('show');
+
+            // Auto-esconde após 5 segundos
+            setTimeout(() => {
+                hideNotification();
+            }, 5000);
+        }
+
+        function hideNotification() {
+            const notification = document.getElementById('notification');
+            notification.classList.remove('show');
+        }
     </script>
     
 </head>
@@ -542,7 +643,7 @@
             {% endfor %}
         </div>             
 
-        <form id="enquete-form" method="POST">
+        <form id="enquete-form" method="POST" novalidate>
             {% csrf_token %}
             {{ form.as_p }}
 
@@ -557,26 +658,26 @@
                         <div class="answers-container">
 
                             {% for resposta in pergunta.possiveis_respostas %}
-                                <div class="resposta-item" id="resposta_{{ resposta.possivelResposta_id }}">
+                                <label class="resposta-item" for="resposta_{{ resposta.possivelResposta_id }}">
                                     {% if pergunta.multiple_responses %}
-                                        <!-- Permite múltiplas respostas -->
                                         <input type="checkbox" 
+                                               id="resposta_{{ resposta.possivelResposta_id }}"
                                                class="answer-checkbox" 
                                                name="respostas_{{ pergunta.pergunta_id }}" 
                                                value="{{ resposta.possivelResposta_id }}"
                                                data-pergunta-id="{{ pergunta.pergunta_id }}"
                                                {% if pergunta.already_voted %}disabled{% endif %}>
                                     {% else %}
-                                        <!-- Permite apenas uma resposta -->
                                         <input type="radio" 
+                                               id="resposta_{{ resposta.possivelResposta_id }}"
                                                class="answer-radio" 
                                                name="respostas_{{ pergunta.pergunta_id }}" 
                                                value="{{ resposta.possivelResposta_id }}"
                                                data-pergunta-id="{{ pergunta.pergunta_id }}"
                                                {% if pergunta.already_voted %}disabled{% endif %}>
                                     {% endif %}
-                                    <label class="resposta-label">{{ resposta.texto_resposta }}</label>
-                                </div>
+                                    <span class="resposta-label">{{ resposta.texto_resposta }}</span>
+                                </label>
                             {% endfor %}                                                     
                             
                         </div>
@@ -595,5 +696,13 @@
             </div>
         </form>
     </div> 
+
+    <!-- Adicione este elemento antes do fechamento do body -->
+    <div id="notification" class="notification">
+        <div class="notification-content">
+            <div class="notification-message"></div>
+            <button class="notification-close" onclick="hideNotification()">&times;</button>
+        </div>
+    </div>
 </body>
 </html>
