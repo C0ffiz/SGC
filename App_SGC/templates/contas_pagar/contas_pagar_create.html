@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="pt-br">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>SGC</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+        <link rel="stylesheet" href="/static/css/contas_pagar.css">
+
+    <style>
+        .error-duplicate{
+            background-color: transparent;
+            color: #fff;
+            text-decoration: none;
+            border: 0;
+            list-style-position: inside;
+            padding: 0;
+        }
+
+         /* Espaçamento entre as colunas */
+         .container-cols {
+            display: flex;
+            gap: 10px; 
+        }
+        /* Cada coluna ocupa o mesmo espaço */
+        .input-col {
+            flex: 1; 
+            display: flex;
+            flex-direction: column;
+        }
+        /* Espaçamento entre as linhas */
+        .input-bottom {
+            margin-bottom: 10px; 
+        }
+        /* Espaçamento entre o label e o input */
+        .input-bottom label {           
+            margin-bottom: 5px; 
+        }
+        /* Define o tamanho dos campos input */
+        input[type="text"], input[type="date"], input[type="time"], input[type="file"], select.form-control-sm {
+            width: 220px;
+            height: 30px;
+            margin: auto;
+            /* font-size: 18px;  */
+        }
+        /* Define o tamanho do botão salvar */
+        #btnsalvar {
+            display: block;
+            margin: auto;
+            width: 140px;
+            font-size: 18px; /* Aumenta o tamanho do texto do botão */
+        }
+        /* Tamanho da fonte, cor e negrito para a MENSAGEM de erro */
+        .text-danger {
+            font-size: 20px; /* Aumenta o tamanho da letra da mensagem de erro */
+            height: 30px; /* Espaço reservado para a mensagem de erro */
+            line-height: 30px; /* Centraliza verticalmente o texto da mensagem */
+            margin-bottom: 20px; /* Margem inferior */
+            color: rgb(246, 244, 244) !important; /* Cor branca */
+            font-weight: bold; /* Negrito */
+        }
+
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Aplicar a máscara de moeda ao campo "valor"
+            $('#valor').mask('00.000.000,00', {reverse: true});
+    
+            // Função chamada ao clicar no botão de salvar
+            $('#btnsalvar').click(function(event) {
+                event.preventDefault(); // Impede o envio automático do formulário
+      
+                // Validação dos campos obrigatórios
+                var campos = [
+                    $('#id_categoria'),
+                    $('#fornecedor_id'),
+                    $('#tipo_documento'),
+                    $('#numero_documento'), 
+                    $('#documento'), 
+                    $('#data_vencimento'),
+                    $('#valor')
+                ];
+        
+                var valid = true; // Variável para controlar se todos os campos são válidos
+                    
+                for (var i = 0; i < campos.length; i++) {
+                    var campo = campos[i];
+                    if (!campo.val()) {
+                        campo[0].setCustomValidity("Preencha este campo");
+                        campo.focus();
+                        campo.blur(); // Força a exibição da mensagem pop-up
+                        campo[0].reportValidity(); // Exibe a mensagem de campo obrigatório
+                        valid = false;
+                        break; // Para a execução do loop após encontrar o primeiro campo vazio
+                    } else {
+                        campo[0].setCustomValidity(""); // Limpa a mensagem de erro se o campo estiver preenchido
+                    }
+                }
+     
+                if (valid) {
+                    // Remover a máscara de valor e data antes de enviar o formulário
+                    $('#valor').val(function(_, val) {
+                        return val.replace(/\./g, '').replace(',', '.'); // Converte o valor de moeda
+                    });
+    
+                    $('#data_vencimento').val(function(_, val) {
+                        return val.replace(/\//g, '-'); // Converte a data para o formato AAAA-MM-DD
+                    });
+    
+                    // Submete o formulário após as correções
+                    $('form').off('submit').submit();
+                }
+            });
+        });
+    </script>
+    
+     
+</head>
+
+<body>
+    <nav class="navbar bg-dark mb-30" data-bs-theme="dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'contas_pagar_list' %}">CONDOMINIUM</a>
+        </div>
+    </nav>
+    <main class="container">
+        <h1 id="titulo">CADASTRO DE CONTAS A PAGAR</h1><br>
+        
+        <div class="painel" style ="height: 500px;">
+            <form method="POST" enctype="multipart/form-data"> 
+                {% csrf_token %}
+                
+                <!-- Exibir mensagem de erro com espaço fixo -->
+                <div class="text-danger">
+                    {% for message in messages %}
+                        <div>{{ message }}</div>
+                    {% endfor %}
+                </div>                
+                
+                <div class="colunas">
+
+                        <!-- Coluna 1 -->
+                    <div class="coluna">
+
+                        <div class="input-bottom">
+                            <label for="categoria" class="form-label">*Conta:</label>
+                            <select 
+                                name="categoria" id="id_categoria" class="form-control-sm" tabindex="1" required autofocus>
+                                <option value="">Conta</option>
+                                {% for categoria in categorias %}
+                                    <option value="{{ categoria.id }}">{{ categoria.nome }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="input-bottom">
+                            <label for="tipo_documento" class="form-label">*Tipo Documento:</label>
+                            <select name="tipo_documento" class="form-control-sm" id="tipo_documento" tabindex="3" required>
+                                <option value="">Tipo documento</option>
+                                {% for value, label in tipo_documento %}
+                                    <option value="{{ value }}">{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>   
+
+                        <div class="input-bottom">
+                            <label for="documento" class="form-label">*Documento:</label>
+                            <input name="documento" type="file" class="form-control" id="documento" tabindex="5" required >
+                        </div>
+   
+                        <div class="input-bottom">
+                            <label for="valor" class="form-label">*Valor a Pagar:</label>
+                            <input name="valor" type="text" class="form-control-sm" id="valor" tabindex="7" required>
+                        </div>  
+
+                    </div>
+                    
+                    <!-- Coluna 2 -->
+                    <div class="coluna">
+
+                        <div class="input-bottom">
+                            <label for="fornecedor_id" class="form-label">*Fornecedor:</label>
+                            <select 
+                                name="fornecedor_id" id="fornecedor_id" class="form-control-sm" tabindex="2" required>
+                                <option value="">Fornecedor</option>
+                                {% for fornecedor in fornecedores %}
+                                    <option value="{{ fornecedor.fornecedor_id }}">{{ fornecedor.nomeFantasia }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="input-bottom">
+                            <label for="numero_documento" class="form-label">*Nº Documento:</label>
+                            <input name="numero_documento" type="text" class="form-control-sm" id="numero_documento" tabindex="4" required>
+                        </div>
+                        
+                        <div class="input-bottom">
+                            <label for="data_vencimento" class="form-label">*Data Vencimento:</label>
+                            <input name="data_vencimento" type="date" class="form-control-sm" id="data_vencimento" tabindex="6" required>
+                        </div> 
+
+                    </div>
+
+                </div>
+                <br><br>
+
+                <div>
+                    <button type="button" id="btnsalvar" class="btn btn-primary">SALVAR</button>
+                </div>
+
+            </form>
+        </div>
+    </main>    
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz4fnFO9gybBogGzF9RAp6F3E6pbb7zJpPHT6f6Ffhh0GgiVNU7BRSK7jl" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-QF2mxF1WBbKV5wzELpLhjlbsABsUcQ8Lqyf2z5LN6go6abkFZxWfXaBgEKTt9iZS" crossorigin="anonymous"></script>
+</body>
+</html>

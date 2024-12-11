@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="pt-br">
+    {% load custom_filters %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Folhas de Estilo Externas -->
+    <link rel="stylesheet" href="/static/node_modules/@fortawesome/fontawesome-free/css/all.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <!-- Folhas de Estilo Locais -->
+    <link rel="stylesheet" href="/static/css/metas.css">
+    <title>SGC</title>
+</head>
+
+<body>
+    <!-- Barra de Navegação -->
+    <nav class="navbar bg-dark mb-30" data-bs-theme="dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="home">CONDOMINIUM</a>
+        </div>
+    </nav>
+
+    <!-- Corpo da Página -->
+    <main class="container">
+        <h1 id="titulo_list">METAS DOS COLABORADORES</h1>
+
+        <!-- Opções de Pesquisa e Cadastro -->
+        <div class="container_1">
+            <div class="box">
+                <a href="{% url 'metas_create' %}" class="btn btn-primary" id="cadastrar">CADASTRAR METAS</a>
+            </div>
+
+            <div class="box" id="divBusca">
+                <input type="text" id="txtBusca" placeholder="Nome Colaborador" />
+                <button id="btnBusca">BUSCAR</button>
+            </div>
+        </div>
+
+        <!-- Tabela de pets -->
+        <table id="metaTable" class="table auto-layout">
+            <thead>
+                <tr>
+                    <th scope="col" class="close-th">COLABORADOR</th>
+                    <th scope="col" class="close-th">META</th>
+                    <th scope="col" class="close-th">DATA TÉRMINO</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for meta in metas_list %}
+                    <tr>
+                        <td>{{ meta.cpf_colaborador.nome_colaborador }}</td>
+                        <td>{{ meta.dsc_meta }}</td>
+                        <td>{{ meta.data_termino|format_date }}</td>
+                        <td style="border: none; width:300px">
+                            <a href="{% url 'metas_avaliar' pk=meta.pk %}" class="btn btn-primary btn-sm">AVALIAR</a>
+                            <a href="{% url 'metas_update' pk=meta.pk %}" class="btn btn-primary btn-sm">ALTERAR</a>
+                            <a href="{% url 'metas_delete' pk=meta.pk %}" class="btn btn-danger btn-sm">EXCLUIR</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </main>
+
+    <!-- Scripts JavaScript -->
+    <script>
+        // Função para manipular a pesquisa/filtragem
+        function handleSearch() {
+            document.getElementById('txtBusca').addEventListener('input', function () {
+                var searchText = this.value.toLowerCase();
+                var rows = document.querySelectorAll('#metaTable tbody tr');
+
+                rows.forEach(function (row) {
+                    var nome_colaborador = row.cells[0].textContent.toLowerCase();
+                    // Check if either username or CPF contains the search text
+                    if (nome_colaborador.includes(searchText)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+        }
+
+        // Ouvinte de evento para DOMContentLoaded para chamar as funções necessárias
+        document.addEventListener('DOMContentLoaded', function () {
+            handleSearch();
+        });
+    </script>
+
+    <!-- Bootstrap JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

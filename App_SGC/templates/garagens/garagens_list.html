@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="pt-br">
+    {% load custom_filters %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Folhas de Estilo Externas -->
+    <link rel="stylesheet" href="/static/node_modules/@fortawesome/fontawesome-free/css/all.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <!-- Folhas de Estilo Locais -->
+    <link rel="stylesheet" href="/static/css/garagens.css">
+    <title>SGC</title>
+</head>
+<body>
+    <!-- Barra de Navegação -->
+    <nav class="navbar bg-dark mb-30" data-bs-theme="dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="home">CONDOMINIUM</a>
+        </div>
+    </nav>
+
+    <!-- Corpo da Página -->
+    <main class="container">
+        <h1 id="titulo_list">GARAGENS</h1>
+
+        <!-- Opções de Pesquisa e Cadastro -->
+        <div class="container_1">
+            <div class="box">
+                <a href="{% url 'garagens_create' %}" class="btn btn-primary" id="cadastrar">CADASTRAR GARAGENS</a>
+            </div>
+
+            <div class="box" id="divBusca">
+                <input type="text" id="txtBusca" placeholder="Nº Garagem" />
+                <button id="btnBusca">BUSCAR</button>
+            </div>
+        </div>
+
+        <!-- Tabela de Garagens -->
+        <table id="garagensTable" class="table auto-layout">
+            <thead>
+                <tr>
+                    <th scope="col" class="close-th">CPF CONDÔMINO</th> 
+                    <th scope="col" class="close-th">BLOCO</th> 
+                    <th scope="col" class="close-th">Nº GARAGEM</th>   
+                </tr>
+            </thead>
+            <tbody>
+                {% for gara in garagens_list %}
+                <tr>
+                    <td>{{ gara.cpf_condomino.cpf_condomino|format_cpf }}</td>
+                    <td>{{ gara.bloco_id.bloco }}</td>
+                    <td>{{ gara.n_garagem }}</td>
+                    <td style="border: none; width:200px">
+                        <a href="{% url 'garagens_update' pk=gara.pk %}" class="btn btn-primary btn-sm">ALTERAR</a>
+                        <a href="{% url 'garagens_delete' pk=gara.pk %}" class="btn btn-danger btn-sm">EXCLUIR</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </main>
+
+    <!-- Scripts JavaScript -->
+    <script>
+
+        // Função para manipular a pesquisa/filtragem
+        function handleSearch() {
+    document.getElementById('txtBusca').addEventListener('input', function () {
+        var searchText = this.value.toLowerCase();
+        var rows = document.querySelectorAll('#garagensTable tbody tr');
+
+        rows.forEach(function (row) {
+            var cells = row.querySelectorAll('td');
+            var matchFound = false;
+
+            cells.forEach(function (cell) {
+                if (cell.textContent.toLowerCase().includes(searchText)) {
+                    matchFound = true;
+                }
+            });
+
+            if (matchFound) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+}
+
+
+
+        // Ouvinte de evento para DOMContentLoaded para chamar as funções necessárias
+        document.addEventListener('DOMContentLoaded', function () {
+            handleSearch();
+        });
+
+    </script>
+
+    <!-- Bootstrap JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

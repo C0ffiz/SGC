@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SGC</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="/static/css/enquete.css">
+    <style>           
+        .container-cols {
+            display: flex;
+            gap: 20px; /* Espaçamento entre as colunas */
+        }
+        .input-col {
+            flex: 1; /* Cada coluna ocupa o mesmo espaço */
+            display: flex;
+            flex-direction: column;
+        }
+        .input-col .input-row {
+            margin-bottom: 40px; /* Espaçamento entre as linhas */
+        }
+        .form-control-sm {
+            /* width: 50%;  */
+        }
+        input[type="text"], input[type="date"], select {
+            width: 220px;
+            height: 30px;
+        }   
+        .input-bottom {
+            margin-bottom: 20px; /* Aumenta a distância entre as divs verticalmente */
+            margin-right: 20px; /* Aumenta a distância entre as divs horizontalmente */
+        } 
+        .form-check {
+            display: flex;
+            align-items: center; /* Alinha as caixas de seleção com o texto */
+            margin-bottom: 15px;
+            margin-left: 11cm; /* Desloca os elementos para a direita */
+        }
+        .form-check-input {
+            margin-right: 10px; /* Distância entre a caixa de seleção e o texto da resposta */
+        }
+
+        .form-check-label {
+            color: white; /* Cor branca para as respostas */
+            font-size: 18px; /* Tamanho da fonte das respostas */
+        }   
+        /* Tamanho da fonte, cor e negrito para a MENSAGEM de erro */
+        .text-danger {
+            font-size: 20px; /* Aumenta o tamanho da letra da mensagem de erro */
+            height: 30px; /* Espaço reservado para a mensagem de erro */
+            line-height: 30px; /* Centraliza verticalmente o texto da mensagem */
+            margin-bottom: 20px; /* Margem inferior */
+            color: rgb(246, 244, 244) !important; /* Cor branca */
+            font-weight: bold; /* Negrito */
+        }
+    </style>
+</head>
+
+
+<body>
+    <nav class="navbar bg-dark mb-30" data-bs-theme="dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'exibirHome' %}">CONDOMINIUM</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <h1 id="titulo">ENQUETE - VOTAÇÃO</h1>
+        <div class="painel" style="height: 500px;">
+
+            <form method="POST" action="{% url 'votar_enquete' %}">
+           
+                {% csrf_token %}
+                
+                <!-- Mensagens de sucesso/erro -->
+                <div class="text-danger">
+                    {% for message in messages %}
+                        <div>{{ message }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="input-bottom">
+                    <h2>{{ pergunta.pergunta }}</h2>
+                </div>
+                
+                <div class="input-bottom">
+                    {% for resposta in possiveis_respostas %}
+                        <div class="form-check">
+                            <!-- Botão de seleção ao lado da resposta -->
+                            <input class="form-check-input" type="radio" name="possivel_resposta_id" value="{{ resposta.id }}" required>
+
+                            <label class="form-check-label">
+                                {{ resposta.possivel_resposta }}
+                            </label>
+                        </div>
+                    {% endfor %}
+                </div>            
+                <br><br>
+
+                <button id="btnsalvar" type="submit">VOTAR</button>            
+
+            </form>
+        </div>
+    </main>
+   
+</body>
+</html>

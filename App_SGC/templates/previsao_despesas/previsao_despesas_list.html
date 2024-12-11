@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="pt-br">
+    {% load custom_filters %}
+    
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Folhas de Estilo Externas -->
+    <link rel="stylesheet" href="/static/node_modules/@fortawesome/fontawesome-free/css/all.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <!-- Folhas de Estilo Locais -->
+    <link rel="stylesheet" href="/static/css/previsao_despesas.css">
+    <title>SGC</title>
+
+    <style>
+       
+        /* altera ambiente do cabeçalho e linha q fica abaixo */
+        .auto-layout {
+            table-layout: auto; /* Ajusta o layout da tabela conforme o conteúdo */
+            margin-left: auto;
+            margin-right: auto;
+            /* border-collapse: separate; */
+            border-spacing: 0px; /* Aumenta a distância entre as colunas */
+        }
+        /* altera ambiente do botão cadastrar e buscar */
+        .box {
+            width: 350px;
+            height: 32px;
+            display: inline-block;
+            margin-right: 20px; /* Adiciona margem à direita para separar as divs horizontalmente */
+            margin-bottom: 20px; /* Adiciona margem inferior para separar as divs verticalmente */
+        }
+    </style>  
+</head>
+
+<body>
+    <!-- Barra de Navegação -->
+    <nav class="navbar bg-dark mb-30" data-bs-theme="dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="home">CONDOMINIUM</a>
+        </div>
+    </nav>
+
+    <!-- Corpo da Página -->
+    <main class="container">
+        <h1 id="titulo_list">PREVISÃO DE DESPESAS</h1>
+
+        <!-- Opções de Pesquisa e Cadastro -->
+        <div class="container_1">
+            <div class="box">
+                <a href="{% url 'previsao_despesas_create' %}" class="btn btn-primary" id="cadastrar">CADASTRAR PREVISÃO</a>
+            </div>
+
+            <div class="box" id="divBusca">
+                <input type="text" id="txtBusca" placeholder="Conta" />
+                <button id="btnBusca">BUSCAR</button>
+            </div>
+        </div>
+
+        <!-- Tabela de Contas a Receber -->
+        <table id="ReceitasTable" class="table auto-layout">
+            <thead>
+                <tr>
+                    <th scope="col" class="close-th">CONTA</th>
+                    <th scope="col" class="close-th">DATA PREVISÃO</th>
+                    <th scope="col" class="close-th">VALOR DESPESA</th>                 
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for pd in previsao_despesas_list %}
+                <tr>
+                    <td>{{ pd.categoria.nome }}</td>
+                    <td>{{ pd.data_orcamento_despesa|format_month_year }}</td>
+                    <td>{{ pd.valor_orcamento_despesa|currency_brl }}</td>
+                    <td style="border: none; width:200px">
+                        <a href="{% url 'previsao_despesas_update' pk=pd.pk %}" class="btn btn-primary btn-sm">ALTERAR</a>
+                        <a href="{% url 'previsao_despesas_delete' pk=pd.pk %}" class="btn btn-danger btn-sm">EXCLUIR</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </main>
+
+    <!-- Scripts JavaScript -->
+    <script>
+        // Função para manipular a pesquisa/filtragem
+        function handleSearch() {
+            document.getElementById('txtBusca').addEventListener('input', function () {
+                var searchText = this.value.toLowerCase();
+                var rows = document.querySelectorAll('#ReceitasTable tbody tr');
+
+                rows.forEach(function (row) {
+                    // Seleciona o segundo <td> dentro da linha
+                    var nome = row.querySelectorAll('td')[0].textContent.toLowerCase();
+                    // Verifica se o nome contém o texto da busca
+                    if (nome.includes(searchText)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+        }
+
+        // Ouvinte de evento para DOMContentLoaded para chamar as funções necessárias
+        document.addEventListener('DOMContentLoaded', function () {
+            handleSearch();
+        });
+    </script>
+
+    <!-- Bootstrap JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

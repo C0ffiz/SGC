@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- Folhas de Estilo Externas -->
+        <link rel="stylesheet" href="/static/node_modules/@fortawesome/fontawesome-free/css/all.css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+            integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <!-- Folhas de Estilo Locais -->
+        <link rel="stylesheet" href="/static/css/condominios.css">
+        <title>SGC</title>
+    </head>
+    <body>
+        <!-- Barra de Navegação -->
+        <nav class="navbar bg-dark mb-30" data-bs-theme="dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="home">CONDOMINIUM</a>
+            </div>
+        </nav>
+
+        <!-- Corpo da Página -->
+        <main class="container">
+            <h1 id="titulo_list">CONDOMÍNIOS</h1>
+
+            <!-- Opções de Pesquisa e Cadastro -->
+            <div class="container_1">
+                <div class="box">
+                    <a href="{% url 'condominios_create' %}" class="btn btn-primary" id="cadastrar">CADASTRAR</a>
+                </div>
+                <div class="box" id="divBusca">
+                    <input type="text" id="txtBusca" placeholder="Condomínio" />
+                    <button id="btnBusca">BUSCAR</button>
+                </div>
+            </div>
+
+            <!-- Tabela de Usuários -->
+            <table id="condominiosTable" class="table">
+                <thead>
+                    <tr>                 
+                        <th scope="col">
+                            <a href="#" class="sort-header link-arrow down" data-sort="nome_condominio">
+                                <span class="label-text">NOME CONDOMÍNIO</span>
+                                <span class="sort-icon"></span>
+                                <span class="sorting-label"></span>
+                            </a>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cond in condominios_list %}
+                        <tr>
+                            <td class="nome_condominio">{{ cond.nome_condominio }}</td>
+                            <td style="border: none; width:200px">
+                                <a href="{% url 'condominios_update' pk=cond.pk %}" class="btn btn-primary btn-sm">ALTERAR</a>
+                                <a href="{% url 'condominios_delete' pk=cond.pk %}" class="btn btn-danger btn-sm">EXCLUIR</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </main>
+
+        <!-- manipula a ordenação das colunas -->
+        <script>
+            // Função para manipular a ordenação das colunas
+            function handleSort() {
+                var headers = document.querySelectorAll('.sort-header');
+                headers.forEach(function (header) {
+                    header.addEventListener('click', function (event) {
+                        event.preventDefault(); // Evita comportamento padrão do link
+                        var column = this.getAttribute('data-sort');
+                        var isAscending = this.classList.contains('asc');
+                        toggleSortIcon(this, isAscending);
+                        sortTable(column, isAscending);
+                    });
+                });
+            }
+
+            // Função para alternar o ícone de ordenação
+            function toggleSortIcon(header, isAscending) {
+                header.classList.toggle('asc', !isAscending);
+                header.classList.toggle('desc', isAscending);
+            }
+
+            // Função para ordenar as linhas da tabela
+            function sortTable(column, isAscending) {
+                var table = document.getElementById('condominiosTable');
+                var tbody = table.querySelector('tbody');
+                var rows = Array.from(tbody.rows);
+                var columnIndex = Array.from(table.querySelectorAll('th')).findIndex(th => th.querySelector(`[data-sort="${column}"]`));
+
+                rows.sort(function (a, b) {
+                    var x = a.cells[columnIndex].textContent.trim().toLowerCase();
+                    var y = b.cells[columnIndex].textContent.trim().toLowerCase();
+                    return isAscending ? x.localeCompare(y) : y.localeCompare(x);
+                });
+
+                while (tbody.firstChild) {
+                    tbody.removeChild(tbody.firstChild);
+                }
+
+                rows.forEach(function (row) {
+                    tbody.appendChild(row);
+                });
+            }
+
+            // Função para manipular a pesquisa/filtragem
+            function handleSearch() {
+                document.getElementById('txtBusca').addEventListener('input', function () {
+                    var searchText = this.value.toLowerCase();
+                    var rows = document.querySelectorAll('#condominiosTable tbody tr');
+
+                    rows.forEach(function (row) {
+                        var nome_condominio = row.querySelector('.nome_condominio').textContent.toLowerCase();
+                        if (nome_condominio.includes(searchText)) {
+                            row.style.display = '';
+                        } else {
+                            row.style.display = 'none';
+                        }
+                    });
+                });
+            }
+
+            // Ouvinte de evento para DOMContentLoaded para chamar as funções necessárias
+            document.addEventListener('DOMContentLoaded', function () {
+                handleSort();
+                handleSearch();
+            });
+        </script>
+
+        <!-- Bootstrap JavaScript -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+</html>
+

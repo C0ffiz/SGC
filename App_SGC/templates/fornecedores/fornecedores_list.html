@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="pt-br">
+    {% load custom_filters %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Folhas de Estilo Externas -->
+    <link rel="stylesheet" href="/static/node_modules/@fortawesome/fontawesome-free/css/all.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <!-- Folhas de Estilo Locais -->
+    <link rel="stylesheet" href="/static/css/fornecedores.css">
+    <title>SGC</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+
+</head>
+
+<body>
+    <!-- Barra de Navegação -->
+    <nav class="navbar bg-dark mb-30" data-bs-theme="dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="home">CONDOMINIUM</a>
+        </div>
+    </nav>
+
+    <!-- Corpo da Página -->
+    <main class="container">
+        <h1 id="titulo_list">FORNECEDORES</h1>
+
+        <!-- Opções de Pesquisa e Cadastro -->
+        <div class="container_1">
+            <div class="box">
+                <a href="{% url 'fornecedores_create' %}" class="btn btn-primary" id="cadastrar">CADASTRAR FORNECEDOR</a>
+            </div>
+
+            <div class="box" id="divBusca">
+                <input type="text" id="txtBusca" placeholder="CNPJ/CPF" />
+                <button id="btnBusca">BUSCAR</button>
+            </div>
+        </div>
+
+        <!-- Tabela de Unidades -->
+        <table id="fornecedoresTable" class="table auto-layout">
+            <thead>
+                <tr>                                  
+                    <th scope="col" class="close-th">CNPJ</th>
+                    <th scope="col" class="close-th">RAZÃO SOCIAL</th>
+                    <th scope="col" class="close-th">NOME FANTASIA</th>
+                    <th scope="col" class="close-th">CPF FORNECEDOR</th>    
+                    <th scope="col" class="close-th">ENDEREÇO</th>
+                    <th scope="col" class="close-th">TELEFONE</th>
+                    <th scope="col" class="close-th">CELULAR</th>
+                    <th scope="col" class="close-th">E-MAIL</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for forn in fornecedores_list %}
+                    <tr>                        
+                        <td>{{ forn.cnpj|format_cnpj}}</td>
+                        <td>{{ forn.razaoSocial }}</td>
+                        <td>{{ forn.nomeFantasia }}</td>
+                        <td>{{ forn.cpf_fornecedor|format_cpf }}</td>
+                        <td>{{ forn.endereco }}</td>
+                        <td>{{ forn.telefone|format_phone|default_if_none:""  }}</td>
+                        <td>{{ forn.celular|format_celular }}</td>
+                        <td>{{ forn.email }}</td>
+                        <td style="border: none; width:200px">
+                            <a href="{% url 'fornecedores_update' pk=forn.pk %}" class="btn btn-primary btn-sm">ALTERAR</a>
+                            <a href="{% url 'fornecedores_delete' pk=forn.pk %}" class="btn btn-danger btn-sm">EXCLUIR</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </main>
+
+    <script>
+        // Função para manipular a pesquisa/filtragem            
+        function handleSearch() {
+            document.getElementById('txtBusca').addEventListener('input', function () {
+                var searchText = this.value.toLowerCase();
+                var rows = document.querySelectorAll('#fornecedoresTable tbody tr');
+
+                rows.forEach(function (row) {
+                    var cnpj = row.cells[0].textContent.toLowerCase();
+                    var cpf_fornecedor = row.cells[3].textContent.toLowerCase();
+                    if (cnpj.includes(searchText) || cpf_fornecedor.includes(searchText)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+        }
+
+        window.addEventListener('load', function () {
+            handleSearch();
+        });
+    </script>
+    <!-- Bootstrap JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+</body>
+
+</html>

@@ -1,0 +1,243 @@
+body {
+    background-color: rgb(0, 74, 112);
+}
+
+.navbar {
+    background-color: rgb(4, 37, 86);
+    color: rgb(151, 151, 151);
+    font-weight: 600;
+    display: flex;
+    align-content: center;
+    align-items: center;
+    flex-wrap: nowrap;
+    text-wrap: nowrap;
+}
+
+#titulo_list {
+    width: 100%;
+    align-items: center;
+    text-align: center;
+    color: #fbf5f5;
+    font-size: 40px;
+    padding-bottom: 30px;
+}
+
+#titulo {
+    width: 100%;
+    align-items: center;
+    text-align: center;
+    color: #fbf5f5;
+    font-size: 40px;
+    padding-bottom: 0px;
+}
+
+p {
+    width: 100%;
+    /* align-items:; */
+    text-align: center;
+    color: #fbf5f5;
+    font-size: 30px;
+    padding-bottom: 30px;
+}
+
+a{
+    color: #fff;
+}
+
+a:hover{
+    color:#fff
+}
+
+.container {
+    text-align: center;
+    padding-top: 60px;
+    color: #fbf5f5;
+    align-items: center;
+    align-content: center;
+}
+
+.container_1 {
+    display: flex;
+    width: 100%;
+    height: 60px;
+    align-items: center;
+    align-content: center;
+}
+
+
+th {
+    font-weight: bold;
+    color: #fbf5f5;
+    /* forced-color-adjust: #ffffff; */
+}
+
+td {
+    color: #fff;
+    align-items: center;
+    align-content: center;
+}
+
+.btn-primary {
+    font-weight: bold;
+}
+
+.button-container {
+    display: flex;
+    gap: 10px; /* Espaçamento entre os botões */
+    justify-content: center; /* Centraliza os botões no contêiner */
+}
+
+.button-style {
+    border: none;
+    justify-content: center;
+    align-items: center;
+    width: 140px;
+    height: 32px;
+    margin-top: 5px;
+    text-align: center;
+    font-weight: bold;
+    background: #0d6efd;
+    color: #fbf5f5;
+    display: flex;
+    align-items: center;
+}
+
+.btnsalvar {
+    border: none;
+    justify-content: center;
+    align-items: center;
+    width: 140px;
+    height: 32px;
+    margin-top: 5px;
+    text-align: center;
+    font-weight: bold;
+    background: #0d6efd;
+    color: #fbf5f5;
+    display: flex;
+    align-items: center;
+}
+
+.btn-danger {
+    font-weight: bold;
+}
+
+#cadastrar {
+    width: 250px;
+    height: 32px;
+    display: flex;
+    justify-content: center;  /* Centraliza horizontalmente */
+    align-items: center;   /* Centraliza verticalmente */
+    /* font-weight: bold; */
+}
+
+/* Busca na tabela */
+
+#divBusca {
+    background-color: #E0EEEE;
+    border: solid 0px#0d6efd;
+    border-radius: 5px;
+    width: auto;
+    height: 32px;
+}
+
+#txtBusca {
+    float: left;
+    background-color: transparent;
+    padding-left: 5px;
+    font-size: 18px;
+    border: none;
+    height: 32px;
+    width: 191px;
+}
+
+#btnBusca {
+    border: none;
+    float: left;
+    height: 32px;
+    /* border-radius:0 7px 7px 0; */
+    border-radius: 0 5px 5px 0;
+    width: 70px;
+    font-weight: bold;
+    background: #0d6efd;
+    color: #fbf5f5;
+}
+
+.message {
+    width: 100%;
+    height: 40px;
+}
+
+#sidebar-menu-hide {
+    width: 44px;
+    overflow: hidden;
+    transition: width 0.5s ease;
+}
+
+#sidebar-menu-hide:hover {
+    width: 230px;
+}
+
+.box {
+    width: 350px;
+    height: 32px;
+    display: inline-block;
+    margin-right: 20px;
+    /* Adicione margem para separar as divs */
+    margin-bottom: 0%;
+}
+
+.sort-header {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+
+.link-arrow {
+    color: #7a8793;
+    text-decoration: none;
+}
+
+.link-arrow:before {
+    font-family: "Font Awesome 6 Free", sans-serif;
+    font-weight: 600;
+    font-size: 0.75rem;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.link-arrow.down:before {
+    content: "\f107";
+}
+
+.link-arrow.transition:before {
+    transition: 0.2s all;
+}
+
+.link-arrow.rotate:before {
+    transform: rotate(180deg);
+}
+
+.link-arrow.rotate-revert:before {
+    transform: rotate(-90deg);
+}
+
+.btn-excluir{
+    width: 90px;
+    height: 31px;
+}
+
+.btn-cancelar{
+    width: 90px;
+    height: 31px;
+}
+
+.error-duplicate{
+    background-color: transparent;
+    color: #fff;
+    text-decoration: none;
+    border: 0;
+    list-style-position: inside;
+    padding: 0;
+}
+

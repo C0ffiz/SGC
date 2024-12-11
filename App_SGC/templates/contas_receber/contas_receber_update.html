@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="pt-br">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>SGC</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+        <link rel="stylesheet" href="/static/css/contas_receber.css">
+
+    <style>
+        .error-duplicate{
+            background-color: transparent;
+            color: #fff;
+            text-decoration: none;
+            border: 0;
+            list-style-position: inside;
+            padding: 0;
+        }
+
+        /* Tamanho da fonte, cor e negrito para a MENSAGEM de erro */
+        .text-danger {
+            font-size: 20px; /* Aumenta o tamanho da letra da mensagem de erro */
+            height: 30px; /* Espaço reservado para a mensagem de erro */
+            line-height: 30px; /* Centraliza verticalmente o texto da mensagem */
+            margin-bottom: 20px; /* Margem inferior */
+            color: rgb(246, 244, 244) !important; /* Cor branca */
+            font-weight: bold; /* Negrito */
+        }
+    </style>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Aplicar a máscara de moeda ao carregar a página
+            $('#valor').mask('00.000.000,00', {reverse: true});
+            // Aplicar a máscara de data ao carregar a página
+            // $('#data_vencimento').mask('00/00/0000');
+    
+            $('#btnsalvar').click(function(event) {
+                event.preventDefault(); // Impede o envio automático do formulário
+    
+                // Validação dos campos obrigatórios, na ordem desejada
+                var campos = [
+                    {campo: $('#id_categoria'), nome: ''},
+                    {campo: $('#unidade_id'), nome: ''},
+                    {campo: $('#tipo_documento'), nome: ''},
+                    {campo: $('#numero_documento'), nome: ''},
+                    {campo: $('#data_vencimento'), nome: ''},
+                    {campo: $('#valor'), nome: ''}
+                    
+            
+                ];
+    
+                var valid = true;
+    
+                // Itera sobre os campos e aplica validação customizada
+                for (var i = 0; i < campos.length; i++) {
+                    if (!campos[i].campo.val()) {
+                        campos[i].campo[0].setCustomValidity(`Preencha o campo ${campos[i].nome}`);
+                        campos[i].campo[0].reportValidity();
+                        valid = false;
+                        break; // Interrompe a iteração ao encontrar o primeiro campo inválido
+                    } else {
+                        campos[i].campo[0].setCustomValidity(""); // Remove mensagem de erro se estiver válido
+                    }
+                }
+    
+                if (valid) {
+                    // Remover a máscara de valor e data antes de enviar o formulário
+                    $('#valor').each(function() {
+                        var valor = $(this).val().replace(/\./g, '').replace(',', '.');
+                        $(this).val(valor);
+                    });
+    
+                    $('#data_vencimento').each(function() {
+                        var data = $(this).val().replace(/\//g, '-'); // Remove a máscara e transforma a data em formato AAAA-MM-DD
+                        $(this).val(data);
+                    });
+    
+                    // Submete o formulário após as correções
+                    $('form').off('submit').submit();
+                }
+            });
+        });
+    </script>
+    
+</head>
+<body>
+    <nav class="navbar bg-dark mb-30" data-bs-theme="dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'contas_receber_list' %}">CONDOMINIUM</a>
+        </div>
+    </nav>
+    <main class="container">
+        <h1 id="titulo">ALTERAÇÃO CONTAS A RECEBER</h1><br>
+        
+        <div class="painel" style="height: 500px;">
+            <form method="POST" action="{% url 'contas_receber_update' form.instance.pk %}">
+                {% csrf_token %}
+               
+                <!-- Exibir mensagem de erro com espaço fixo -->
+                <div class="text-danger">
+                    {% if form.errors %}
+                        <div>
+                            {% for error in form.non_field_errors %}
+                                {{ error }}
+                            {% endfor %}
+                            {% for field, errors in form.errors.items %}
+                                {% for error in errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div> 
+
+                <div class="colunas">
+
+                    <!-- Coluna 1 -->
+                    <div class="coluna">
+
+                        <div class="input-bottom">
+                            <label for="id_parent" class="form-label">*Conta:</label>
+                            <select name="categoria" id="id_categoria" class="form-control-sm" readonly>
+                                <option value="">Conta</option>
+                                {% for categoria in categorias %}
+                                    <option value="{{ categoria.id }}" {% if categoria.id == form.instance.categoria.id %}selected{% endif %}>
+                                        {{ categoria.nome }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="input-bottom">
+                            <label for="tipo_documento" class="form-label">*Tipo Documento:</label>
+                            <select class="form-control-sm {% if form.tipo_documento.errors %}field-error{% endif %}" id="tipo_documento" name="tipo_documento" required>
+                                {% for value, label in form.tipo_documento.field.choices %}
+                                    <option value="{{ value }}" {% if form.tipo_documento.value == value %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="input-bottom">
+                            <label for="data_vencimento" class="form-label">*Data Vencimento:</label>
+                            <input type="date" class="form-control-sm {% if form.data_vencimento.errors %}field-error{% endif %}" id="data_vencimento" name="data_vencimento" value="{% if form.data_vencimento.value %}{{ form.data_vencimento.value|date:'Y-m-d' }}{% endif %}" required autofocus>
+                        </div>
+
+                    </div>
+                
+                    <!-- Coluna 2 -->
+                    <div class="coluna">
+
+                        <div class="input-bottom">
+                            <label for="unidade_id" class="form-label">*Unidade:</label>
+                            <select name="unidade_id" id="unidade_id" class="form-control-sm" tabindex="2" autofocus>
+                                <option value="">Unidade</option>
+                                {% for unidade in unidades %}
+                                    <option value="{{ unidade.unidade_id }}" {% if unidade.unidade_id == unidade_atual_id %}selected{% endif %}>
+                                        {{ unidade.bloco_id.bloco }} {{ unidade.unidade }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>  
+                         
+                        <div class="input-bottom">
+                            <label for="numero_documento" class="form-label">*Nº Documento:</label>
+                            <input type="text" class="form-control-sm {% if form.numero_documento.errors %}field-error{% endif %}" id="numero_documento" name="numero_documento" value="{{ form.numero_documento.value }}" required>
+                        </div>
+                                                
+                        <div class="input-bottom">
+                            <label for="valor" class="form-label">*Valor a Receber:</label>
+                            <input type="text" class="form-control-sm {% if form.valor.errors %}field-error{% endif %}" id="valor" name="valor" value="{{ form.valor.value|stringformat:"0.2f" }}" required>
+                        </div>
+
+                    </div>
+                </div>
+                <br>
+
+                <button id="btnsalvar" type="submit" class="btn btn-primary btnsalvar">SALVAR</button>
+                             
+            </form>
+        </div>
+    </main>
+
+    <script>
+        $('form').submit(function() {
+            $('#valor, #valor_recebido').each(function(){
+                var valor = $(this).val().replace(/\./g, '').replace(',', '.'); // Substitui pontos por vazio e vírgulas por ponto
+                $(this).val(valor);
+            });
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz4fnFO9gybBogGzF9RAp6F3E6pbb7zJpPHT6f6Ffhh0GgiVNU7BRSK7jl" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-QF2mxF1WBbKV5wzELpLhjlbsABsUcQ8Lqyf2z5LN6go6abkFZxWfXaBgEKTt9iZS" crossorigin="anonymous"></script>
+</body>
+</html>

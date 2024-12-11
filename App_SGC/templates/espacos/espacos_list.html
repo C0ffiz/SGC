@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="pt-br">
+{% load custom_filters %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/static/node_modules/@fortawesome/fontawesome-free/css/all.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="/static/css/espacos.css">
+    <title>SGC</title>
+</head>
+<body>
+    <nav class="navbar bg-dark mb-30" data-bs-theme="dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="home">CONDOMINIUM</a>
+        </div>
+    </nav>
+    <main class="container">
+        <h1 id="titulo_list">ESPAÇOS PARA RESERVA</h1>
+        <div class="container_1">
+            <div class="box">
+                <a href="{% url 'espacos_create' %}" class="btn btn-primary" id="cadastrar">CADASTRAR ESPAÇOS</a>
+            </div>
+            <div class="box" id="divBusca">
+                <input type="text" id="txtBusca" placeholder="Espaço" />
+                <button id="btnBusca">BUSCAR</button>
+            </div>
+        </div>
+        <table id="espaco_admTable" class="table">
+
+            <thead>
+                <tr>
+                    <th scope="col">ESPAÇO PARA RESERVA</th>
+                    <th scope="col">DSC</th>
+                    <th scope="col">TEMPO LOCAÇÃO/h</th>
+                    <th scope="col">VALOR LOCAÇÃO</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for espa in espacos_list %}
+                <tr>
+                    <td>{{ espa.nome_espaco }}</td>
+                    <td>{{ espa.dsc_espaco }}</td>
+                    <td>{{ espa.tempo_espaco }}</td>
+                    <td>{{ espa.valor_espaco|currency_brl |default_if_none:'' }}</td>
+
+                    <td style="border: none; width:200px">
+                        <a href="{% url 'espacos_update' pk=espa.pk %}" class="btn btn-primary btn-sm">ALTERAR</a>
+                        <a href="{% url 'espacos_delete' pk=espa.pk %}" class="btn btn-danger btn-sm">EXCLUIR</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </main>
+    
+    <script>
+        function handleSearch() {
+    document.getElementById('txtBusca').addEventListener('input', function () {
+        var searchText = this.value.toLowerCase();
+        var rows = document.querySelectorAll('#espaco_admTable tbody tr');
+
+        rows.forEach(function (row) {
+            // Seleciona todas as células da linha
+            var cells = row.querySelectorAll('td');
+            var rowContainsSearchText = false;
+
+            // Verifica todas as células para ver se contêm o texto de busca
+            cells.forEach(function (cell) {
+                if (cell.textContent.toLowerCase().includes(searchText)) {
+                    rowContainsSearchText = true;
+                }
+            });
+
+            // Exibe ou oculta a linha com base na presença do texto de busca
+            if (rowContainsSearchText) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    handleSearch();
+});
+
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

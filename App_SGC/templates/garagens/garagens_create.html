@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SGC</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="/static/css/garagens.css">
+
+    <style>
+        input[type="text"], input[type="date"], select.form-control-sm {
+            width: 220px;
+            height: 30px;
+            margin: auto;
+            margin-bottom: 10px; /* Espaçamento entre as linhas */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+   
+        /* Tamanho da fonte, cor e negrito para a MENSAGEM de erro */
+        .text-danger {
+            font-size: 20px; /* Aumenta o tamanho da letra da mensagem de erro */
+            height: 30px; /* Espaço reservado para a mensagem de erro */
+            line-height: 30px; /* Centraliza verticalmente o texto da mensagem */
+            margin-bottom: 10px; /* Margem inferior */
+            color: rgb(246, 244, 244) !important; /* Cor branca */
+            font-weight: bold; /* Negrito */
+        }
+           /* Tamanho da fonte, cor e negrito para a MENSAGEM de erro */
+           .text-danger {
+            font-size: 20px; /* Aumenta o tamanho da letra da mensagem de erro */
+            height: 30px; /* Espaço reservado para a mensagem de erro */
+            line-height: 30px; /* Centraliza verticalmente o texto da mensagem */
+            margin-bottom: 20px; /* Margem inferior */
+            color: rgb(246, 244, 244) !important; /* Cor branca */
+            font-weight: bold; /* Negrito */
+        }
+
+    </style>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $('#cpf_condomino').mask('000.000.000-00');
+            $('#btnsalvar').click(function(event) {
+                var cpf = $('#cpf_condomino').val().replace(/\D/g, '');
+                $('#cpf_condomino').val(cpf);
+
+                // Converter campos para maiúsculas
+                $('#placa_veiculo').val($('#placa_veiculo').val().toUpperCase());
+                $('#marca_veiculo').val($('#marca_veiculo').val().toUpperCase());
+                $('#modelo_veiculo').val($('#modelo_veiculo').val().toUpperCase());
+                $('#cor_veiculo').val($('#cor_veiculo').val().toUpperCase());
+            });
+        });
+    </script>
+</head>
+<body>
+    <nav class="navbar bg-dark mb-30" data-bs-theme="dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'garagens_list' %}">CONDOMINIUM</a>
+        </div>
+    </nav>
+    <main class="container">
+        <h1 id="titulo">CADASTRO DE GARAGENS</h1>
+
+        <div class="painel" style="height: 500px;">
+            <form method="POST" action="{% url 'garagens_create' %}">
+                {% csrf_token %}
+
+                <!-- Exibir mensagem de erro com espaço fixo -->
+                <div class="text-danger">
+                    {% for message in messages %}
+                        <div>{{ message }}</div>
+                    {% endfor %}
+                </div>                
+
+                <div class="input-bottom">
+                    <label for="cpf_condomino" class="form-label">*CPF do Condômino:</label>
+                    <input type="text" class="form-control" id="cpf_condomino" name="cpf_condomino" required tabindex="1" autofocus>
+                </div>
+
+                <div class="input-bottom">
+                    <label for="bloco_id" class="form-label">*Bloco:</label>
+                    <select name="bloco_id" id="bloco_id" class="form-control-sm" tabindex="2" required>
+                        <option value="">Bloco</option>
+                        {% for bloco in blocos %}
+                            <option value="{{ bloco.bloco_id }}">{{ bloco.bloco }}</option>
+                        {% endfor %}
+                    </select>                    
+                </div>
+
+                <div class="input-bottom">
+                    <label for="n_garagem" class="form-label">*Nº Garagem:</label>
+                    <input type="text" class="form-control" id="n_garagem" name="n_garagem" maxlength="4" required tabindex="3">
+                </div> 
+                <br><br>     
+
+                <button id="btnsalvar" type="submit">SALVAR</button>
+            </form>
+        </div>
+    </main>
+</body>
+</html>

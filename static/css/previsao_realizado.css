@@ -1,0 +1,237 @@
+html body {
+    background-color: rgb(0, 74, 112) !important; 
+
+}
+
+.navbar{
+    background-color: rgb(4, 37, 86);
+    color: #fff;
+    font-weight: 600;
+    display: flex;
+    align-content: center;
+    align-items: center;
+    flex-wrap: nowrap;
+    text-wrap: nowrap;
+
+    a{
+        color: #fff;
+    }
+}
+
+
+/* Botões da tela de listagem */
+
+.btn-danger, .btn-primary {
+    font-weight: bold;
+}
+
+
+/* Div da Main da tela de listagem */
+
+.container{
+    text-align: center;
+    padding-top: 60px;
+    color: #fbf5f5;
+    align-items: center;
+    align-content: center;
+}
+
+
+/* Titulo da Pagina da tela de listagem */
+
+#titulo_list {
+    width: 100%;
+    align-items: center;
+    text-align: center;
+    color: #fbf5f5;
+    font-size: 40px;
+    padding-bottom: 15px;
+    padding-top: 15px;
+}
+
+
+/* Div de Cadastrar|Buscar da tela de listagem */
+
+.container_1 {
+    display: flex;
+    width: 100%;
+    height: 60px;
+    align-items: center;
+    align-content: center;
+}
+
+
+/* Botões de Cadastrar da tela de listagem */
+
+#cadastrar {
+    width: 250px;
+    height: 32px;
+    display: flex;
+    justify-content: center;  /* Centraliza horizontalmente */
+    align-items: center;   /* Centraliza verticalmente */
+    
+}
+
+
+/* Buscar na tabela */
+
+#divBusca {
+    background-color: #E0EEEE;
+    border: solid 0px#0d6efd;
+    border-radius: 5px;
+    width: auto;
+    height: 32px;
+}
+
+#txtBusca {
+    float: left;
+    background-color: transparent;
+    padding-left: 5px;
+    font-size: 18px;
+    border: none;
+    height: 32px;
+    width: 191px;
+}
+
+#btnBusca {
+    border: none;
+    float: left;
+    height: 32px;
+    border-radius: 0 5px 5px 0;
+    width: 70px;
+    font-weight: bold;
+    background: #0d6efd;
+    color: #fbf5f5;
+}
+
+
+/* Colunas da Tabela da tela de listagem */
+
+th {
+    font-weight: bold;
+    color: #fbf5f5;
+    /* forced-color-adjust: #ffffff; */
+}
+
+td {
+    color: #fff;
+    align-items: center;
+    align-content: center;
+}
+
+
+/* Botões da tela de exclusão */
+.btn-excluir{
+    width: 90px;
+    height: 31px;
+    text-align: center;
+}
+
+.btn-cancelar{
+    width: 90px;
+    height: 31px;
+    text-align: center;
+}
+
+
+/* Colunas dos campos da tela de cadastrar|update */
+
+.colunas {
+    display: flex;
+    gap: 20px; /* Space between columns */
+    justify-content: center; /* Center columns horizontally */
+    flex-wrap: wrap; /* Allow columns to wrap if necessary */
+    width: 100%; /* Ensure it takes the full width of the container */
+}
+
+.colunas .coluna {
+    flex: 1; /* Each column takes equal space */
+    max-width: fit-content; /* Optional: set max-width for columns */
+}
+
+
+/* Campos da tela de cadastrar|update */
+
+.input-bottom {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px; /* Espaçamento entre as linhas */
+}
+
+input[type="text"], input[type="number"], input[type="tel"], input[type="email"], input[type="date"], select {
+    width: 220px;
+    height: 33px;
+    border-width: 1px;
+}
+
+/* Botões da tela de cadastrar */
+
+.btnsalvar {
+    margin-top: 10px;
+    margin-bottom: 20px;
+    width: 140px;
+    height: 38px;
+    text-align: center;
+    font-weight: bold;
+}
+
+
+.message {
+    width: 100%;
+    height: 40px;
+}
+
+/* 2/2 Utilizado para que o link do arquivo do list fique azul e sublinhado */
+.link-personalizado {
+    color: #ceceed; /* Azul escuro */
+    text-decoration: underline; /* Sublinhado */
+}
+
+.link-personalizado:hover {
+    color: #ceceed; /* Mantém o azul escuro ao passar o mouse */
+    text-decoration: underline;
+}
+
+
+/* ALTERAÇÕES 09/10/2024 NA <main> !!!!!!!!!!!!!!!!!!!!!!!! já existe outro container */ 
+/* Tamanho da <main> */
+.container, 
+.container-sm, 
+.container-md, 
+.container-lg, 
+.container-xl {
+  width: 100%;
+  max-width: none;
+}
+
+/* Intruções da Tabela */
+p {
+    color: rgba(255, 255, 255, 0.753)
+}
+
+/* Borda da tabela */
+/* Bold right border for each month's group */
+.month-header {
+    border-right: 3px solid rgb(255, 255, 255);  /* Bold right border for header */
+}
+
+.month-cell {
+    border-right: 3px solid rgb(255, 255, 255);  /* Bold right border for body cells */
+}
+
+/* Add borders for the whole table */
+#usuariosTable {
+    border: 2px solid rgba(201, 201, 201, 0.336);       /* Bold border around the entire table */
+    border-collapse: collapse;     /* Ensures borders don't double up */
+}
+
+/* Set thinner borders for all other sides */
+
+
+/* Remove the right border for the last column (to avoid extra thickness) */
+#usuariosTable thead th:last-child, 
+#usuariosTable tbody td:last-child {
+    border-right: 1px solid rgb(255, 255, 255);  /* Normal border for last column */
+}
+
+

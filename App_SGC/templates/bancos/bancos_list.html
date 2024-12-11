@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="pt-br">
+{% load custom_filters %}
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- Folhas de Estilo Externas -->
+        <link rel="stylesheet" href="/static/node_modules/@fortawesome/fontawesome-free/css/all.css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+            integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <!-- Folhas de Estilo Locais -->
+        <link rel="stylesheet" href="/static/css/bancos.css">
+        <title>SGC</title>
+        <style>
+            /* altera ambiente do cabeçalho e linha q fica abaixo */
+            .auto-layout {
+                table-layout: auto; /* Ajusta o layout da tabela conforme o conteúdo */
+                margin-left: auto;
+                margin-right: auto;
+                /* border-collapse: separate; */
+                border-spacing: 0px; /* Aumenta a distância entre as colunas */
+            }
+            /* altera ambiente do botão cadastrar e buscar */
+            .box {
+                width: 350px;
+                height: 32px;
+                display: inline-block;
+                margin-right: 20px; /* Adiciona margem à direita para separar as divs horizontalmente */
+                margin-bottom: 20px; /* Adiciona margem inferior para separar as divs verticalmente */
+            }
+            #saldo{
+                font-size: larger;
+            }
+            
+        </style>
+    </head>
+
+    <body>
+        <!-- Barra de Navegação -->
+        <nav class="navbar bg-dark mb-30" data-bs-theme="dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="home">CONDOMINIUM</a>
+            </div>
+        </nav>
+
+        <!-- Corpo da Página -->
+        <main class="container">
+            <h1 id="titulo_list">BANCOS</h1>
+
+            <!-- Opções de Pesquisa e Cadastro -->
+            <div class="container_1">
+                <div class="box">
+                    <a href="{% url 'bancos_create' %}" class="btn btn-primary" id="cadastrar">CADASTRAR BANCOS</a>
+                </div>
+
+                <div class="box" id="divBusca">
+                    <input type="text" id="txtBusca" placeholder="Nome banco" />
+                    <button id="btnBusca">BUSCAR</button>
+                </div>
+
+            </div>
+
+            <!-- Tabela de Bancos -->
+            <table id="BancosTable" class="table auto-layout">
+                <thead>
+                    <tr>
+                        <th scope="col" class="close-th">NOME</th>
+                        <th scope="col" class="close-th">BANCO</th>
+                        <th scope="col" class="close-th">AGÊNCIA</th>
+                        <th scope="col" class="close-th">CC</th>
+                        <th scope="col" class="close-th">TELEFONE</th>
+                        <th scope="col" class="close-th">CELULAR</th>
+                        <th scope="col" class="close-th">E-MAIL</th>
+                        <th scope="col" class="close-th">SALDO</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body">
+                    {% for banco in bancos_list %}
+                    <tr> 
+                        <td>{{ banco.nome_banco }}</td>
+                        <td>{{ banco.n_banco }}</td>    
+                        <td>{{ banco.agencia }}</td>
+                        <td>{{ banco.conta_corrente }}</td>
+                        <td class="telefone">{{ banco.telefone|format_phone|default_if_none:"" }}</td>
+                        <td class="celular">{{ banco.celular|format_celular }}</td>
+                        <td>{{ banco.email }}</td>
+                        <td>{{ banco.saldo_instituicao|currency_brl }}</td>
+                        <td style="border: none; width:200px">
+                            <a href="{% url 'bancos_update' pk=banco.pk %}" class="btn btn-primary btn-sm">ALTERAR</a>
+                            <a href="{% url 'bancos_delete' pk=banco.pk %}" class="btn btn-danger btn-sm">EXCLUIR</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                
+                </tbody>
+            </table>
+        </main>
+
+        <script> 
+            function handleSearch() {
+                document.getElementById('txtBusca').addEventListener('input', function () {
+                    var searchText = this.value.toLowerCase();
+                    var rows = document.querySelectorAll('#BancosTable tbody tr'); // Corrigido o ID da tabela
+        
+                    rows.forEach(function (row) {
+                        // Seleciona a coluna com data_vencimento (4 = quinta coluna)
+                        var nomeBanco = row.querySelectorAll('td')[0].textContent.toLowerCase(); 
+                        
+                        // Verifica se a data contém o texto da busca
+                        if (nomeBanco.includes(searchText)) {
+                            row.style.display = '';
+                        } else {
+                            row.style.display = 'none';
+                        }
+                    });
+                });
+            }
+        
+            document.addEventListener('DOMContentLoaded', function () {
+                handleSearch();
+            });
+        </script>
+
+        <!-- Bootstrap JavaScript -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+</html>

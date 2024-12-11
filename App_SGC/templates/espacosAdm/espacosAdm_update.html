@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SGC</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="/static/css/espacosAdm.css">
+    <style>
+        .container-cols {
+            display: flex;
+            gap: 20px; /* Espaçamento entre as colunas */
+        }
+        .input-col {
+            flex: 1; /* Cada coluna ocupa o mesmo espaço */
+            display: flex;
+            flex-direction: column;
+        }
+        .input-col .input-row {
+            margin-bottom: 40px; /* Espaçamento entre as linhas */
+        }
+        .form-control-sm {
+            /* width: 50%;  */
+        }
+        input[type="text"], input[type="date"], select {
+            width: 220px;
+            height: 30px;
+        }   
+        .input-bottom {
+            margin-bottom: 20px; /* Aumenta a distância entre as divs verticalmente */
+            margin-right: 20px; /* Aumenta a distância entre as divs horizontalmente */
+        }
+            /* Tamanho da fonte, cor e negrito para a MENSAGEM de erro */
+        .text-danger {
+            font-size: 20px; /* Aumenta o tamanho da letra da mensagem de erro */
+            height: 30px; /* Espaço reservado para a mensagem de erro */
+            line-height: 30px; /* Centraliza verticalmente o texto da mensagem */
+            margin-bottom: 20px; /* Margem inferior */
+            color: rgb(246, 244, 244) !important; /* Cor branca */
+            font-weight: bold; /* Negrito */
+        }    
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar bg-dark mb-30" data-bs-theme="dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'espacosAdm_list' %}">CONDOMINIUM</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <h1 id="titulo">ALTERAÇÃO DE ESPAÇOS ADMINISTRATIVOS</h1><br>
+
+        <div class="painel" style="height: 500px;">
+
+            <form method="POST">
+                {% csrf_token %}
+
+                <div class="text-danger">
+                    {% for message in messages %}
+                        <div>{{ message }}</div>
+                    {% endfor %}
+                </div>                
+
+                <div class="update-form">
+                    <label for="nome_espaco_adm" class="form-label">*Espaço Administrativo:</label> <br>
+                    <input id="nome_espaco_adm" name="nome_espaco_adm" class="form-control-sm" type="text" 
+                    value="{{ form.nome_espaco_adm.value }}" maxlength="60" tabindex="1" required autofocus> <br><br>
+                </div>                             
+                <br><br>
+
+                <button id="btnsalvar" type="submit" value="Update">SALVAR</button>
+            </form>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+            crossorigin="anonymous">
+    </script>
+</body>
+</html>

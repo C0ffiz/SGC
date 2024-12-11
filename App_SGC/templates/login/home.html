@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<link rel="stylesheet" href="/static/node_modules/bootstrap/dist/css/bootstrap.css">
+	<link rel="stylesheet" href="/static/node_modules/sidebar-skeleton-compostrap/dist/css/sidebar.css">
+	<link rel="stylesheet" href="/static/node_modules/@fortawesome/fontawesome-free/css/all.css">
+	<link rel="stylesheet" href="/static/node_modules/perfect-scrollbar/css/perfect-scrollbar.css">
+	<link rel="stylesheet" href="/static/dist/css/sidebar.menu.css">
+
+	<!-- Required meta tags -->
+	<!-- <meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1"> -->
+
+	<!-- Bootstrap CSS -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+	<link rel="stylesheet" href="/static/css/home.css">        
+	<title>SGC</title>
+</head>
+
+<!-- <body class="bg-light"> -->
+<body>
+         		<!-- Altera a cor onde está o título -->
+	<nav style="background-color:rgb(4, 37, 86) !important;" id="navbar" class="navbar navbar-light bg-light">
+		<div>
+			<p class="list-title text-uppercase">{{ user.n_condominio.nome_condominio }}</p>
+			<p class="list-title text-uppercase">Usário conectado:{{ user.username }}</p>
+		</div>
+		<div class="container-fluid">
+			<span id="titulo"  class="navbar-brand mb-0 h1">SISTEMA DE GERENCIAMENTO DE CONDOMÍNIOS</span>
+		</div>
+	</nav>
+
+	<div class="d-flex wrapper wrapper-navbar-used ">
+
+		<nav role="navigation" class="sidebar sidebar-bg-dark sidebar-rounded-top-right shadow-sm" id="navigation" style="background-color: rgba(0, 0, 0, 0);">
+
+						<!-- sidebar -->
+			<div class="sidebar-menu">
+
+				<!-- menu fixed -->
+				<div class="sidebar-menu-fixed">
+
+					<!-- menu scrollbar -->
+																										<!-- Altera a cor de todo o menu retrátil -->
+					<div id="sidebar-menu-hide" class="scrollbar scrollbar-use-navbar scrollbar-bg-dark" style="background-color: rgba(4, 37, 86);">		
+					
+						<!-- menu -->
+																					<!-- Altera a cor do menu onde estão os dizeres -->
+						<ul class="list list-unstyled list-bg-dark list-icon-red mb-0" style="background-color: rgb(4, 37, 86)">						
+							
+		
+							<!--  GERENCIAL  ------------------------------------------------------------------------>
+							<li class="list-item">
+								<!-- list items -->
+								<ul class="list-unstyled">
+									<!-- Relatórios Gerenciais ........................................................................ -->
+									<li><a href="#" class="list-link link-arrow ">
+										<span class="list-icon"><i class="fa-solid fa-globe bell"></i></span>Gerencial X</a>
+
+										<!-- list items, second level (Mês/Ano) -->
+										<ul class="list-unstyled list-hidden">
+											<!-- OKGráfico pitza mensal que mostra o total e o executado tanto das receitas quanto das despesas. Dá opção de escolha 
+												do mês e ano. Inicia setado com o atual mês e ano-->
+											<li><a href="exec_orcamento_list" class="list-link">Execução do Orçamento</a></li>
+
+											<!-- OK Tabela que mostra as previsões de receitas e despesas de cada conta, por mês, bem como o executado, o a 
+												executar e o percentual de execução de cada conta -->
+											<li><a href="previsao_realizado_list" class="list-link">Previsão x Realizado</a></li>
+
+											<!-- OK 1 Gráfico pitza mostrando a inadimpléncias no mês(previsão de receitas ordinárias x executado de receitas ordinárias), 
+											1 Gráfico pitza mostrando a inadimpléncias nos últimos 3 meses(previsão de receitas ordinárias x executado de receitas ordinárias),
+											1 Gráfico pitza mostrando a inadimpléncias total(previsão de receitas ordinárias x executado de receitas ordinárias),
+											Dá opção de escolher o mês e ano. Inadimplente é aquele q venceu o condomínio e ainda não pagou. Aparece inicialmente com o mês e ano atual -->
+											<li><a href="#" class="list-link">Inadimplência ✖</a></li>
+
+											<!-- OK 1 Gráficos de pizza mostrando a quantidade de contas a receber, em azul, e a pagar, em vermelho,  no mês
+												Dá opção de escolher o mês. Aparece inicialmente com o mês atual -->
+											<li><a href="#" class="list-link">Saldo R$ do mês ✖</a></li>
+
+											<!-- 1 Gráfico pitza mostrando as atividades trabalhadas(legenda) e o percentual do tempo de 8 horas trabalhadas em cada atividade e o 
+											tempo livre de cada um. A seleção se dá pelo nome do colaborador, mostrando a foto dele ao lado  e mais informações que estão na tabela colaboradores -->
+											<li><a href="#" class="list-link">Produtividade ✖</a></li>
+
+											<!-- OK 1 Gráficos de linha/coluna mostrando a quantidade de ocorrências nos últimos 12 Meses (eixo x mês, eixo y qtd),
+											1 Gráficos de linha/coluna mostrando a quantidade de ocorrências nos últimos 10 anos (eixo x ano, eixo y qtd),
+												Dá opção de escolher o ano. Aparece inicialmente com o ano atual -->
+											<li><a href="#" class="list-link">Ocorrências ✖</a></li>
+
+											<!-- OK 1 Gráficos de linha/coluna mostrando a quantidade de moradores nos últimos 12 Meses (eixo x mês, eixo y qtd),
+												1 Gráficos de linha/coluna mostrando a quantidade de colaboradores nos últimos 10 anos (eixo x ano, eixo y qtd),
+												 Dá opção de escolher o ano. Aparece inicialmente com o ano atual -->
+											<li><a href="#" class="list-link">Moradores ✖</a></li> 
+
+											<!-- OK 1 Gráficos de linha/coluna mostrando a quantidade de colaboradores nos últimos 12 Meses (eixo x mês, eixo y qtd),
+												1 Gráficos de linha mostrando a quantidade de colaboradores nos últimos 10 anos (eixo x ano, eixo y qtd),
+												 Dá opção de escolher o ano. Aparece inicialmente com o ano atual -->
+											<li><a href="#" class="list-link">Colaboradores ✖</a></li>	
+
+											<!-- 1 Gráfico pizza mostrando quantas reservas foram realizadas no mês em cada espaço , 1 Gráfico pizza mostrando quantas reservas foram realizadas 
+											 no ano em cada espaço, 1 Gráfico pizza mostrando quantas reservas foram realizadas nos últmimos 10 anos em cada espaço. Dá opção de 
+												escolher o mês e ano. Aparece inicialmente com o mês e ano atual -->
+											<li><a href="#" class="list-link">Reservas ✖</a></li>
+
+											<!-- Ok 1 Gráfico pizza mostrando quanto cada espaço gerou em receitas no mês, 1 Gráfico pizza mostrando quanto cada espaço gerou 
+												em receitas no ano, 1 Gráfico pizza mostrando quanto cada espaço gerou em receitas nos últmimos 10 anos. Dá opção de 
+												  escolher o mês e ano. Aparece inicialmente com o mês e ano atual -->
+											<li><a href="#" class="list-link">Recursos gerados espaços ✖</a></li>
+
+											<!-- 1 Gráficos de linha/coluna mostrando os visitantes por dia durante os últimos 30 dias(eixo x dia, eixo y qtd), 1 de linha mostando os visitantes dos últimos 12 Meses (eixo x mês, eixo y qtd),
+												  1 de linha/coluna mostrando os visitantes nos últimos 10 anos (eixo x ano, eixo y qtd) e 1 de linha/coluna, mostrando os dias que mais teve visitantes no mês (eixo x dia da semana, eixo y qtd). Dá opção de 
+												  escolher o mês e ano. Aparece inicialmente com o mês e ano atual -->
+											<li><a href="#" class="list-link">Visitantes ✖</a></li>	
+
+											<!-- OK 1 Gráficos de linha/coluna mostrando as mudanças por dia durante os últimos 30 dias(eixo x dia, eixo y qtd), 1 de linha mostando as mudanças dos últimos 12 Meses (eixo x mês, eixo y qtd),
+												  1 de linha/coluna mostrando as mudanças nos últimos 10 anos (eixo x ano, eixo y qtd) e 1 de linha/coluna, mostrando os dias que mais teve  mudanças no mês (eixo x dia da semana, eixo y qtd). Dá opção de 
+												  escolher o mês e ano. Aparece inicialmente com o mês e ano atual -->
+											<li><a href="#" class="list-link">Mudanças ✖</a></li>	
+										</ul>
+									</li>
+								</ul>
+							</li>	
+
+
+							
+							<!-- FINANCEIRO  ------------------------------------------------------------------------>
+							<li class="list-item">
+								<!-- list items -->
+								<ul class="list-unstyled">
+									<!-- Orçamento ........................................................................ -->
+									<li><a href="#" class="list-link link-arrow">
+										<span class="list-icon"><i class="fa-solid fa-globe bell"></i></span>Financeiro</a>
+										<!-- list items, second level -->
+										<ul class="list-unstyled list-hidden">
+											<li><a href="caixas_list" class="list-link">Caixas</a></li>
+											<li><a href="bancos_list" class="list-link">Bancos</a></li>
+											<li><a href="fornecedores_list" class="list-link">Fornecedores</a></li>	
+											<li><a href="contas_pagar_list" class="list-link">Contas a Pagar</a></li>
+											<li><a href="contas_receber_list" class="list-link">Contas a Receber</a></li>												
+											<li><a href="previsao_receitas_list" class="list-link">Previsão de Receitas</a></li>
+											<li><a href="previsao_despesas_list" class="list-link">Previsão de Despesas</a></li>											
+											<li><a href="financeiro_estrutura_list" class="list-link">Plano de Contas</a></li>
+										</ul>
+									</li>
+								</ul>
+							</li>
+							
+
+
+							<!-- RELATÓRIOS  ---------------------------------------------------------------------->
+							<li class="list-item">
+
+								<!-- list items -->
+								<ul class="list-unstyled">
+
+									<!-- Relatórios -->
+									<li><a href="#" class="list-link link-arrow ">
+										<span class="list-icon"><i class="fa-solid fa-globe bell"></i></span>Relatórios X</a>
+
+										<!-- list items, second level -->
+										<ul class="list-unstyled list-hidden">
+											<li><a href="#" class="list-link">Contas a Pagar ✖</a></li>
+											<li><a href="#" class="list-link">Contas a Receber ✖</a></li>
+											<li><a href="#" class="list-link">Previsão de Receitas ✖</a></li>
+											<li><a href="#" class="list-link">Previsão de Despesas ✖</a></li>
+											<li><a href="#" class="list-link">Plano de Contas ✖</a></li>
+											<li><a href="#" class="list-link">Patrimônio ✖</a></li>
+											<li><a href="#" class="list-link">Espaços Administrativos ✖</a></li>
+											<li><a href="#" class="list-link">Saldo Caixas/Bancos ✖</a></li>
+											<li><a href="#" class="list-link">Tipos de Patrimônio ✖</a></li>
+											<li><a href="#" class="list-link">Produtividade Colaborador ✖</a></li>
+											<li><a href="#" class="list-link">Produtividade Colaboradores ✖</a></li>
+										</ul>
+									</li>
+								</ul>
+							</li>
+	
+
+
+							<!-- PATRIMÔNIO  ----------------------------------------------------------------------->
+							<li class="list-item">
+								<!-- list items -->
+								<ul class="list-unstyled">
+									<!-- Patrimônio........................................................................ -->
+									<li><a href="#" class="list-link link-arrow ">
+										<span class="list-icon"><i class="fa-solid fa-globe bell"></i></span>Patrimônio</a>
+
+										<!-- list items, second level -->
+										<ul class="list-unstyled list-hidden">
+											<li><a href="patrimonio_list" class="list-link">Patrimônio</a></li>	
+											<li><a href="espacosAdm_list" class="list-link">Espaços Administrativos</a></li>	
+											<li><a href="tiposPatrimonio_list" class="list-link">Tipos de Patrimônio</a></li>																			
+										</ul>
+									</li>
+								</ul>
+							</li>
+
+
+
+							<!-- PRODUTIVIDADE  -------------------------------------------------------------------->
+							<li class="list-item">
+								<!-- list items -->
+								<ul class="list-unstyled">
+									<!-- Produtividade........................................................................-->
+									<li><a href="#" class="list-link link-arrow ">
+										<span class="list-icon"><i class="fa-solid fa-globe bell"></i></span>Produtividade</a>
+
+										<!-- list items, second level -->
+										<ul class="list-unstyled list-hidden">
+											<li><a href="produtividades_list" class="list-link">Produtividade</a></li>																			
+										</ul>
+									</li>
+								</ul>
+							</li>
+						
+
+							
+							<!--  ADMINISTRATIVO  -------------------------------------------------------------------->
+							<li class="list-item">
+
+								<!-- list items -->
+								<ul class="list-unstyled">	
+									<!-- Relatórios Administrativos .................................................................. -->
+									<li><a href="#" class="list-link link-arrow">
+										<span class="list-icon"><i class="fa-solid fa-globe bell"></i></span>Administrativo  X</a>
+										<!-- list items, second level -->
+										<ul class="list-unstyled list-hidden">		
+											
+											<li><a href="#" class="list-link">Atas  ✖</a></li>
+											<li><a href="beneficios_list" class="list-link">Benefícios</a></li>
+											<li><a href="beneficios_recebidos_list" class="list-link">Benefícios Recebidos</a></li>
+											<li><a href="blocos_list" class="list-link">Blocos</a></li>
+											<li><a href="colaboradores_list" class="list-link">Colaboradores</a></li>	
+											<li><a href="condominios_list" class="list-link">Condomínios</a></li>
+											<li><a href="condominos_list" class="list-link">Condôminos</a></li>
+											<li><a href="correspondencias_list" class="list-link">Correspondências</a></li>
+											<li><a href="espacos_list" class="list-link">Espaços Reserva</a></li>
+											<li><a href="espacosAdm_list" class="list-link">Espaços Administrativos</a></li>
+											<li><a href="beneficios_list" class="list-link">Enquetes  ✖</a></li>
+											<li><a href="garagens_list" class="list-link">Garagens</a></li>
+											<li><a href="moradores_list" class="list-link">Moradores</a></li>
+											<li><a href="mudancas_list" class="list-link">Mudanças</a></li>
+											<li><a href="ocorrencias_list" class="list-link">Ocorrências</a></li>
+											<li><a href="pets_list" class="list-link">Pets</a></li>
+											<li><a href="reservas_list" class="list-link">Reserva de Espaços</a></li>
+											<li><a href="unidades_list" class="list-link">Unidades</a></li>
+											<li><a href="usuarios_list" class="list-link">Usuarios</a></li>
+											<li><a href="veiculos_list" class="list-link">Veículos</a></li>									
+											<li><a href="#" class="list-link">Visitantes ✖</a></li>										
+										</ul>
+									</li>
+								</ul>
+							</li>	
+													
+		
+
+							<!-- PRESTAÇÃO DE CONTAS  -------------------------------------------------------------->
+							<li class="list-item">
+
+								<!-- list items -->
+								<ul class="list-unstyled">
+
+									<!-- Prestação de Contas p com os Condomínos -->
+									<li><a href="#" class="list-link link-arrow ">
+										<span class="list-icon"><i class="fa-solid fa-globe bell"></i></span>Prestação de Contas X</a>
+
+										<!-- list items, second level -->
+										<ul class="list-unstyled list-hidden">
+											<li><a href="metas_list" class="list-link">Prestação de Contas</a></li>																													
+										</ul>
+									</li>
+								</ul>
+							</li>
+							
+
+
+							<!-- Enquete  -------------------------------------------------------------------------->
+							<li class="list-item">
+
+								<!-- list items -->
+								<ul class="list-unstyled">
+
+									<!-- Metas p colaboradores -->
+									<li><a href="#" class="list-link link-arrow ">
+										<span class="list-icon"><i class="fa-solid fa-globe bell"></i></span>Enquetes</a>
+
+										<!-- list items, second level -->
+										<ul class="list-unstyled list-hidden">
+											<li><a href="enquete_create" class="list-link">Enquetes</a></li>
+
+											<!-- <li><a href="enquete" class="list-link">Votar</a></li> -->
+										</ul>
+									</li>
+								</ul>
+							</li>
+
+
+
+							<!-- METAS  -------------------------------------------------------------------------->
+							<li class="list-item">
+
+								<!-- list items -->
+								<ul class="list-unstyled">
+
+									<!-- Metas p colaboradores -->
+									<li><a href="#" class="list-link link-arrow ">
+										<span class="list-icon"><i class="fa-solid fa-globe bell"></i></span>Metas</a>
+
+										<!-- list items, second level -->
+										<ul class="list-unstyled list-hidden">
+											<li><a href="metas_list" class="list-link">Metas Colaboradores</a></li>																													
+										</ul>
+									</li>
+								</ul>
+							</li>
+	
+
+
+							<!-- SAIR  ------------------------------------------------------------------------------>
+							<li class="list-item">
+								<!-- list items -->
+								<ul class="list-unstyled">
+									<!-- Relatórios -->
+									<li>
+										<a href="#" class="list-link link-arrow">
+											<span class="list-icon"><i class="fa-solid fa-globe bell"></i></span>Sair
+										</a>
+
+										<!-- list items, second level -->
+										<ul class="list-unstyled list-hidden">
+											<li>
+												<!-- Formulário para realizar o logout via POST -->
+												<form method="POST" action="{% url 'logout' %}">
+													{% csrf_token %}
+													<button type="submit" class="list-link btn btn-link" style="padding: 0; border: none; background: none;">
+														Deseja realmente sair?
+													</button>
+												</form>
+											</li>
+										</ul>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</nav>
+
+		<div class="container-fluid">
+
+			<!-- content -->
+			<main role="main"></main>
+		</div>
+	</div>
+
+	<!-- javascript library -->
+	<script src="/static/node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
+	<script src="/static/node_modules/sidebar-skeleton-compostrap/dist/js/sidebar.js"></script>
+	<script src="/static/node_modules/perfect-scrollbar/dist/perfect-scrollbar.js"></script>
+	<script src="/static/node_modules/nanobar/nanobar.js"></script>
+	<script src="/static/dist/js/sidebar.menu.js"></script>
+	<script>
+		document.addEventListener('DOMContentLoaded', () => {
+			new Nanobar().go(100);
+			new PerfectScrollbar('.scrollbar', {
+				wheelSpeed: 0.3
+			});
+		});
+	</script>
+
+	<script>
+		const sidebar = document.getElementById('sidebar-menu-hide');
+		sidebar.addEventListener('mouseover', () => {
+    		sidebar.classList.add('expanded');
+		});
+		sidebar.addEventListener('mouseout', () => {
+    		sidebar.classList.remove('expanded');
+		});
+	</script>
+
+</body>
+</html>
+

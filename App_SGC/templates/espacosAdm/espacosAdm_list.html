@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/static/node_modules/@fortawesome/fontawesome-free/css/all.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="/static/css/espacosAdm.css">
+    <title>SGC</title>
+</head>
+<body>
+    <nav class="navbar bg-dark mb-30" data-bs-theme="dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="home">CONDOMINIUM</a>
+        </div>
+    </nav>
+    <main class="container">
+        <h1 id="titulo_list">ESPAÇOS ADMINISTRATIVOS</h1>
+        <div class="container_1">
+            <div class="box">
+                <a href="{% url 'espacosAdm_create' %}" class="btn btn-primary" id="cadastrar">CADASTRAR ESPAÇOS</a>
+            </div>
+            <div class="box" id="divBusca">
+                <input type="text" id="txtBusca" placeholder="Espaço" />
+                <button id="btnBusca">BUSCAR</button>
+            </div>
+        </div>
+        <table id="espaco_admTable" class="table">
+
+            <thead>
+                <tr>
+                    <th scope="col">ESPAÇO ADMINISTRATIVO</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for espa in espacosAdm_list %}
+                <tr>
+                    <td>{{ espa.nome_espaco_adm }}</td>
+
+                    <td style="border: none; width:200px">
+                        <a href="{% url 'espacosAdm_update' pk=espa.pk %}" class="btn btn-primary btn-sm">ALTERAR</a>
+                        <a href="{% url 'espacosAdm_delete' pk=espa.pk %}" class="btn btn-danger btn-sm">EXCLUIR</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </main>
+    
+    <script>
+        function handleSearch() {
+            document.getElementById('txtBusca').addEventListener('input', function () {
+                var searchText = this.value.toLowerCase();
+                var rows = document.querySelectorAll('#espaco_admTable tbody tr');
+
+                rows.forEach(function (row) {
+                    var espaco = row.querySelector('td').textContent.toLowerCase();
+                    if (espaco.includes(searchText)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            handleSearch();
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

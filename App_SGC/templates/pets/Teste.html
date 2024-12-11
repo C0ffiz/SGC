@@ -1,0 +1,558 @@
+<!doctype html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SGC</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="/static/css/enquetes.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: rgb(0, 74, 112);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .add-poll-btn {
+            background-color: #0d6efd;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .add-poll-btn:hover {
+            background-color: #0b5ed7;
+        }
+
+        .polls-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .poll-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .delete-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background-color: #e0e0e0;
+            border: 1px solid #d0d0d0;
+            color: #666;
+            cursor: pointer;
+            width: 26px;
+            height: 26px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 3px;
+            transition: all 0.2s ease;
+        }
+
+        .delete-btn:hover {
+            background-color: #d0d0d0;
+            color: #444;
+        }
+
+        .question-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-top: 35px; /* Aumentei o espaço entre o botão e o campo */
+        }
+
+        .answers-container {
+            margin: 15px 0;
+        }
+
+        .answer-input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .answer-input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .remove-answer-btn {
+            background: none;
+            border: none;
+            color: #ff4444;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .add-answer-btn {
+            background: none;
+            border: none;
+            color: #0d6efd;
+            cursor: pointer;
+            padding: 5px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .toggle-container {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #0d6efd;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .enquete-card {
+            border: 1px solid #ccc;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .remove-answer-btn {
+            color: red;
+            cursor: pointer;
+        }
+
+        .poll-card {
+            position: relative;
+            /* ... existing styles ... */
+        }
+
+        .bottom-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            width: 100%;
+        }
+
+        .save-poll-btn {
+            background-color: #0d6efd;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+
+        .save-poll-btn:hover {
+            background-color: #0b5ed7;
+        }
+
+        .toggle-container span {
+            color: black;
+        }
+
+        /* Tamanho da fonte, cor e negrito para a MENSAGEM de erro */
+        .text-danger {
+                font-size: 20px; /* Aumenta o tamanho da letra da mensagem de erro */
+                height: 30px; /* Espaço reservado para a mensagem de erro */
+                line-height: 30px; /* Centraliza verticalmente o texto da mensagem */
+                margin-bottom: 20px; /* Margem inferior */
+                color: rgb(246, 244, 244) !important; /* Cor branca */
+                font-weight: bold; /* Negrito */
+            }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        #titulo {
+            margin-top: 0cm; 
+        }
+
+        /* Adicionar estilo para o título */
+        .titulo {
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 30px;
+        }
+    </style>
+
+    <script>
+        function submitEnquete(event) {
+            event.preventDefault();
+            
+            const texto_pergunta = document.querySelector('input[name="texto_pergunta"]').value;
+            const respostas = Array.from(document.querySelectorAll('input[name="respostas_texto[]"]')).map(input => input.value);
+
+            const data = {
+                texto_pergunta: texto_pergunta,
+                respostas: respostas
+                // Adicione outros campos necessários aqui
+            };
+
+            fetch("{% url 'enquete_create' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.success) {
+                    alert(data.success);
+                    // Redirecionar ou limpar o formulário conforme necessário
+                } else if(data.error) {
+                    alert(data.error);
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                alert('Ocorreu um erro ao enviar a enquete.');
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('enquete-form');
+            form.addEventListener('submit', submitEnquete);
+        });
+    </script>
+
+</head>
+
+<body>
+
+    <nav class="navbar bg-dark mb-30" data-bs-theme="dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'exibirHome' %}">CONDOMINIUM</a>
+        </div>
+    </nav> 
+   
+    <div class="container" style="padding-top: 80px;">
+
+        <h1 class="titulo">CRIAR ENQUETES</h1><br>
+
+        <!-- Exibir mensagem de erro com espaço fixo -->
+        <div class="text-danger" id="message-container">
+            {% for message in messages %}
+                <div>{{ message }}</div>
+            {% endfor %}
+        </div>     
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form id="enquete-form" method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <!-- ...outros campos do formulário, mas sem 'n_condominio'... -->
+            <!-- <button type="submit" class="btn btn-primary">Cadastrar Enquete</button> -->
+        
+
+                    <div class="header">
+                        <!-- <h1>Criar Enquete</h1> -->
+                        <button class="add-poll-btn" onclick="clearMessage(); addPoll()">+ Nova Enquete</button>
+                    </div>
+                    <div class="polls-container" id="pollsContainer">
+                        {% for pergunta in pergunta_formset %}
+                            {% if pergunta.instance.id %}
+                                <div class="poll-card" data-id="{{ pergunta.instance.id }}">
+
+                                    <button class="delete-btn" onclick="clearMessage(); deletePoll(this)">X</button>
+
+                                    <input type="text" class="question-input" name="texto_pergunta" value="{{ pergunta.instance.texto_pergunta }}" placeholder="Digite sua pergunta...">
+
+                                    <div class="answers-container">
+                                        {% for resposta in pergunta.instance.possiveis_respostas.all %}
+                                            <div class="answer-input-group">
+                                                <input type="text" class="answer-input" value="{{ resposta.texto_resposta }}" placeholder="Opção de resposta">
+                                                <button class="remove-answer-btn" onclick="removeAnswer(this)">×</button>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+
+                                    <button class="add-answer-btn" onclick="addAnswer(this)">
+                                        <span>+</span> Adicionar resposta
+                                    </button>
+
+                                    <div class="multiple-responses-container">
+                                        <span class="multipleResLabel">{% if pergunta.instance.multiple_responses %}Múltiplas Respostas{% else %}Única Resposta{% endif %}</span>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" onchange="clearMessage(); toggleMultipleResponses(this); updateMultipleResLabel(this)">
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+
+                                    <div class="bottom-container">
+
+                                        <button class="save-poll-btn" onclick="clearMessage(); savePoll(this)">SALVAR</button>
+                                        
+                                        <div class="toggle-container">
+                                            <span>{{ pergunta.instance.status }}</span>
+                                            <label class="toggle-switch">
+                                                <input type="checkbox" onchange="clearMessage(); togglePoll(this)" {% if pergunta.instance.status == 'Habilitada' %}checked{% endif %}>
+                                                <span class="slider"></span>
+                                            </label>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+        </form>
+    </div>
+
+    <script>
+        function createPollCard(pergunta = '', respostas = [], id = null, status = 'Desabilitada') {
+            const card = document.createElement('div');
+            card.className = 'poll-card';
+            if (id) card.setAttribute('data-id', id);
+            
+            card.innerHTML = `
+                <button class="delete-btn" onclick="clearMessage(); deletePoll(this)">X</button>
+                <input type="text" class="question-input" name="texto_pergunta" value="${pergunta}" placeholder="Digite sua pergunta...">
+                <div class="answers-container">
+                    ${respostas.map(resposta => `
+                        <div class="answer-input-group">
+                            <input type="text" class="answer-input" value="${resposta}" placeholder="Opção de resposta">
+                            <button class="remove-answer-btn" onclick="removeAnswer(this)">×</button>
+                        </div>
+                    `).join('')}
+                </div>
+                <button class="add-answer-btn" onclick="addAnswer(this)">
+                    <span>+</span> Adicionar resposta
+                </button>
+                <div class="multiple-responses-container">
+                    <span class="multipleResLabel">Única Resposta</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" onchange="clearMessage(); toggleMultipleResponses(this); updateMultipleResLabel(this)">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="bottom-container">
+                    <button class="save-poll-btn" onclick="clearMessage(); savePoll(this)">SALVAR</button>
+                    <div class="toggle-container">
+                        <span>${status}</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" onchange="clearMessage(); togglePoll(this)" ${status === 'Habilitada' ? 'checked' : ''}>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+            `;
+            
+            return card;
+        }
+
+        function addPoll() {
+            clearMessage();
+            const pollsContainer = document.getElementById('pollsContainer');
+            const newPoll = createPollCard();
+            pollsContainer.appendChild(newPoll);
+        }
+
+        function deletePoll(button) {
+            const card = button.closest('.poll-card');
+            const perguntaId = card.getAttribute('data-id');
+
+            if (perguntaId) {
+                fetch("{% url 'enquete_delete' %}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({ pergunta_id: perguntaId })
+                }).then(response => {
+                    if (response.ok) {
+                        displayMessage('Enquete excluída com sucesso!');
+                        card.remove();
+                    } else {
+                        displayMessage('Erro ao excluir enquete.');
+                    }
+                });
+            } else {
+                card.remove();
+            }
+        }
+
+        function addAnswer(button) {
+            const answersContainer = button.previousElementSibling;
+            const newAnswerGroup = document.createElement('div');
+            newAnswerGroup.className = 'answer-input-group';
+            newAnswerGroup.innerHTML = `
+                <input type="text" class="answer-input" placeholder="Opção de resposta">
+                <button class="remove-answer-btn" onclick="removeAnswer(this)">×</button>
+            `;
+            answersContainer.appendChild(newAnswerGroup);
+        }
+
+        function removeAnswer(button) {
+            const answerGroup = button.parentElement;
+            const answersContainer = answerGroup.parentElement;
+            if (answersContainer.children.length > 1) {
+                answerGroup.remove();
+            }
+        }
+
+        function togglePoll(checkbox) {
+            const label = checkbox.parentElement.previousElementSibling;
+            label.textContent = checkbox.checked ? 'Iniciar enquete' : 'Encerrar enquete';
+        }
+
+        function toggleMultipleResponses(checkbox) {
+            const card = checkbox.closest('.poll-card');
+            card.setAttribute('data-multiple-responses', checkbox.checked);
+        }
+
+        function savePoll(button) {
+            const card = button.closest('.poll-card');
+            const pergunta = card.querySelector('.question-input').value;
+            const respostas = Array.from(card.querySelectorAll('.answer-input')).map(input => input.value);
+            const perguntaId = card.getAttribute('data-id');
+            const status = card.querySelector('.toggle-switch input').checked ? 'Habilitada' : 'Desabilitada';
+            const multiple_responses = card.getAttribute('data-multiple-responses') === 'true';
+
+            fetch("{% url 'enquete_create' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({
+                    pergunta_id: perguntaId,
+                    pergunta: pergunta,
+                    respostas: respostas,
+                    status: status,
+                    multiple_responses: multiple_responses
+                })
+            }).then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    displayMessage('Enquete salva com sucesso!');
+                    if (!perguntaId) {
+                        card.setAttribute('data-id', data.pergunta_id);
+                    }
+                } else {
+                    displayMessage('Erro ao salvar enquete.');
+                }
+            });
+        }
+
+        function displayMessage(message) {
+            const messageContainer = document.getElementById('message-container');
+            messageContainer.innerHTML = `<div>${message}</div>`;
+        }
+
+        function clearMessage() {
+            const messageContainer = document.getElementById('message-container');
+            messageContainer.innerHTML = '';
+        }
+
+        function updateMultipleResLabel(checkbox) {
+            // Encontre o container pai mais próximo com a classe 'poll-card'
+            const pollCard = checkbox.closest('.poll-card');
+            if (pollCard) {
+                const label = pollCard.querySelector('.multipleResLabel');
+                if (label) {
+                    label.textContent = checkbox.checked ? 'Múltiplas Respostas' : 'Única Resposta';
+                }
+            }
+        }
+
+        // Inicializa o texto correto ao carregar a página para cada poll-card
+        document.addEventListener('DOMContentLoaded', function() {
+            const checkboxes = document.querySelectorAll('.multiple-responses-container input[type="checkbox"]');
+            checkboxes.forEach(function(checkbox) {
+                updateMultipleResLabel(checkbox);
+            });
+        });
+    </script>
+</body>
+</html>
+
+
