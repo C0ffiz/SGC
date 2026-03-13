@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="pt-br">
+    {% load custom_filters %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="/static/node_modules/@fortawesome/fontawesome-free/css/all.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <!-- Local Stylesheets -->
+    <link rel="stylesheet" href="/static/css/moradores.css">
+    <title>SGC - Execução do Orçamento</title>
+    <!-- jQuery and Mask Plugin -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+    <!-- Google Charts for Graphs -->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        // Load Google Charts
+        google.charts.load("current", { packages: ["corechart"] });
+        google.charts.setOnLoadCallback(drawCharts);
+
+        function drawCharts() {
+            // Data for Receita Chart
+            const dataReceita = google.visualization.arrayToDataTable([
+                ['Categoria', 'Valor'],
+                ['Orçamento Total', {{ orcamento_receita|default:0|floatformat:2|replace_comma }}],
+                ['Recebido Total', {{ recebido_receita|default:0|floatformat:2|replace_comma }}]
+            ]);
+
+            const optionsReceita = {
+                title: 'Execução das Receitas',
+                is3D: true,
+                colors: ['#007bff', '#ff4d4d'],
+                backgroundColor: 'transparent',
+                legend: {
+                    position: 'bottom',
+                    textStyle: { color: '#ffffff' }
+                },
+                titleTextStyle: { color: '#ffffff' },
+                pieSliceTextStyle: { color: '#ffffff' },
+            };
+
+            const chartReceita = new google.visualization.PieChart(document.getElementById('graficoReceitas'));
+            chartReceita.draw(dataReceita, optionsReceita);
+
+            // Data for Despesa Chart
+            const dataDespesa = google.visualization.arrayToDataTable([
+                ['Categoria', 'Valor'],
+                ['Orçamento Total', {{ orcamento_despesa|default:0|floatformat:2|replace_comma }}],
+                ['Pago Total', {{ pago_despesa|default:0|floatformat:2|replace_comma }}]
+            ]);
+
+            const optionsDespesa = {
+                title: 'Execução das Despesas',
+                is3D: true,
+                colors: ['#007bff', '#ff4d4d'],
+                backgroundColor: 'transparent',
+                legend: {
+                    position: 'bottom',
+                    textStyle: { color: '#ffffff' }
+                },
+                titleTextStyle: { color: '#ffffff' },
+                pieSliceTextStyle: { color: '#ffffff' },
+            };
+
+            const chartDespesa = new google.visualization.PieChart(document.getElementById('graficoDespesas'));
+            chartDespesa.draw(dataDespesa, optionsDespesa);
+        }
+
+        // Update charts when month is changed
+        function updateCharts() {
+            const selectedMonth = document.getElementById('mesSelect').value;
+            // Update the charts by making an AJAX call or reload the page with the selected month (depends on backend logic)
+            window.location.href = "?mes=" + selectedMonth; // Example of a page reload with month as a query param
+        }
+    </script>
+</head>
+
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar bg-dark mb-30" data-bs-theme="dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="home">CONDOMINIUM</a>
+        </div>
+    </nav>
+
+    <!-- Page Body -->
+    <main class="container">
+        <h1 id="titulo_list">EXECUÇÃO DO ORÇAMENTO</h1>
+        
+        <!-- Month Selector -->
+        <div class="row mb-4">
+            <div class="col-md-6 offset-md-3">
+                <label for="mesSelect" class="form-label">Selecione o Mês:</label>
+                <select class="form-select" id="mesSelect" onchange="updateCharts()">
+                    <option value="01" {% if mes == '01' %}selected{% endif %}>Janeiro</option>
+                    <option value="02" {% if mes == '02' %}selected{% endif %}>Fevereiro</option>
+                    <option value="03" {% if mes == '03' %}selected{% endif %}>Março</option>
+                    <option value="04" {% if mes == '04' %}selected{% endif %}>Abril</option>
+                    <option value="05" {% if mes == '05' %}selected{% endif %}>Maio</option>
+                    <option value="06" {% if mes == '06' %}selected{% endif %}>Junho</option>
+                    <option value="07" {% if mes == '07' %}selected{% endif %}>Julho</option>
+                    <option value="08" {% if mes == '08' %}selected{% endif %}>Agosto</option>
+                    <option value="09" {% if mes == '09' %}selected{% endif %}>Setembro</option>
+                    <option value="10" {% if mes == '10' %}selected{% endif %}>Outubro</option>
+                    <option value="11" {% if mes == '11' %}selected{% endif %}>Novembro</option>
+                    <option value="12" {% if mes == '12' %}selected{% endif %}>Dezembro</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Revenue Execution Chart -->
+            <div class="col-md-6">
+                <h3>Execução das Receitas</h3>
+                <div id="graficoReceitas" style="width: 100%; height: 400px;"></div>
+            </div>
+    
+            <!-- Expense Execution Chart -->
+            <div class="col-md-6">
+                <h3>Execução das Despesas</h3>
+                <div id="graficoDespesas" style="width: 100%; height: 400px;"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Bootstrap JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

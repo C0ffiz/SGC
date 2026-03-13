@@ -1,0 +1,26 @@
+conta_receber_create:1 Failed to find a valid digest in the 'integrity' attribute for resource 'https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js' with computed SHA-384 integrity 'I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r'. The resource has been blocked.
+conta_receber_create:1 Failed to find a valid digest in the 'integrity' attribute for resource 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js' with computed SHA-384 integrity '0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy'. The resource has been blocked.
+userscript.html?name=Maximize-Video.user.js&id=8a4e27d2-87da-43c6-95b5-658bf8533a42:68 [2024-08-07 21:44:56][Maximize Video] > Ready
+conta_receber_create:194 Plano Contas Data: (7) [{…}, {…}, {…}, {…}, {…}, {…}, {…}]0: dsc_plano_conta: "Receitas"id: 6nivel_1: "1"nivel_2: "0"nivel_3: "0"nivel_4: "0"[[Prototype]]: Object1: dsc_plano_conta: "RECEITAS ORDINARIAS"id: 7nivel_1: "1"nivel_2: "1"nivel_3: "0"nivel_4: "0"[[Prototype]]: Object2: dsc_plano_conta: "Taxa Agua"id: 4nivel_1: "1"nivel_2: "1"nivel_3: "2"nivel_4: null[[Prototype]]: Object3: dsc_plano_conta: "RECEITAS ESPACO COMUM"id: 8nivel_1: "1"nivel_2: "3"nivel_3: "0"nivel_4: "0"[[Prototype]]: Object4: dsc_plano_conta: "Tax Churras"id: 3nivel_1: "1"nivel_2: "3"nivel_3: "1"nivel_4: null[[Prototype]]: Object5: dsc_plano_conta: "RECEITAS FINANCEIRAS"id: 9nivel_1: "1"nivel_2: "4"nivel_3: "0"nivel_4: "0"[[Prototype]]: Object6: dsc_plano_conta: "RENDIMENTO DE APLICACAO"id: 5nivel_1: "1"nivel_2: "4"nivel_3: "1"nivel_4: null[[Prototype]]: Objectlength: 7[[Prototype]]: Array(0)
+conta_receber_create:205 Filtering level 1 with previous values: []length: 0[[Prototype]]: Array(0)
+conta_receber_create:214 Filtered options for level 1: (7) [{…}, {…}, {…}, {…}, {…}, {…}, {…}]0: dsc_plano_conta: "Receitas"id: 6nivel_1: "1"nivel_2: "0"nivel_3: "0"nivel_4: "0"[[Prototype]]: Object1: dsc_plano_conta: "RECEITAS ORDINARIAS"id: 7nivel_1: "1"nivel_2: "1"nivel_3: "0"nivel_4: "0"[[Prototype]]: Object2: dsc_plano_conta: "Taxa Agua"id: 4nivel_1: "1"nivel_2: "1"nivel_3: "2"nivel_4: null[[Prototype]]: Object3: dsc_plano_conta: "RECEITAS ESPACO COMUM"id: 8nivel_1: "1"nivel_2: "3"nivel_3: "0"nivel_4: "0"[[Prototype]]: Object4: dsc_plano_conta: "Tax Churras"id: 3nivel_1: "1"nivel_2: "3"nivel_3: "1"nivel_4: null[[Prototype]]: Object5: dsc_plano_conta: "RECEITAS FINANCEIRAS"id: 9nivel_1: "1"nivel_2: "4"nivel_3: "0"nivel_4: "0"[[Prototype]]: Object6: dsc_plano_conta: "RENDIMENTO DE APLICACAO"id: 5nivel_1: "1"nivel_2: "4"nivel_3: "1"nivel_4: null[[Prototype]]: Objectlength: 7[[Prototype]]: Array(0)
+conta_receber_create:197 Updating #nivel_1 with options: [{…}]0: dsc_plano_conta: "Receitas"value: "1"[[Prototype]]: Objectlength: 1[[Prototype]]: Array(0)
+$$('.console-group-messages > .console-message-wrapper').forEach(e => {
+  let element = getEventListeners(e);
+  
+  // If we have a click eventListener.
+  if (typeof element.click == 'object') {
+    // Click on the thing to collapse or expand.
+    element.click[0].listener(true);
+  }
+});
+undefined
+conta_receber_create:205 Filtering level 2 with previous values: ['1']0: "1"length: 1[[Prototype]]: Array(0)
+conta_receber_create:214 Filtered options for level 2: (6) [{…}, {…}, {…}, {…}, {…}, {…}]0: dsc_plano_conta: "RECEITAS ORDINARIAS"id: 7nivel_1: "1"nivel_2: "1"nivel_3: "0"nivel_4: "0"[[Prototype]]: Object1: dsc_plano_conta: "Taxa Agua"id: 4nivel_1: "1"nivel_2: "1"nivel_3: "2"nivel_4: null[[Prototype]]: Object2: dsc_plano_conta: "RECEITAS ESPACO COMUM"id: 8nivel_1: "1"nivel_2: "3"nivel_3: "0"nivel_4: "0"[[Prototype]]: Object3: dsc_plano_conta: "Tax Churras"id: 3nivel_1: "1"nivel_2: "3"nivel_3: "1"nivel_4: null[[Prototype]]: Object4: dsc_plano_conta: "RECEITAS FINANCEIRAS"id: 9nivel_1: "1"nivel_2: "4"nivel_3: "0"nivel_4: "0"[[Prototype]]: Object5: dsc_plano_conta: "RENDIMENTO DE APLICACAO"id: 5nivel_1: "1"nivel_2: "4"nivel_3: "1"nivel_4: null[[Prototype]]: Objectlength: 6[[Prototype]]: Array(0)
+conta_receber_create:197 Updating #nivel_2 with options: (3) [{…}, {…}, {…}]0: dsc_plano_conta: "RECEITAS ORDINARIAS"value: "1"[[Prototype]]: Object1: dsc_plano_conta: "RECEITAS ESPACO COMUM"value: "3"[[Prototype]]: Object2: dsc_plano_conta: "RECEITAS FINANCEIRAS"value: "4"[[Prototype]]: Objectlength: 3[[Prototype]]: Array(0)
+conta_receber_create:205 Filtering level 3 with previous values: (2) ['1', '1']0: "1"1: "1"length: 2[[Prototype]]: Array(0)
+conta_receber_create:214 Filtered options for level 3: [{…}]0: dsc_plano_conta: "Taxa Agua"id: 4nivel_1: "1"nivel_2: "1"nivel_3: "2"nivel_4: null[[Prototype]]: Objectlength: 1[[Prototype]]: Array(0)
+conta_receber_create:197 Updating #nivel_3 with options: [{…}]0: dsc_plano_conta: "Taxa Agua"value: "2"[[Prototype]]: Objectlength: 1[[Prototype]]: Array(0)
+conta_receber_create:205 Filtering level 4 with previous values: (3) ['1', '1', '2']0: "1"1: "1"2: "2"length: 3[[Prototype]]: Array(0)
+conta_receber_create:214 Filtered options for level 4: [{…}]
+conta_receber_create:197 Updating #nivel_4 with options: [{…}]
